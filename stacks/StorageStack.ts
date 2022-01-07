@@ -18,6 +18,7 @@ export class StorageStack extends Stack {
       fields: {
         id: TableFieldType.STRING,
       },
+      primaryIndex: { partitionKey: "id" },
     });
 
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");
