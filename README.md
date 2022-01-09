@@ -1,8 +1,31 @@
-# POCOK
+<br />
+<div align="center">
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="logo.png" alt="Logo" width="150" height="150">
+  </a>
 
-This project was bootstrapped with [Create Serverless Stack](https://docs.serverless-stack.com/packages/create-serverless-stack).
+  <h3 align="center">POCOK</h3>
 
-Start by installing the dependencies.
+  <p align="center">
+    A fast way to pay your invoices right in your email.
+    <br />
+    <br />
+  </p>
+</div>
+
+### Built with
+
+- [Serverless Stack](https://serverless-stack.com/)
+- [Go](https://golang.org/)
+- [AWS](https://aws.amazon.com/)
+
+## Getting started
+
+### Prerequisites
+
+Register an [AWS account](https://aws.amazon.com/resources/create-account/) and configure [AWS CLI](https://github.com/aws/aws-cli) with your credentials. (for local lambda environment)
+
+Install the SST dependencies:
 
 ```bash
 $ yarn
@@ -32,14 +55,6 @@ Remove all your stacks and all of their resources from AWS. Or optionally remove
 
 Runs your tests using Jest. Takes all the [Jest CLI options](https://jestjs.io/docs/en/cli).
 
-## Documentation
+## Acknowledgments
 
-Learn more about the Serverless Stack.
-
-- [Docs](https://docs.serverless-stack.com)
-- [@serverless-stack/cli](https://docs.serverless-stack.com/packages/cli)
-- [@serverless-stack/resources](https://docs.serverless-stack.com/packages/resources)
-
-## Community
-
-[Follow us on Twitter](https://twitter.com/ServerlessStack) or [post on our forums](https://discourse.serverless-stack.com).
+Logo - [Gopherize.me](https://gopherize.me/)
