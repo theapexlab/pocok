@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"net/http"
 	"os"
+	"pocok/src/api/process_email/get_pdf_url"
+	"pocok/src/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
@@ -16,22 +18,18 @@ type dependencies struct {
 	sqsClient *sqs.Client
 }
 
-func (d *dependencies) handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	resp, err := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-		MessageBody: aws.String("test message"),
-		QueueUrl:    &d.queueUrl,
-	})
+func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+	pdfUrl, err := get_pdf_url.GetPdfUrl(request.Body)
 	if err != nil {
-		return events.APIGatewayProxyResponse{
-			StatusCode: 500,
-			Body:       err.Error(),
-		}, nil
+		return utils.ApiResponse(http.StatusInternalServerError, "")
 	}
 
-	return events.APIGatewayProxyResponse{
-		StatusCode: 200,
-		Body:       *resp.MessageId,
-	}, nil
+	d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		MessageBody: &pdfUrl,
+		QueueUrl:    &d.queueUrl,
+	})
+
+	return utils.ApiResponse(http.StatusOK, "")
 }
 
 func getSQSClient() *sqs.Client {

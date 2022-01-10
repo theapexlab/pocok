@@ -26,9 +26,10 @@ export class ApiStack extends Stack {
       routes: {
         "POST /webhooks/mailgun": {
           function: {
-            handler: "src/api/process-email.go",
+            handler: "src/api/process_email/main.go",
             environment: {
-              queueUrl: additionalStackProps.queueStack.queue.sqsQueue.queueUrl,
+              queueUrl: additionalStackProps?.queueStack.queue.sqsQueue
+                .queueUrl as string,
             },
             permissions: [additionalStackProps?.queueStack.queue as Queue],
           },
