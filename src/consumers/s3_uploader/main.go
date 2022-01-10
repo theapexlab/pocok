@@ -19,10 +19,10 @@ import (
 )
 
 type dependencies struct {
-	tableName string
-	s3Bucket  string
-	s3Client  *s3.Client
-	dbClient  *dynamodb.Client
+	tableName  string
+	bucketName string
+	s3Client   *s3.Client
+	dbClient   *dynamodb.Client
 }
 
 func downloadFile(url string) ([]byte, error) {
@@ -31,29 +31,31 @@ func downloadFile(url string) ([]byte, error) {
 	if err != nil {
 		return []byte(nil), err
 	}
+
+	// store file in memory
 	req.NoStore = true
 	resp := client.Do(req)
 	data, err := resp.Bytes()
+
 	return data, err
 }
 
 func uploadPDF(d *dependencies, url string) error {
 	data, downloadErr := downloadFile(url)
 	if downloadErr != nil {
-		fmt.Print(downloadErr)
+		fmt.Printf("❌ Error while downloading PDF: %s", downloadErr)
 		return downloadErr
 	}
-	fmt.Print("data length:", len(data))
+
 	filename := strconv.FormatInt(time.Now().Unix(), 10) + ".pdf"
-	fmt.Print("filename:", filename)
 
 	s3Resp, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
-		Bucket: &d.s3Bucket,
+		Bucket: &d.bucketName,
 		Key:    &filename,
 		Body:   bytes.NewReader(data),
 	})
 	if s3Err != nil {
-		fmt.Print(s3Err.Error())
+		fmt.Printf("❌ Error while uploading to s3: %s", s3Err)
 		return s3Err
 	}
 
@@ -66,26 +68,32 @@ func uploadPDF(d *dependencies, url string) error {
 		},
 	})
 	if dbErr != nil {
-		fmt.Print(dbErr.Error())
+		fmt.Printf("❌ Error while creating record in DB: %s", dbErr)
 		return dbErr
 	}
 
 	return nil
 }
 
-func (d *dependencies) handler(event events.SQSEvent) {
+func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
 		url := record.Body
-		uploadPDF(d, url)
+		uploadPDFErr := uploadPDF(d, url)
+		// if the original file doesn't exists, no need to retry the message
+		if uploadPDFErr != nil && uploadPDFErr != grab.StatusCodeError(403) {
+			return uploadPDFErr
+		}
 	}
+
+	return nil
 }
 
 func main() {
 	d := &dependencies{
-		tableName: os.Getenv("tableName"),
-		s3Bucket:  os.Getenv("bucketName"),
-		s3Client:  aws_clients.GetS3Client(),
-		dbClient:  aws_clients.GetDbClient(),
+		tableName:  os.Getenv("tableName"),
+		bucketName: os.Getenv("bucketName"),
+		s3Client:   aws_clients.GetS3Client(),
+		dbClient:   aws_clients.GetDbClient(),
 	}
 
 	lambda.Start(d.handler)

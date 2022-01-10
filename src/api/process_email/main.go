@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
 	"pocok/src/api/process_email/get_pdf_url"
@@ -19,15 +20,20 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	pdfUrl, err := get_pdf_url.GetPdfUrl(request.Body)
-	if err != nil {
+	pdfUrl, pdfParseErr := get_pdf_url.GetPdfUrl(request.Body)
+	if pdfParseErr != nil {
+		fmt.Printf("❌ Error while parsing PDF URL: %s", pdfParseErr)
 		return utils.ApiResponse(http.StatusInternalServerError, "")
 	}
 
-	d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: &pdfUrl,
 		QueueUrl:    &d.queueUrl,
 	})
+	if sqsErr != nil {
+		fmt.Printf("❌ Error while sending message to SQS: %s", sqsErr)
+		return utils.ApiResponse(http.StatusInternalServerError, "")
+	}
 
 	return utils.ApiResponse(http.StatusOK, "")
 }

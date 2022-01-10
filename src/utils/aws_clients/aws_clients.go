@@ -12,7 +12,7 @@ import (
 func GetSQSClient() *sqs.Client {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		panic("configuration error, " + err.Error())
+		panic("SQS configuration error, " + err.Error())
 	}
 
 	return sqs.NewFromConfig(cfg)
@@ -21,7 +21,7 @@ func GetSQSClient() *sqs.Client {
 func GetS3Client() *s3.Client {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		panic("configuration error, " + err.Error())
+		panic("S3 configuration error, " + err.Error())
 	}
 
 	return s3.NewFromConfig(cfg)
@@ -30,7 +30,7 @@ func GetS3Client() *s3.Client {
 func GetDbClient() *dynamodb.Client {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		panic("configuration error, " + err.Error())
+		panic("DynamoDB configuration error, " + err.Error())
 	}
 
 	return dynamodb.NewFromConfig(cfg)

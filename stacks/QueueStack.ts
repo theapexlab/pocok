@@ -38,6 +38,9 @@ export class QueueStack extends Stack {
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
           ],
         },
+        consumerProps: {
+          batchSize: 1,
+        },
       },
     });
   }
