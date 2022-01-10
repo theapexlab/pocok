@@ -30,7 +30,7 @@ export class QueueStack extends Stack {
           environment: {
             tableName: additionalStackProps?.storageStack.invoiceTable
               .tableName as string,
-            s3Bucket: additionalStackProps?.storageStack.invoiceBucket
+            bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
           },
           permissions: [

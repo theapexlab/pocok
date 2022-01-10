@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"os"
 	"pocok/src/utils/aws_clients"
 	"strconv"
@@ -37,19 +38,26 @@ func downloadFile(url string) ([]byte, error) {
 }
 
 func uploadPDF(d *dependencies, url string) error {
-	data, _ := downloadFile(url)
+	data, downloadErr := downloadFile(url)
+	if downloadErr != nil {
+		fmt.Print(downloadErr)
+		return downloadErr
+	}
+	fmt.Print("data length:", len(data))
 	filename := strconv.FormatInt(time.Now().Unix(), 10) + ".pdf"
+	fmt.Print("filename:", filename)
 
-	s3Resp, err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+	s3Resp, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket: &d.s3Bucket,
 		Key:    &filename,
 		Body:   bytes.NewReader(data),
 	})
-	if err != nil {
-		return err
+	if s3Err != nil {
+		fmt.Print(s3Err.Error())
+		return s3Err
 	}
 
-	_, err = d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
+	_, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: &d.tableName,
 		Item: map[string]types.AttributeValue{
 			"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
@@ -57,9 +65,11 @@ func uploadPDF(d *dependencies, url string) error {
 			"etag":     &types.AttributeValueMemberS{Value: *s3Resp.ETag},
 		},
 	})
-	if err != nil {
-		return err
+	if dbErr != nil {
+		fmt.Print(dbErr.Error())
+		return dbErr
 	}
+
 	return nil
 }
 
