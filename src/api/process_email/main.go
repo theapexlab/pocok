@@ -6,10 +6,10 @@ import (
 	"os"
 	"pocok/src/api/process_email/get_pdf_url"
 	"pocok/src/utils"
+	"pocok/src/utils/aws_clients"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
@@ -32,19 +32,10 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	return utils.ApiResponse(http.StatusOK, "")
 }
 
-func getSQSClient() *sqs.Client {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("configuration error, " + err.Error())
-	}
-
-	return sqs.NewFromConfig(cfg)
-}
-
 func main() {
 	d := &dependencies{
 		queueUrl:  os.Getenv("queueUrl"),
-		sqsClient: getSQSClient(),
+		sqsClient: aws_clients.GetSQSClient(),
 	}
 
 	lambda.Start(d.handler)
