@@ -17,6 +17,8 @@ export class StorageStack extends Stack {
     this.invoiceTable = new Table(this, "Invoices", {
       fields: {
         id: TableFieldType.STRING,
+        filename: TableFieldType.STRING,
+        etag: TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: "id" },
     });
