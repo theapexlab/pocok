@@ -1,4 +1,4 @@
-package get_pdf_url_test
+package parse_email_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestGetPdfUrl(t *testing.T) {
+func TestParseEmail(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "GetPdfUrl Suite")
+	RunSpecs(t, "ParseEmail Suite")
 }

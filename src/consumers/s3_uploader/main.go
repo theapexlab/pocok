@@ -3,14 +3,19 @@ package main
 import (
 	"bytes"
 	"context"
-	"fmt"
+	"encoding/base64"
+	"encoding/json"
+	"errors"
 	"os"
+	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -40,22 +45,34 @@ func downloadFile(url string) ([]byte, error) {
 	return data, err
 }
 
-func uploadPDF(d *dependencies, url string) error {
-	data, downloadErr := downloadFile(url)
-	if downloadErr != nil {
-		fmt.Printf("❌ Error while downloading PDF: %s", downloadErr)
-		return downloadErr
+func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessage) error {
+	var data []byte
+	var err error
+
+	switch uploadInvoiceMessage.Type {
+	case "url":
+		data, err = downloadFile(uploadInvoiceMessage.Body)
+	case "base64":
+		data, err = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
+	default:
+		err = errors.New("invalid uploadInvoiceMessage type: " + uploadInvoiceMessage.Type)
+	}
+
+	if err != nil {
+		utils.LogError("", err)
+		return err
 	}
 
 	filename := strconv.FormatInt(time.Now().Unix(), 10) + ".pdf"
 
-	s3Resp, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
-		Bucket: &d.bucketName,
-		Key:    &filename,
-		Body:   bytes.NewReader(data),
+	_, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket:      &d.bucketName,
+		Key:         &filename,
+		Body:        bytes.NewReader(data),
+		ContentType: aws.String("application/pdf"),
 	})
 	if s3Err != nil {
-		fmt.Printf("❌ Error while uploading to s3: %s", s3Err)
+		utils.LogError("Error while uploading to s3", s3Err)
 		return s3Err
 	}
 
@@ -64,21 +81,34 @@ func uploadPDF(d *dependencies, url string) error {
 		Item: map[string]types.AttributeValue{
 			"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
 			"filename": &types.AttributeValueMemberS{Value: filename},
-			"etag":     &types.AttributeValueMemberS{Value: *s3Resp.ETag},
 		},
 	})
 	if dbErr != nil {
-		fmt.Printf("❌ Error while creating record in DB: %s", dbErr)
+		utils.LogError("Error while inserting to db", dbErr)
 		return dbErr
 	}
 
 	return nil
 }
 
+func parseBody(body string) (*models.UploadInvoiceMessage, error) {
+	var jsonBody *models.UploadInvoiceMessage
+
+	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
+}
+
 func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
-		url := record.Body
-		uploadPDFErr := uploadPDF(d, url)
+		uploadInvoiceMessage, err := parseBody(record.Body)
+		if err != nil {
+			continue
+		}
+
+		uploadPDFErr := uploadPDF(d, uploadInvoiceMessage)
 		// if the original file doesn't exists, no need to retry the message
 		if uploadPDFErr != nil && uploadPDFErr != grab.StatusCodeError(403) {
 			return uploadPDFErr
