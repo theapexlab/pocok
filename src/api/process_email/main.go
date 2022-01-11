@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"net/http"
 	"os"
-	"pocok/src/api/process_email/get_pdf_url"
+	"pocok/src/api/process_email/parse_email"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 
@@ -20,18 +20,21 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	pdfUrl, pdfParseErr := get_pdf_url.GetPdfUrl(request.Body)
-	if pdfParseErr != nil {
-		fmt.Printf("❌ Error while parsing PDF URL: %s", pdfParseErr)
+	invoiceMessage, emailParseErr := parse_email.ParseEmail(request.Body)
+	if emailParseErr != nil {
+		utils.LogError("Error while parsing email", emailParseErr)
 		return utils.ApiResponse(http.StatusInternalServerError, "")
 	}
 
+	invoiceMessageByteArr, _ := json.Marshal(invoiceMessage)
+	invoiceMessageString := string(invoiceMessageByteArr)
+
 	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-		MessageBody: &pdfUrl,
+		MessageBody: &invoiceMessageString,
 		QueueUrl:    &d.queueUrl,
 	})
 	if sqsErr != nil {
-		fmt.Printf("❌ Error while sending message to SQS: %s", sqsErr)
+		utils.LogError("Error while sending message to SQS", emailParseErr)
 		return utils.ApiResponse(http.StatusInternalServerError, "")
 	}
 

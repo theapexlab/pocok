@@ -24,7 +24,7 @@ export class ApiStack extends Stack {
 
     const api = new Api(this, "Api", {
       routes: {
-        "POST /webhooks/mailgun": {
+        "POST /webhooks/pipedream": {
           function: {
             handler: "src/api/process_email/main.go",
             environment: {
