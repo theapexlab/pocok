@@ -16,6 +16,7 @@ require (
 )
 
 require (
+	github.com/aws/aws-sdk-go v1.42.32 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.12.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.1.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.3 // indirect
