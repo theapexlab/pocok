@@ -25,6 +25,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery v1.4.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.6.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.10.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/textract v1.11.0 // indirect
 	github.com/aws/smithy-go v1.9.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f // indirect

@@ -47,6 +47,8 @@ github.com/aws/aws-sdk-go-v2/service/sso v1.7.0 h1:E4fxAg/UE8a6yiLZYv8/EP0uXKPPR
 github.com/aws/aws-sdk-go-v2/service/sso v1.7.0/go.mod h1:KnIpszaIdwI33tmc/W/GGXyn22c1USYxA/2KyvoeDY0=
 github.com/aws/aws-sdk-go-v2/service/sts v1.12.0 h1:7g0252k2TF3eA1DtfkTQB/tqI41YvbUPaolwTR0/ITc=
 github.com/aws/aws-sdk-go-v2/service/sts v1.12.0/go.mod h1:UV2N5HaPfdbDpkgkz4sRzWCvQswZjdO1FfqCWl0t7RA=
+github.com/aws/aws-sdk-go-v2/service/textract v1.11.0 h1:gyt3RjX+0vkoqeYGN1CXJPvQ/prZjk7lpo6YzHlnlnk=
+github.com/aws/aws-sdk-go-v2/service/textract v1.11.0/go.mod h1:WtN4+lDaUa0zpw7vw6cnpqNYFKplhSRNcIrdG7ph+uw=
 github.com/aws/constructs-go/constructs/v10 v10.0.9/go.mod h1:RC6w8bOwxLmPX7Jfo9dkEZ9iVfgH4QnaVnfWvaNOHy0=
 github.com/aws/constructs-go/constructs/v10 v10.0.26 h1:JkzXiPMXwVv0iZmoFYF4AZBQo6fl1j7fGdIZFlglWok=
 github.com/aws/constructs-go/constructs/v10 v10.0.26/go.mod h1:Tk3teOB9AAvXsgGcl3MLrOv0iTSv4UTQStQ5TQ+OIJc=

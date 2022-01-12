@@ -71,6 +71,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		Body:        bytes.NewReader(data),
 		ContentType: aws.String("application/pdf"),
 	})
+
 	if s3Err != nil {
 		utils.LogError("Error while uploading to s3", s3Err)
 		return s3Err
