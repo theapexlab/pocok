@@ -17,7 +17,7 @@ type UploadInvoiceMessage struct {
 type Invoice struct {
 	Id           string `json:"id" dynamodbav:"id"`
 	Filename     string `json:"filename" dynamodbav:"filename"`
-	TextractData string `json:"textractData" dynamodbav:"textractData,omitemty"`
+	TextractData string `json:"textractData" dynamodbav:"textractData,omitempty"`
 
 	InvoiceNumber string `json:"invoiceNumber" dynamodbav:"invoiceNumber,omitempty"`
 	CustomerName  string `json:"customerName" dynamodbav:"customerName,omitempty"`
