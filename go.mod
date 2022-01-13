@@ -15,6 +15,8 @@ require (
 	github.com/onsi/gomega v1.17.0
 )
 
+require github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.10.0 // indirect
+
 require (
 	github.com/aws/aws-sdk-go-v2 v1.12.0
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.1.0 // indirect
