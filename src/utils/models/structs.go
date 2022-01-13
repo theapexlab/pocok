@@ -21,23 +21,23 @@ type Invoice struct {
 	Filename     string `json:"filename" dynamodbav:"filename"`
 	TextractData string `json:"textractData" dynamodbav:"textractData,omitemty"`
 
-	InvoiceNumber string `json:"invoiceNumber" dynamoadbav:"invoiceNumber,omitempty"`
-	CustomerName  string `json:"customerName" dynamoadbav:"customerName,omitempty"`
-	AccountNumber string `json:"accountNumber" dynamoadbav:"accountNumber,omitempty"`
-	Iban          string `json:"iban" dynamoadbav:"iban,omitempty"`
-	NetPrice      int    `json:"netPrice" dynamoadbav:"netPrice,omitempty"`
-	GrossPrice    int    `json:"grossPrice" dynamoadbav:"grossPrice,omitempty"`
-	Currency      string `json:"currency" dynamoadbav:"currency,omitempty"`
-	DueDate       string `json:"dueDate" dynamoadbav:"dueDate,omitempty"`
+	InvoiceNumber string `json:"invoiceNumber" dynamodbav:"invoiceNumber,omitempty"`
+	CustomerName  string `json:"customerName" dynamodbav:"customerName,omitempty"`
+	AccountNumber string `json:"accountNumber" dynamodbav:"accountNumber,omitempty"`
+	Iban          string `json:"iban" dynamodbav:"iban,omitempty"`
+	NetPrice      int    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
+	GrossPrice    int    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
+	Currency      string `json:"currency" dynamodbav:"currency,omitempty"`
+	DueDate       string `json:"dueDate" dynamodbav:"dueDate,omitempty"`
 
 	// TODO Refactor later into Service struct array
-	ServiceName       string `json:"serviceName" dynamoadbav:"serviceName,omitempty"`
-	ServiceAmount     int    `json:"serviceAmount" dynamoadbav:"serviceAmount,omitempty"`
-	ServiceNetPrice   int    `json:"serviceNetPrice" dynamoadbav:"serviceNetPrice,omitempty"`
-	ServiceGrossPrice int    `json:"serviceGrossPrice" dynamoadbav:"serviceGrossPrice,omitempty"`
-	ServiceCurrency   string `json:"serviceCurrency" dynamoadbav:"serviceCurrency,omitempty"`
-	ServiceTax        int    `json:"serviceTax" dynamoadbav:"serviceTax,omitempty"`
+	ServiceName       string `json:"serviceName" dynamodbav:"serviceName,omitempty"`
+	ServiceAmount     int    `json:"serviceAmount" dynamodbav:"serviceAmount,omitempty"`
+	ServiceNetPrice   int    `json:"serviceNetPrice" dynamodbav:"serviceNetPrice,omitempty"`
+	ServiceGrossPrice int    `json:"serviceGrossPrice" dynamodbav:"serviceGrossPrice,omitempty"`
+	ServiceCurrency   string `json:"serviceCurrency" dynamodbav:"serviceCurrency,omitempty"`
+	ServiceTax        int    `json:"serviceTax" dynamodbav:"serviceTax,omitempty"`
 
-	CustomerEmail string `json:"custmerEmail" dynamoadbav:"custmerEmail,omitempty"`
-	Status        string `json:"status" dynamoadbav:"status,omitempty"` // InvoiceStatus
+	CustomerEmail string `json:"custmerEmail" dynamodbav:"custmerEmail,omitempty"`
+	Status        string `json:"status" dynamodbav:"status,omitempty"` // InvoiceStatus
 }
