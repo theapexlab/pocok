@@ -18,10 +18,36 @@ export class StorageStack extends Stack {
       fields: {
         id: TableFieldType.STRING,
         filename: TableFieldType.STRING,
-      },
-      primaryIndex: { partitionKey: "id" },
-    });
+        textractData: TableFieldType.STRING,
 
+        // Extracted Data
+        invoiceNumber: TableFieldType.STRING,
+        customerName: TableFieldType.STRING,
+        accountNumber: TableFieldType.STRING,
+        iban: TableFieldType.STRING,
+        netPrice: TableFieldType.NUMBER,
+        grossPrice: TableFieldType.NUMBER,
+        currency: TableFieldType.STRING,
+        dueDate: TableFieldType.STRING,
+
+        // Refactor into service array/table later
+        serviceName: TableFieldType.STRING,
+        serviceAmount: TableFieldType.STRING,
+        serviceNetPrice: TableFieldType.STRING,
+        serviceGrossPrice: TableFieldType.STRING,
+        serviceCurrency: TableFieldType.STRING,
+        serviceTax: TableFieldType.STRING,
+
+        // Dynamic data
+        customerEmail: TableFieldType.STRING,
+        status: TableFieldType.STRING,
+      },
+      primaryIndex: { partitionKey: "id", sortKey: "filename" },
+      localIndexes: {
+        invoiceNumberIndex: { sortKey: "invoiceNumber" },
+        customerIndex: { sortKey: "customerName" },
+      },
+    });
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");
   }
 }
