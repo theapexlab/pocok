@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"pocok/src/utils/aws_clients"
 
@@ -18,42 +19,12 @@ type dependencies struct {
 	dbClient       *dynamodb.Client
 }
 
-func ParsePdf(pdfS3Object s3.GetObjectOutput) {
-	// if textractSession == nil {
-	// 	textractSession = textract.New(session.Must(session.NewSession(&aws.Config{
-	// 		Region: aws.String("eu-central-1"), // Frankfurt
-	// 	})))
-	// }
-
-	// file, err := ioutil.ReadFile("example-invoice.pdf")
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// strs := []string{"FORMS"}
-
-	// resp, err := textractSession.AnalyzeDocument(&textract.AnalyzeDocumentInput{
-	// 	Document: &textract.Document{
-	// 		// Bytes: file,
-	// 		S3Object: pdfS3Object,
-	// 	},
-	// 	FeatureTypes: aws.StringSlice(strs),
-	// })
-
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(resp)
-}
-
-func (d *dependencies) handler(event events.SQSEvent) error {
-	for _, record := range event.Records {
-		filename := record.Body
-	}
-
-	return nil
-}
+// func getS3Object(d *dependencies, filename string) (*s3.GetObjectOutput, error) {
+// 	return d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
+// 		Bucket: &d.bucketName,
+// 		Key:    &filename,
+// 	})
+// }
 
 func main() {
 	d := &dependencies{
@@ -65,3 +36,34 @@ func main() {
 
 	lambda.Start(d.handler)
 }
+
+func (d *dependencies) handler(event events.SQSEvent) error {
+	for _, record := range event.Records {
+		fmt.Println(record.Body)
+		// filename := record.Body
+		// ParsePdf(d, filename)
+	}
+
+	return nil
+}
+
+// func ParsePdf(d *dependencies, filename string) error {
+// 	fmt.Println("filename", filename)
+// 	res, err := d.textractClient.StartDocumentTextDetection (context.TODO(), &textract.AnalyzeExpenseInput{
+// 		Document: &types.Document{
+// 			S3Object: &types.S3Object{
+// 				Bucket: &d.bucketName,
+// 				Name:   &filename,
+// 			},
+// 		},
+// 	})
+
+// 	fmt.Println(res)
+
+// 	if err != nil {
+// 		utils.LogError("Failed to parse pdf", err)
+// 		return err
+// 	}
+
+// 	return nil
+// }

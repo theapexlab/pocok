@@ -17,17 +17,22 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/aws/aws-sdk-go-v2/service/textract"
+	"github.com/aws/aws-sdk-go-v2/service/textract/types"
 	"github.com/cavaliergopher/grab/v3"
-	"github.com/segmentio/ksuid"
 )
 
 type dependencies struct {
-	tableName  string
-	bucketName string
-	s3Client   *s3.Client
-	dbClient   *dynamodb.Client
+	tableName       string
+	bucketName      string
+	snsTopicArn     string
+	textractRoleArn string
+	s3Client        *s3.Client
+	dbClient        *dynamodb.Client
+	sqsClient       *sqs.Client
+	textractClient  *textract.Client
 }
 
 func downloadFile(url string) ([]byte, error) {
@@ -77,16 +82,44 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
-	_, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
-		TableName: &d.tableName,
-		Item: map[string]types.AttributeValue{
-			"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
-			"filename": &types.AttributeValueMemberS{Value: filename},
+	// todo:  save attrubutes to db after textract completed
+	// _, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
+	// 	TableName: &d.tableName,
+	// 	Item: map[string]types.AttributeValue{
+	// 		"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
+	// 		"filename": &types.AttributeValueMemberS{Value: filename},
+	// 	},
+	// })
+
+	// if dbErr != nil {
+	// 	utils.LogError("Error while inserting to db", dbErr)
+	// 	return dbErr
+	// }
+
+	// _, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	// 	MessageBody: &filename,
+	// 	QueueUrl:    &d.textractQueueUrl,
+	// })
+	// if sqsErr != nil {
+	// 	utils.LogError("Error while forwarding message to textract queue", sqsErr)
+	// 	return sqsErr
+	// }
+
+	_, textractErr := d.textractClient.StartDocumentTextDetection(context.TODO(), &textract.StartDocumentTextDetectionInput{
+		DocumentLocation: &types.DocumentLocation{
+			S3Object: &types.S3Object{
+				Bucket: &d.bucketName,
+				Name:   &filename,
+			},
+		},
+		NotificationChannel: &types.NotificationChannel{
+			SNSTopicArn: &d.snsTopicArn,
+			RoleArn:     &d.textractRoleArn,
 		},
 	})
-	if dbErr != nil {
-		utils.LogError("Error while inserting to db", dbErr)
-		return dbErr
+	if textractErr != nil {
+		utils.LogError("failed to send to textract", err)
+		return textractErr
 	}
 
 	return nil
@@ -121,10 +154,14 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 func main() {
 	d := &dependencies{
-		tableName:  os.Getenv("tableName"),
-		bucketName: os.Getenv("bucketName"),
-		s3Client:   aws_clients.GetS3Client(),
-		dbClient:   aws_clients.GetDbClient(),
+		tableName:       os.Getenv("tableName"),
+		bucketName:      os.Getenv("bucketName"),
+		snsTopicArn:     os.Getenv("snsTopicArn"),
+		textractRoleArn: os.Getenv("textractRoleArn"),
+		s3Client:        aws_clients.GetS3Client(),
+		dbClient:        aws_clients.GetDbClient(),
+		sqsClient:       aws_clients.GetSQSClient(),
+		textractClient:  aws_clients.GetTextractClient(),
 	}
 
 	lambda.Start(d.handler)

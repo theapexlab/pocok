@@ -11,5 +11,6 @@ export default function main(app: App): void {
 
   const storageStack = new StorageStack(app, "storage-stack");
   const queueStack = new QueueStack(app, "queue-stack", {}, { storageStack });
+
   new ApiStack(app, "api-stack", {}, { storageStack, queueStack });
 }
