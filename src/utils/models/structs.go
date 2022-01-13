@@ -5,8 +5,6 @@ type UploadInvoiceMessage struct {
 	Body string `json:"body"`
 }
 
-// TODO
-
 // type Service struct {
 // 	Name       string
 // 	Amount     int

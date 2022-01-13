@@ -2,7 +2,7 @@ package models
 
 // InvoiceStatus Options
 const (
-	PENDING string = "pending"
-	SUCCESS string = "success"
-	REJECT  string = "reject"
+	PENDING  string = "pending"
+	ACCEPTED string = "approved"
+	REJECTED string = "rejected"
 )
