@@ -107,7 +107,7 @@ func parseRecordBody(event string) (*documentTextDetectionMessage, error) {
 }
 
 func (d *dependencies) getResults(message *documentTextDetectionMessage) {
-	res, err := d.textractClient.GetDocumentTextDetection(context.TODO(), &textract.GetDocumentTextDetectionInput{
+	res, err := d.textractClient.GetExpenseAnalysis(context.TODO(), &textract.GetExpenseAnalysisInput{
 		JobId: &message.JobId,
 	})
 	if err != nil {
@@ -116,9 +116,12 @@ func (d *dependencies) getResults(message *documentTextDetectionMessage) {
 
 	fmt.Println(res)
 
-	// for _, block := range res.Blocks {
-	// 	block.
-	// }
+	for i := 1; i < len(res.ExpenseDocuments); i++ {
+		for _, record := range res.ExpenseDocuments[i].SummaryFields {
+			fmt.Println(record.LabelDetection)
+			fmt.Println(record.LabelDetection)
+		}
+	}
 }
 
 // func ParsePdf(d *dependencies, filename string) error {

@@ -100,7 +100,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
-	_, textractErr := d.textractClient.StartDocumentTextDetection(context.TODO(), &textract.StartDocumentTextDetectionInput{
+	_, textractErr := d.textractClient.StartExpenseAnalysis(context.TODO(), &textract.StartExpenseAnalysisInput{
 		DocumentLocation: &types.DocumentLocation{
 			S3Object: &types.S3Object{
 				Bucket: &d.bucketName,
