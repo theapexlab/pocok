@@ -14,9 +14,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 	"github.com/aws/aws-sdk-go-v2/service/textract/types"
 	"github.com/cavaliergopher/grab/v3"
@@ -24,25 +22,19 @@ import (
 )
 
 type dependencies struct {
-	tableName       string
 	bucketName      string
 	snsTopicArn     string
 	textractRoleArn string
 	s3Client        *s3.Client
-	dbClient        *dynamodb.Client
-	sqsClient       *sqs.Client
 	textractClient  *textract.Client
 }
 
 func main() {
 	d := &dependencies{
-		tableName:       os.Getenv("tableName"),
 		bucketName:      os.Getenv("bucketName"),
 		snsTopicArn:     os.Getenv("snsTopicArn"),
 		textractRoleArn: os.Getenv("textractRoleArn"),
 		s3Client:        aws_clients.GetS3Client(),
-		dbClient:        aws_clients.GetDbClient(),
-		sqsClient:       aws_clients.GetSQSClient(),
 		textractClient:  aws_clients.GetTextractClient(),
 	}
 

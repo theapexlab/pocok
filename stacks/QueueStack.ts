@@ -15,9 +15,9 @@ type AdditionalStackProps = {
 };
 
 export class QueueStack extends Stack {
-  uploadQueue: Queue;
-  textractQueue: Queue;
-  jobCompletionTopic: Topic;
+  invoiceQueue: Queue;
+  textractJobResultsQueue: Queue;
+  textractJobCompletionTopic: Topic;
 
   constructor(
     scope: Construct,
@@ -27,7 +27,13 @@ export class QueueStack extends Stack {
   ) {
     super(scope, id, props);
 
-    this.textractQueue = new Queue(this, "textractQueue", {
+    this.textractJobResultsQueue = this.createTextractJobResultsQueue(additionalStackProps)
+    this.textractJobCompletionTopic = this.createTextractJobCompletionTopic()
+    this.invoiceQueue = this.createInvoiceQueue(additionalStackProps)
+  }
+
+  createTextractJobResultsQueue(additionalStackProps?: AdditionalStackProps) {
+    return  new Queue(this, "TextractJobResults", {
       consumer: {
         function: {
           handler: "src/consumers/textractor/main.go",
@@ -53,13 +59,17 @@ export class QueueStack extends Stack {
         },
       }
     });
+  }
 
-    this.jobCompletionTopic = new Topic(this, "jobCompletionTopic", {
+  createTextractJobCompletionTopic() {
+    return new Topic(this, "TextractJobCompletion", {
       subscribers: [
-        this.textractQueue as Queue,
+        this.textractJobResultsQueue as Queue,
       ],
     });
+  }
 
+  createInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
     const textractServiceRole = new Role(this, "textractServiceRole", {
       assumedBy: new ServicePrincipal("textract.amazonaws.com"),
     });
@@ -67,28 +77,24 @@ export class QueueStack extends Stack {
     textractServiceRole.addToPolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        resources: [this.jobCompletionTopic.topicArn as string],
+        resources: [this.textractJobCompletionTopic.topicArn as string],
         actions: ["sns:Publish"],
       })
     );
 
-    // todo: remove un-neccesary environment vars
-    this.uploadQueue = new Queue(this, "uploadQueue", {
+    return new Queue(this, "Invoice", {
       consumer: {
         function: {
-          handler: "src/consumers/s3_uploader/main.go",
+          handler: "src/consumers/invoice_preprocessor/main.go",
           environment: {
-            tableName: additionalStackProps?.storageStack.invoiceTable
-              .tableName as string,
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
-            textractQueueUrl:  this.textractQueue.sqsQueue.queueUrl  as string,
-            snsTopicArn: this.jobCompletionTopic.topicArn as string,
+            textractQueueUrl:  this.textractJobResultsQueue.sqsQueue.queueUrl  as string,
+            snsTopicArn: this.textractJobCompletionTopic.topicArn as string,
             textractRoleArn: textractServiceRole.roleArn as string
           },
           permissions: [
-            this.textractQueue as Queue,
-            additionalStackProps?.storageStack.invoiceTable as Table,
+            this.textractJobResultsQueue as Queue,
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
           ],
           initialPolicy: [
