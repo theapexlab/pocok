@@ -46,7 +46,7 @@ func main() {
 
 func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
-		documentTextDetectionMessage, err := parseBody(record.Body)
+		documentTextDetectionMessage, err := parseRecordBody(record.Body)
 		if err != nil {
 			utils.LogError("Failed to parse textract message", err)
 			return err
@@ -62,16 +62,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		fmt.Println(documentTextDetectionMessage) //todo: remove this line
 
 		// todo: call GetDocumentTextDetection api with JobId
-		res, detectErr := d.textractClient.GetDocumentTextDetection(context.TODO(), &textract.GetDocumentTextDetectionInput{
-			JobId: &documentTextDetectionMessage.JobId,
-		})
-
-		if detectErr != nil {
-			utils.LogError("GetDocumentTextDetection failed", detectErr)
-			return detectErr
-		}
-
-		fmt.Println(res) //todo: remove this line once this file is ready
+		d.getResults(documentTextDetectionMessage)
 
 		// todo:  save attrubutes to db after textract completed
 		// _, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
@@ -91,19 +82,35 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 	return nil
 }
 
-func parseBody(body string) (*documentTextDetectionMessage, error) {
-	var jsonBody *documentTextDetectionBody
-	var jsonMessage *documentTextDetectionMessage
+func parseRecordBody(event string) (*documentTextDetectionMessage, error) {
+	var snsEntity events.SNSEntity
 
-	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+	if err := json.Unmarshal([]byte(event), &snsEntity); err != nil {
 		return nil, err
 	}
 
-	if err := json.Unmarshal([]byte(jsonBody.Message), &jsonMessage); err != nil {
+	var message *documentTextDetectionMessage
+
+	if err := json.Unmarshal([]byte(snsEntity.Message), &message); err != nil {
 		return nil, err
 	}
 
-	return jsonMessage, nil
+	return message, nil
+}
+
+func (d *dependencies) getResults(message *documentTextDetectionMessage) {
+	res, err := d.textractClient.GetDocumentTextDetection(context.TODO(), &textract.GetDocumentTextDetectionInput{
+		JobId: &message.JobId,
+	})
+	if err != nil {
+		utils.LogError("", err)
+	}
+
+	fmt.Println(res)
+
+	// for _, block := range res.Blocks {
+	// 	block.
+	// }
 }
 
 // func ParsePdf(d *dependencies, filename string) error {

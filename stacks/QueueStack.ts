@@ -41,17 +41,18 @@ export class QueueStack extends Stack {
             additionalStackProps?.storageStack.invoiceTable as Table,
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
           ],
+          initialPolicy: [
+            new PolicyStatement({
+              resources: ["*"],
+              actions: ["textract:*"]
+            })
+          ]
         },
         consumerProps: {
           batchSize: 1,
         },
       }
     });
-
-    this.textractQueue.consumerFunction?.addToRolePolicy(new PolicyStatement({
-      resources: ["*"],
-      actions: ["textract:*"] 
-    }))
 
     this.jobCompletionTopic = new Topic(this, "jobCompletionTopic", {
       subscribers: [
@@ -90,20 +91,17 @@ export class QueueStack extends Stack {
             additionalStackProps?.storageStack.invoiceTable as Table,
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
           ],
+          initialPolicy: [
+            new PolicyStatement({
+              resources: ["*"],
+              actions: ["textract:*"]
+            })
+          ]
         },
         consumerProps: {
           batchSize: 1,
         },
       },
     });
-
-    const textractRole = new Role(this, "TextractServiceRole", {
-      assumedBy: new ServicePrincipal("textract.amazonaws.com"),
-    })
-
-    this.uploadQueue.consumerFunction?.addToRolePolicy(new PolicyStatement({
-      resources: ["*"],
-      actions: ["textract:*"]
-    }))
   }
 }

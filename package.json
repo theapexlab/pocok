@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "test": "sst test",
-    "start": "sst start",
+    "start": "cross-env NODE_ENV=development sst start",
     "build": "sst build",
     "deploy": "sst deploy",
-    "remove": "sst remove",
+    "remove": "cross-env NODE_ENV=development sst remove",
     "go-test": "go test -v ./src/..."
   },
   "eslintConfig": {
@@ -19,7 +19,8 @@
     "@aws-cdk/assert": "1.138.0",
     "@tsconfig/node14": "^1.0.1",
     "@types/aws-lambda": "^8.10.70",
-    "@types/node": "<15.0.0"
+    "@types/node": "<15.0.0",
+    "cross-env": "^7.0.3"
   },
   "dependencies": {
     "@aws-cdk/core": "1.138.0",
