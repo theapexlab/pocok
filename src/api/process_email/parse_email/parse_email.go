@@ -3,28 +3,38 @@ package parse_email
 import (
 	"encoding/json"
 	"errors"
+	"pocok/src/api/process_email/url_parsing_strategies"
+	"pocok/src/utils"
 	"pocok/src/utils/models"
 )
 
-type attachment struct {
-	ContentType string `json:"contentType"`
-	Content_b64 string `json:"content_b64"`
-}
-
-type from struct {
-	Address string `json:"address"`
-	Name    string `json:"name"`
-}
-
-type webhookBody struct {
-	Attachments []*attachment `json:"attachments"`
-	Text        string        `json:"text"`
-	From        []*from       `json:"from"`
-}
-
 var ErrNoPdfAttachmentFound = errors.New("no pdf attachment found")
 
-func hasPdfAttachment(attachments []*attachment) bool {
+func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
+	var jsonBody models.EmailWebhookBody
+
+	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+		return nil, models.ErrInvalidJson
+	}
+
+	if hasPdfAttachment(jsonBody.Attachments) {
+		return &models.UploadInvoiceMessage{
+			Type: "base64",
+			Body: jsonBody.Attachments[0].Content_b64,
+		}, nil
+	}
+
+	if ok, url := hasPdfUrl(&jsonBody); ok {
+		return &models.UploadInvoiceMessage{
+			Type: "url",
+			Body: url,
+		}, nil
+	}
+
+	return nil, ErrNoPdfAttachmentFound
+}
+
+func hasPdfAttachment(attachments []*models.EmailAttachment) bool {
 	for _, attachment := range attachments {
 		if attachment.ContentType == "application/pdf" && attachment.Content_b64 != "" {
 			return true
@@ -34,19 +44,10 @@ func hasPdfAttachment(attachments []*attachment) bool {
 	return false
 }
 
-func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
-	var jsonBody webhookBody
-
-	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
-		return nil, models.ErrInvalidJson
+func hasPdfUrl(jsonBody *models.EmailWebhookBody) (bool, string) {
+	url, err := url_parsing_strategies.GetPdfUrlFromEmail(jsonBody)
+	if !errors.Is(err, url_parsing_strategies.ErrNoUrlParsingStrategyFound) {
+		utils.LogError("error while parsing url from email", err)
 	}
-
-	if !hasPdfAttachment(jsonBody.Attachments) {
-		return nil, ErrNoPdfAttachmentFound
-	}
-
-	return &models.UploadInvoiceMessage{
-		Type: "base64",
-		Body: jsonBody.Attachments[0].Content_b64,
-	}, nil
+	return err == nil && url != "", url
 }

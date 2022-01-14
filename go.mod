@@ -6,11 +6,13 @@ require (
 	github.com/aws/aws-cdk-go/awscdk v1.138.0-devpreview
 	github.com/aws/aws-cdk-go/awscdk/v2 v2.4.0
 	github.com/aws/aws-lambda-go v1.25.0
+	github.com/aws/aws-sdk-go-v2 v1.12.0
 	github.com/aws/aws-sdk-go-v2/config v1.11.1
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.14.0
 	github.com/aws/constructs-go/constructs/v10 v10.0.26
 	github.com/aws/constructs-go/constructs/v3 v3.3.181
 	github.com/aws/jsii-runtime-go v1.50.0
+	github.com/jarcoal/httpmock v1.1.0
 	github.com/onsi/ginkgo/v2 v2.0.0
 	github.com/onsi/gomega v1.17.0
 )

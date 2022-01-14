@@ -32,3 +32,17 @@ type Invoice struct {
 	CustomerEmail string `json:"custmerEmail" dynamodbav:"custmerEmail,omitempty"`
 	Status        string `json:"status" dynamodbav:"status,omitempty"` // InvoiceStatus
 }
+type EmailAttachment struct {
+	ContentType string `json:"contentType"`
+	Content_b64 string `json:"content_b64"`
+}
+
+type EmailFrom struct {
+	Address string `json:"address"`
+	Name    string `json:"name"`
+}
+type EmailWebhookBody struct {
+	Attachments []*EmailAttachment `json:"attachments"`
+	Html        string             `json:"html"`
+	From        []*EmailFrom       `json:"from"`
+}
