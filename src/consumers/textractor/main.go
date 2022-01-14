@@ -114,14 +114,17 @@ func (d *dependencies) getResults(message *documentTextDetectionMessage) {
 		utils.LogError("", err)
 	}
 
-	fmt.Println(res)
-
-	for i := 1; i < len(res.ExpenseDocuments); i++ {
-		for _, record := range res.ExpenseDocuments[i].SummaryFields {
-			fmt.Println(record.LabelDetection)
-			fmt.Println(record.LabelDetection)
+	for _, document := range res.ExpenseDocuments {
+		for _, record := range document.SummaryFields {
+			fmt.Printf("%s - %s \n", *record.LabelDetection.Text, *record.ValueDetection.Text)
 		}
 	}
+
+	// for i := 0; i < len(res.ExpenseDocuments); i++ {
+	// 	for _, record := range res.ExpenseDocuments[i].SummaryFields {
+	// 		fmt.Printf("%v - %v", record.LabelDetection.Text, record.ValueDetection.Text)
+	// 	}
+	// }
 }
 
 // func ParsePdf(d *dependencies, filename string) error {
