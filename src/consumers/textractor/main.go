@@ -65,12 +65,20 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		d.getResults(documentTextDetectionMessage)
 
 		// todo:  save attrubutes to db after textract completed
+		// invoice := models.Invoice{
+		// 	Id:       ksuid.New().String(),
+		// 	Filename: filename,
+		// 	Status:   models.PENDING,
+		// 	// Rest of the data is initialised to 0 and empty string
+		// }
+		// item, itemErr := attributevalue.MarshalMap(invoice)
+		// if itemErr != nil {
+		// 	return itemErr
+		// }
+
 		// _, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		// 	TableName: &d.tableName,
-		// 	Item: map[string]types.AttributeValue{
-		// 		"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
-		// 		"filename": &types.AttributeValueMemberS{Value: filename},
-		// 	},
+		// 	Item:      item,
 		// })
 
 		// if dbErr != nil {

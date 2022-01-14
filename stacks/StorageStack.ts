@@ -19,9 +19,12 @@ export class StorageStack extends Stack {
         id: TableFieldType.STRING,
         filename: TableFieldType.STRING,
       },
-      primaryIndex: { partitionKey: "id" },
+      primaryIndex: { partitionKey: "id", sortKey: "filename" },
+      localIndexes: {
+        invoiceNumberIndex: { sortKey: "invoiceNumber" },
+        customerIndex: { sortKey: "customerName" },
+      },
     });
-
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");
   }
 }

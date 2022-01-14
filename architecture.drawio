@@ -83,7 +83,7 @@
                 </mxCell>
                 <mxCell id="13" value="/webhooks/mailgun&lt;br&gt;JSON" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" parent="12" vertex="1" connectable="0">
                     <mxGeometry x="0.0346" y="2" relative="1" as="geometry">
-                        <mxPoint x="-5" y="2" as="offset"/>
+                        <mxPoint x="-13" y="2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="10" value="pipedream" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;dashed=1;fontColor=#FFFFFF;fillColor=#35D28B;strokeColor=none;" parent="1" vertex="1">
@@ -94,7 +94,7 @@
                 </mxCell>
                 <mxCell id="18" value="SMTP forward" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" parent="15" vertex="1" connectable="0">
                     <mxGeometry x="-0.4566" relative="1" as="geometry">
-                        <mxPoint x="21" as="offset"/>
+                        <mxPoint x="35" as="offset"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="14" value="billing@apexlab.io" style="dashed=0;outlineConnect=0;html=1;align=center;labelPosition=center;verticalLabelPosition=bottom;verticalAlign=top;shape=mxgraph.weblogos.gmail;fontColor=#FFFFFF;fillColor=#C02428;" parent="1" vertex="1">

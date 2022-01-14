@@ -10,8 +10,6 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
-	"strconv"
-	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -22,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 	"github.com/aws/aws-sdk-go-v2/service/textract/types"
 	"github.com/cavaliergopher/grab/v3"
+	"github.com/segmentio/ksuid"
 )
 
 type dependencies struct {
@@ -95,7 +94,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return err
 	}
 
-	filename := strconv.FormatInt(time.Now().Unix(), 10) + ".pdf"
+	filename := ksuid.New().String() + ".pdf"
 
 	_, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket:      &d.bucketName,
@@ -121,9 +120,17 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 			RoleArn:     &d.textractRoleArn,
 		},
 	})
-
 	if textractErr != nil {
-		utils.LogError("failed to send to textract", err)
+		utils.LogError("Error while starting textract", textractErr)
+
+		_, s3Err := d.s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+			Bucket: &d.bucketName,
+			Key:    &filename,
+		})
+		if s3Err != nil {
+			utils.LogError("Error while deleting file from s3", s3Err)
+		}
+
 		return textractErr
 	}
 
