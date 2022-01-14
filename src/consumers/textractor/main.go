@@ -50,6 +50,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return err
 		}
 
+		// see job status types: &types.JobStatus.Values()
 		if documentTextDetectionMessage.Status != "SUCCEEDED" {
 			err := errors.New("text detection status failed")
 			utils.LogError("Status != SUCCEEDED", err)

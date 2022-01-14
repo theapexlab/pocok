@@ -48,6 +48,11 @@ export class QueueStack extends Stack {
       }
     });
 
+    this.textractQueue.consumerFunction?.addToRolePolicy(new PolicyStatement({
+      resources: ["*"],
+      actions: ["*"]  // todo: resctric actions to textract:* ?
+    }))
+
     this.jobCompletionTopic = new Topic(this, "jobCompletionTopic", {
       subscribers: [
         this.textractQueue as Queue,
