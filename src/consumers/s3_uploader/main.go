@@ -16,8 +16,8 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/segmentio/ksuid"
@@ -76,13 +76,22 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
+	invoice := models.Invoice{
+		Id:       ksuid.New().String(),
+		Filename: filename,
+		Status:   models.PENDING,
+		// Rest of the data is initialised to 0 and empty string
+	}
+	item, itemErr := attributevalue.MarshalMap(invoice)
+	if itemErr != nil {
+		return itemErr
+	}
+
 	_, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: &d.tableName,
-		Item: map[string]types.AttributeValue{
-			"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
-			"filename": &types.AttributeValueMemberS{Value: filename},
-		},
+		Item:      item,
 	})
+
 	if dbErr != nil {
 		utils.LogError("Error while inserting to db", dbErr)
 		return dbErr
