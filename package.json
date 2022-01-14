@@ -8,7 +8,8 @@
     "build": "sst build",
     "deploy": "sst deploy",
     "remove": "cross-env NODE_ENV=development sst remove",
-    "go-test": "go test -v ./src/..."
+    "go-test": "go test -v ./src/...",
+    "go-tidy": "go mod tidy"
   },
   "eslintConfig": {
     "extends": [
