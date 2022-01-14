@@ -35,19 +35,46 @@ type dependencies struct {
 	textractClient  *textract.Client
 }
 
-func downloadFile(url string) ([]byte, error) {
-	client := grab.NewClient()
-	req, err := grab.NewRequest(".", url)
-	if err != nil {
-		return []byte(nil), err
+func main() {
+	d := &dependencies{
+		tableName:       os.Getenv("tableName"),
+		bucketName:      os.Getenv("bucketName"),
+		snsTopicArn:     os.Getenv("snsTopicArn"),
+		textractRoleArn: os.Getenv("textractRoleArn"),
+		s3Client:        aws_clients.GetS3Client(),
+		dbClient:        aws_clients.GetDbClient(),
+		sqsClient:       aws_clients.GetSQSClient(),
+		textractClient:  aws_clients.GetTextractClient(),
 	}
 
-	// store file in memory
-	req.NoStore = true
-	resp := client.Do(req)
-	data, err := resp.Bytes()
+	lambda.Start(d.handler)
+}
 
-	return data, err
+func (d *dependencies) handler(event events.SQSEvent) error {
+	for _, record := range event.Records {
+		uploadInvoiceMessage, err := parseBody(record.Body)
+		if err != nil {
+			continue
+		}
+
+		uploadPDFErr := uploadPDF(d, uploadInvoiceMessage)
+		// if the original file doesn't exists, no need to retry the message
+		if uploadPDFErr != nil && uploadPDFErr != grab.StatusCodeError(403) {
+			return uploadPDFErr
+		}
+	}
+
+	return nil
+}
+
+func parseBody(body string) (*models.UploadInvoiceMessage, error) {
+	var jsonBody *models.UploadInvoiceMessage
+
+	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+		return nil, err
+	}
+
+	return jsonBody, nil
 }
 
 func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessage) error {
@@ -117,6 +144,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 			RoleArn:     &d.textractRoleArn,
 		},
 	})
+
 	if textractErr != nil {
 		utils.LogError("failed to send to textract", err)
 		return textractErr
@@ -125,44 +153,17 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 	return nil
 }
 
-func parseBody(body string) (*models.UploadInvoiceMessage, error) {
-	var jsonBody *models.UploadInvoiceMessage
-
-	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
-		return nil, err
+func downloadFile(url string) ([]byte, error) {
+	client := grab.NewClient()
+	req, err := grab.NewRequest(".", url)
+	if err != nil {
+		return []byte(nil), err
 	}
 
-	return jsonBody, nil
-}
+	// store file in memory
+	req.NoStore = true
+	resp := client.Do(req)
+	data, err := resp.Bytes()
 
-func (d *dependencies) handler(event events.SQSEvent) error {
-	for _, record := range event.Records {
-		uploadInvoiceMessage, err := parseBody(record.Body)
-		if err != nil {
-			continue
-		}
-
-		uploadPDFErr := uploadPDF(d, uploadInvoiceMessage)
-		// if the original file doesn't exists, no need to retry the message
-		if uploadPDFErr != nil && uploadPDFErr != grab.StatusCodeError(403) {
-			return uploadPDFErr
-		}
-	}
-
-	return nil
-}
-
-func main() {
-	d := &dependencies{
-		tableName:       os.Getenv("tableName"),
-		bucketName:      os.Getenv("bucketName"),
-		snsTopicArn:     os.Getenv("snsTopicArn"),
-		textractRoleArn: os.Getenv("textractRoleArn"),
-		s3Client:        aws_clients.GetS3Client(),
-		dbClient:        aws_clients.GetDbClient(),
-		sqsClient:       aws_clients.GetSQSClient(),
-		textractClient:  aws_clients.GetTextractClient(),
-	}
-
-	lambda.Start(d.handler)
+	return data, err
 }

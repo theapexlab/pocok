@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
+	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -19,12 +23,13 @@ type dependencies struct {
 	dbClient       *dynamodb.Client
 }
 
-// func getS3Object(d *dependencies, filename string) (*s3.GetObjectOutput, error) {
-// 	return d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
-// 		Bucket: &d.bucketName,
-// 		Key:    &filename,
-// 	})
-// }
+type documentTextDetectionBody struct {
+	Message string `json:"Message"`
+}
+type documentTextDetectionMessage struct {
+	JobId  string `json:"JobId,omitempty"`
+	Status string `json:"Status,omitempty"`
+}
 
 func main() {
 	d := &dependencies{
@@ -39,12 +44,52 @@ func main() {
 
 func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
-		fmt.Println(record.Body)
-		// filename := record.Body
-		// ParsePdf(d, filename)
+		documentTextDetectionMessage, err := parseBody(record.Body)
+		if err != nil {
+			utils.LogError("Failed to parse textract message", err)
+			return err
+		}
+
+		if documentTextDetectionMessage.Status != "SUCCEEDED" {
+			err := errors.New("text detection status failed")
+			utils.LogError("Status != SUCCEEDED", err)
+			return err
+		}
+
+		fmt.Println(documentTextDetectionMessage) //todo: remove this line
+
+		// todo: call GetDocumentTextDetection api with JobId
+		res, detectErr := d.textractClient.GetDocumentTextDetection(context.TODO(), &textract.GetDocumentTextDetectionInput{
+			JobId: &documentTextDetectionMessage.JobId,
+		})
+
+		if detectErr != nil {
+			utils.LogError("GetDocumentTextDetection failed", detectErr)
+			return detectErr
+
+			// AccessDeniedException: User: arn:aws:sts::382372657671:assumed-role/arn-aws-iam-382372657671-textractQueueConsumertex-1474UXEUAJT5Z/arn-aws-iam-382372657671--textractQueueConsumertex-iNBB0FV6hwHB
+			// is not authorized to perform: textract:GetDocumentTextDetection because no identity-based policy allows the textract:GetDocumentTextDetection action
+		}
+
+		fmt.Println(res) //todo: remove this line
 	}
 
 	return nil
+}
+
+func parseBody(body string) (*documentTextDetectionMessage, error) {
+	var jsonBody *documentTextDetectionBody
+	var jsonMessage *documentTextDetectionMessage
+
+	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+		return nil, err
+	}
+
+	if err := json.Unmarshal([]byte(jsonBody.Message), &jsonMessage); err != nil {
+		return nil, err
+	}
+
+	return jsonMessage, nil
 }
 
 // func ParsePdf(d *dependencies, filename string) error {
@@ -66,4 +111,11 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 // 	}
 
 // 	return nil
+// }
+
+// func getS3Object(d *dependencies, filename string) (*s3.GetObjectOutput, error) {
+// 	return d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
+// 		Bucket: &d.bucketName,
+// 		Key:    &filename,
+// 	})
 // }
