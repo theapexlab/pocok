@@ -109,29 +109,6 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
-	// todo:  save attrubutes to db after textract completed
-	// _, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
-	// 	TableName: &d.tableName,
-	// 	Item: map[string]types.AttributeValue{
-	// 		"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
-	// 		"filename": &types.AttributeValueMemberS{Value: filename},
-	// 	},
-	// })
-
-	// if dbErr != nil {
-	// 	utils.LogError("Error while inserting to db", dbErr)
-	// 	return dbErr
-	// }
-
-	// _, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-	// 	MessageBody: &filename,
-	// 	QueueUrl:    &d.textractQueueUrl,
-	// })
-	// if sqsErr != nil {
-	// 	utils.LogError("Error while forwarding message to textract queue", sqsErr)
-	// 	return sqsErr
-	// }
-
 	_, textractErr := d.textractClient.StartDocumentTextDetection(context.TODO(), &textract.StartDocumentTextDetectionInput{
 		DocumentLocation: &types.DocumentLocation{
 			S3Object: &types.S3Object{

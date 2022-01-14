@@ -16,6 +16,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 )
 
+// TODO: WIP implementation of POCO-25: create pdf data extract consumer
+
 type dependencies struct {
 	bucketName     string
 	s3Client       *s3.Client
@@ -50,7 +52,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return err
 		}
 
-		// see job status types: &types.JobStatus.Values()
+		// FYI: see job status types: &types.JobStatus.Values()
 		if documentTextDetectionMessage.Status != "SUCCEEDED" {
 			err := errors.New("text detection status failed")
 			utils.LogError("Status != SUCCEEDED", err)
@@ -67,12 +69,23 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		if detectErr != nil {
 			utils.LogError("GetDocumentTextDetection failed", detectErr)
 			return detectErr
-
-			// AccessDeniedException: User: arn:aws:sts::382372657671:assumed-role/arn-aws-iam-382372657671-textractQueueConsumertex-1474UXEUAJT5Z/arn-aws-iam-382372657671--textractQueueConsumertex-iNBB0FV6hwHB
-			// is not authorized to perform: textract:GetDocumentTextDetection because no identity-based policy allows the textract:GetDocumentTextDetection action
 		}
 
-		fmt.Println(res) //todo: remove this line
+		fmt.Println(res) //todo: remove this line once this file is ready
+
+		// todo:  save attrubutes to db after textract completed
+		// _, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
+		// 	TableName: &d.tableName,
+		// 	Item: map[string]types.AttributeValue{
+		// 		"id":       &types.AttributeValueMemberS{Value: ksuid.New().String()},
+		// 		"filename": &types.AttributeValueMemberS{Value: filename},
+		// 	},
+		// })
+
+		// if dbErr != nil {
+		// 	utils.LogError("Error while inserting to db", dbErr)
+		// 	return dbErr
+		// }
 	}
 
 	return nil
