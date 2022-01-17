@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"html/template"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -50,17 +51,21 @@ func GetPendingInvoices(d *dependencies) ([]models.Invoice, error) {
 	return invoices, nil
 }
 
-func GetBody(invoices []models.Invoice) string {
-	/*
-		<html>
-		<amp-state>
-		{
-			invoiceIds: [x,y,z]
-		}
-		</amp-state>
-		</html>
-	*/
-	return "This is going to be the body of the email"
+func GetBody(invoices []models.Invoice) (string error) {
+	ids := make([]string, len(invoices))
+    for i, inv := range invoices {
+        ids[i] = inv.Id
+    }
+	var templateBuffer bytes.Buffer
+    t, err := template.ParseFiles("src/utils/email_template.html")
+	if err != nil {
+	    return nil, err
+	}
+	err := t.Execute(&templateBuffer, ids)
+	if err != nil {
+   	    return nil, err
+    }
+	return templateBuffer.String()
 }
 
 func GetAttachments(invoices []models.Invoice) []string {
