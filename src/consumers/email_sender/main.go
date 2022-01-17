@@ -64,7 +64,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		}
 		attachments := map[string][]byte{}
 		for _, attachmentString := range emailStruct.Attachments {
-			_, s3Err := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
+			s3Resp, s3Err := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
 				Bucket: &d.bucketName,
 				Key:    &attachmentString,
 			})
@@ -72,6 +72,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 				continue
 			}
 			file := []byte{}
+			_, err := s3Resp.Body.Read(file)
 			if err != nil {
 				continue
 			}
