@@ -46,3 +46,10 @@ type EmailWebhookBody struct {
 	Html        string             `json:"html"`
 	From        []*EmailFrom       `json:"from"`
 }
+
+type Email struct {
+	To          string   `json:"to"`
+	Subject     string   `json:"subject"`
+	Html        string   `json:"html"`
+	Attachments []string `json:"attachments"`
+}
