@@ -17,19 +17,18 @@ import (
 
 type dependencies struct {
 	domain     string
-	apiKey     string
 	sender     string
-	recipient  string
+	apiKey     string
 	bucketName string
 	s3Client   *s3.Client
 }
 
-func SendEmail(d *dependencies, subject string, body string, attachments map[string][]byte) error {
+func SendEmail(d *dependencies, recipient string, subject string, body string, attachments map[string][]byte) error {
 	// Create an instance of the Mailgun Client
 	client := mailgun.NewMailgun(d.domain, d.apiKey)
 
 	// The message object allows you to add attachments and Bcc recipients
-	message := client.NewMessage(d.sender, subject, body, d.recipient)
+	message := client.NewMessage(d.sender, subject, body, recipient)
 	for filename, attachment := range attachments {
 		message.AddBufferAttachment(filename, attachment)
 	}
@@ -78,7 +77,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			}
 			attachments[attachmentString] = file
 		}
-		emailErr := SendEmail(d, emailStruct.Subject, emailStruct.Html, attachments)
+		emailErr := SendEmail(d, emailStruct.To, emailStruct.Subject, emailStruct.Html, attachments)
 		if emailErr != nil {
 			return emailErr
 		}
@@ -92,7 +91,6 @@ func main() {
 		domain:     os.Getenv("domain"),
 		apiKey:     os.Getenv("apiKey"),
 		sender:     os.Getenv("sender"),
-		recipient:  os.Getenv("recipient"),
 		bucketName: os.Getenv("bucketName"),
 		s3Client:   aws_clients.GetS3Client(),
 	}
