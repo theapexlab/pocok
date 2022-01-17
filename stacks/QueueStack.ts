@@ -14,6 +14,7 @@ type AdditionalStackProps = {
 
 export class QueueStack extends Stack {
   queue: Queue;
+  emailSenderQueue: Queue;
 
   constructor(
     scope: Construct,
@@ -35,6 +36,27 @@ export class QueueStack extends Stack {
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceTable as Table,
+            additionalStackProps?.storageStack.invoiceBucket as Bucket,
+          ],
+        },
+        consumerProps: {
+          batchSize: 1,
+        },
+      },
+    });
+
+    this.emailSenderQueue = new Queue(this, "EmailSender", {
+      consumer: {
+        function: {
+          handler: "src/consumers/email_sender/main.go",
+          environment: {
+            domain: process.env.DOMAIN as string,
+            sender: process.env.SENDER as string,
+            apiKey: process.env.MAILGUN_API_KEY as string,
+            bucketName: additionalStackProps?.storageStack.invoiceBucket
+              .bucketName as string,
+          },
+          permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
           ],
         },
