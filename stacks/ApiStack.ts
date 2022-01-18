@@ -28,10 +28,10 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/process_email/main.go",
             environment: {
-              queueUrl: additionalStackProps?.queueStack.queue.sqsQueue
+              queueUrl: additionalStackProps?.queueStack.invoiceQueue.sqsQueue
                 .queueUrl as string,
             },
-            permissions: [additionalStackProps?.queueStack.queue as Queue],
+            permissions: [additionalStackProps?.queueStack.invoiceQueue as Queue],
           },
         },
       },

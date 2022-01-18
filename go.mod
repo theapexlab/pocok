@@ -9,18 +9,17 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.12.0
 	github.com/aws/aws-sdk-go-v2/config v1.11.1
 	github.com/aws/aws-sdk-go-v2/service/sqs v1.14.0
+	github.com/aws/aws-sdk-go-v2/service/textract v1.11.0
 	github.com/aws/constructs-go/constructs/v10 v10.0.26
 	github.com/aws/constructs-go/constructs/v3 v3.3.181
 	github.com/aws/jsii-runtime-go v1.50.0
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/onsi/ginkgo/v2 v2.0.0
 	github.com/onsi/gomega v1.17.0
+	github.com/segmentio/ksuid v1.0.4
 )
 
-require github.com/aws/aws-sdk-go-v2/service/dynamodbstreams v1.10.0 // indirect
-
 require (
-	github.com/aws/aws-sdk-go-v2 v1.12.0
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.1.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.3 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.1.0 // indirect
@@ -36,7 +35,6 @@ require (
 require (
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.6.5 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue v1.5.0
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.8.2 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.2 // indirect
 	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.12.0
@@ -44,7 +42,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.12.0 // indirect
 	github.com/cavaliergopher/grab/v3 v3.0.1
-	github.com/segmentio/ksuid v1.0.4
 	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
 	golang.org/x/text v0.3.6 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

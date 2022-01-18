@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
+	"github.com/aws/aws-sdk-go-v2/service/textract"
 )
 
 func GetSQSClient() *sqs.Client {
@@ -34,4 +35,13 @@ func GetDbClient() *dynamodb.Client {
 	}
 
 	return dynamodb.NewFromConfig(cfg)
+}
+
+func GetTextractClient() *textract.Client {
+	cfg, err := config.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		panic("Textract configuration error, " + err.Error())
+	}
+
+	return textract.NewFromConfig(cfg)
 }
