@@ -23,8 +23,8 @@ type Invoice struct {
 	CustomerName  string    `json:"customerName" dynamodbav:"customerName,omitempty"`
 	AccountNumber string    `json:"accountNumber" dynamodbav:"accountNumber,omitempty"`
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
-	NetPrice      int       `json:"netPrice" dynamodbav:"netPrice,omitempty"`
-	GrossPrice    int       `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
+	NetPrice      string    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
+	GrossPrice    string    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	Currency      string    `json:"currency" dynamodbav:"currency,omitempty"`
 	DueDate       string    `json:"dueDate" dynamodbav:"dueDate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
