@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -16,7 +17,6 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/cavaliergopher/grab/v3"
@@ -82,15 +82,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		Status:   models.PENDING,
 		// Rest of the data is initialised to 0 and empty string
 	}
-	item, itemErr := attributevalue.MarshalMap(invoice)
-	if itemErr != nil {
-		return itemErr
-	}
-
-	_, dbErr := d.dbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
-		TableName: &d.tableName,
-		Item:      item,
-	})
+	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)
 
 	if dbErr != nil {
 		utils.LogError("Error while inserting to db", dbErr)
