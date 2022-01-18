@@ -1,5 +1,3 @@
-https://www.youtube.com/watch?v=OfZgHXsYqNE
-
 # Dyanmo basics
 - dynamo db database modeling is different
 - do not fake relational modeling
@@ -15,11 +13,12 @@ https://www.youtube.com/watch?v=OfZgHXsYqNE
 4. identify the primary key for each entity (hash + sort)
 5. identify secondary indexes (LocalSI, GlobalSI)
 
-# Keys
+# Key naming
 - pk - Primary Key
 - sk - Secondary Key
 - gsi1pk - global secondary index 1, primary key
-- lsi2pk - local secondary index 2, primary key
+- gsi1sk - global secondary index 1, sort key
+- lsi2sk - local secondary index 2, sort key
 - etc...
 
 # Access Patterns
