@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"os"
 	"html/template"
+	"os"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -51,21 +52,21 @@ func GetPendingInvoices(d *dependencies) ([]models.Invoice, error) {
 	return invoices, nil
 }
 
-func GetBody(invoices []models.Invoice) (string error) {
+func GetBody(invoices []models.Invoice) (string, error) {
 	ids := make([]string, len(invoices))
-    for i, inv := range invoices {
-        ids[i] = inv.Id
-    }
-	var templateBuffer bytes.Buffer
-    t, err := template.ParseFiles("src/utils/email_template.html")
-	if err != nil {
-	    return nil, err
+	for i, inv := range invoices {
+		ids[i] = inv.Id
 	}
-	err := t.Execute(&templateBuffer, ids)
+	var templateBuffer bytes.Buffer
+	t, err := template.ParseFiles("src/utils/email_template.html")
 	if err != nil {
-   	    return nil, err
-    }
-	return templateBuffer.String()
+		return "", err
+	}
+	execerr := t.Execute(&templateBuffer, ids)
+	if execerr != nil {
+		return "", err
+	}
+	return templateBuffer.String(), nil
 }
 
 func GetAttachments(invoices []models.Invoice) []string {
@@ -79,7 +80,10 @@ func GetAttachments(invoices []models.Invoice) []string {
 func CreateEmail(invoices []models.Invoice) (*models.Email, error) {
 	to := "billing@apexlab.io"
 	subject := "Pocok Invoice Summary"
-	html := GetBody(invoices)
+	html, err := GetBody(invoices)
+	if err != nil {
+		return nil, err
+	}
 	attachments := GetAttachments(invoices)
 
 	email := models.Email{
