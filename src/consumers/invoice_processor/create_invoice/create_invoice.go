@@ -16,7 +16,6 @@ func getFieldValue(field typless.ExtractedField) string {
 }
 
 func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Invoice {
-
 	invoice := models.Invoice{}
 	for _, field := range extractedData.ExtractedFields {
 		switch field.Name {
@@ -36,29 +35,28 @@ func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Inv
 		case "due_date":
 			invoice.DueDate = getFieldValue(field)
 		}
+	}
 
-		for _, fieldsArr := range extractedData.LineItems {
-			service := models.Service{}
-			for _, field := range fieldsArr {
-				switch field.Name {
-				case "service_name":
-					service.Name = getFieldValue(field)
-				case "service_amount":
-					service.Amount = getFieldValue(field)
-				case "service_net_price":
-					service.NetPrice = currency.GetCurrencyFromPrice(getFieldValue(field))
-				case "service_gross_price":
-					service.GrossPrice = currency.TrimCurrencyFromPrice(getFieldValue(field))
-					service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
-				case "service_vat":
-					service.Tax = getFieldValue(field)
-				}
-			}
-			if service.Name != "" {
-				invoice.Services = append(invoice.Services, service)
+	for _, lineItemFields := range extractedData.LineItems {
+		service := models.Service{}
+		for _, field := range lineItemFields {
+			switch field.Name {
+			case "service_name":
+				service.Name = getFieldValue(field)
+			case "service_amount":
+				service.Amount = getFieldValue(field)
+			case "service_net_price":
+				service.NetPrice = currency.GetCurrencyFromPrice(getFieldValue(field))
+			case "service_gross_price":
+				service.GrossPrice = currency.TrimCurrencyFromPrice(getFieldValue(field))
+				service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
+			case "service_vat":
+				service.Tax = getFieldValue(field)
 			}
 		}
-
+		if service.Name != "" {
+			invoice.Services = append(invoice.Services, service)
+		}
 	}
 
 	return &invoice

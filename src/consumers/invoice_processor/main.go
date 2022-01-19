@@ -49,11 +49,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return err
 		}
 
-		invoice, err := create_invoice.CreateInvoice(extractedData)
-		if err != nil {
-			return err
-		}
-
+		invoice := create_invoice.CreateInvoice(extractedData)
 		fmt.Println(invoice)
 	}
 
