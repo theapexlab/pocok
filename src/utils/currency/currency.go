@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func TrimCurrencyFromPrice(price string) string {
+func GetValueFromPrice(price string) string {
 	// TODO: handle decimal point for both , and .
 	r := regexp.MustCompile(`[^0-9,\.]*([0-9,\.]*)[^0-9,\.\n]*`)
 	firstMatch := r.FindStringSubmatch(price)[1]

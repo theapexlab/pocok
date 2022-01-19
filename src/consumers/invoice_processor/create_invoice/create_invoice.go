@@ -19,44 +19,47 @@ func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Inv
 	invoice := models.Invoice{}
 	for _, field := range extractedData.ExtractedFields {
 		switch field.Name {
-		case "invoice_number":
+		case typless.INVOICE_NUMBER:
 			invoice.InvoiceNumber = getFieldValue(field)
-		case "customer_name":
-			invoice.CustomerName = getFieldValue(field)
-		case "account_number":
+		case typless.VENDOR_NAME:
+			invoice.VendorName = getFieldValue(field)
+		case typless.ACCOUNT_NUMBER:
 			invoice.AccountNumber = getFieldValue(field)
-		case "iban":
+		case typless.IBAN:
 			invoice.Iban = getFieldValue(field)
-		case "net_price":
-			invoice.NetPrice = currency.TrimCurrencyFromPrice(getFieldValue(field))
-		case "gross_price":
-			invoice.GrossPrice = currency.TrimCurrencyFromPrice(getFieldValue(field))
+		case typless.NET_PRICE:
+			invoice.NetPrice = currency.GetValueFromPrice(getFieldValue(field))
+		case typless.GROSS_PRICE:
+			invoice.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
 			invoice.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
-		case "due_date":
+		case typless.DUE_DATE:
 			invoice.DueDate = getFieldValue(field)
 		}
 	}
-
+LineItemsLoop:
 	for _, lineItemFields := range extractedData.LineItems {
 		service := models.Service{}
 		for _, field := range lineItemFields {
 			switch field.Name {
-			case "service_name":
+			case typless.SERVICE_NAME:
 				service.Name = getFieldValue(field)
-			case "service_amount":
+			case typless.SERVICE_AMOUNT:
 				service.Amount = getFieldValue(field)
-			case "service_net_price":
+			case typless.SERVICE_NET_PRICE:
 				service.NetPrice = currency.GetCurrencyFromPrice(getFieldValue(field))
-			case "service_gross_price":
-				service.GrossPrice = currency.TrimCurrencyFromPrice(getFieldValue(field))
+			case typless.SERVICE_GROSS_PRICE:
+				service.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
 				service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
-			case "service_vat":
-				service.Tax = getFieldValue(field)
+			case typless.SERVICE_VAT:
+				service.Vat = getFieldValue(field)
 			}
 		}
-		if service.Name != "" {
-			invoice.Services = append(invoice.Services, service)
+
+		if service.Name == "" || (service.GrossPrice == "" && currency.GetValueFromPrice(service.Amount) == "" && service.NetPrice == "") {
+			continue LineItemsLoop
 		}
+
+		invoice.Services = append(invoice.Services, service)
 	}
 
 	return &invoice

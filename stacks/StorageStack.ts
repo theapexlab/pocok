@@ -22,7 +22,7 @@ export class StorageStack extends Stack {
       primaryIndex: { partitionKey: "id", sortKey: "filename" },
       localIndexes: {
         invoiceNumberIndex: { sortKey: "invoiceNumber" },
-        customerIndex: { sortKey: "customerName" },
+        vendorIndex: { sortKey: "vendorName" },
       },
     });
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");

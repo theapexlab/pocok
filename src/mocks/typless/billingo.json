@@ -207,7 +207,7 @@
     },
     {
       "data_type": "STRING",
-      "name": "customer_name",
+      "name": "vendor_name",
       "values": [
         {
           "confidence_score": 0.99,

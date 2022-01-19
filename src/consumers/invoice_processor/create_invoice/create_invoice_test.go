@@ -2,6 +2,7 @@ package create_invoice_test
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"pocok/src/consumers/invoice_processor/create_invoice"
 	"pocok/src/services/typless"
@@ -31,7 +32,7 @@ var _ = Describe("CreateInvoice", func() {
 	var invoice *models.Invoice
 	var err error
 
-	When("gets ", func() {
+	When("handles billingo invoice correctly", func() {
 		BeforeEach(func() {
 			extractedData = parseMockJson("billingo.json")
 			invoice = create_invoice.CreateInvoice(extractedData)
@@ -47,10 +48,17 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.InvoiceNumber).To(Equal("E-2021-36"))
 			Expect(invoice.Iban).To(Equal("HU19-120105010040405600200005"))
 			Expect(invoice.AccountNumber).To(Equal("HU40 12010501-00404056-00100008"))
-			Expect(invoice.CustomerName).To(Equal("John Doe"))
+			Expect(invoice.VendorName).To(Equal("John Doe"))
 			Expect(invoice.DueDate).To(Equal("2021. 10.08."))
 			Expect(invoice.GrossPrice).To(Equal("322,50"))
 			Expect(invoice.NetPrice).To(Equal("322,50"))
+			Expect(len(invoice.Services)).To(Equal(1))
+			Expect(invoice.Services[0].Name).To(Equal("Óradíjas tanácsadás"))
+			Expect(invoice.Services[0].Amount).To(Equal("7.5 óra"))
+			Expect(invoice.Services[0].Currency).To(Equal("EUR"))
+			Expect(invoice.Services[0].GrossPrice).To(Equal("322,50"))
+			Expect(invoice.Services[0].Vat).To(Equal("AAM ÁFA:"))
+			fmt.Println(invoice)
 		})
 	})
 })

@@ -11,7 +11,7 @@ type Service struct {
 	NetPrice   string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	Currency   string `json:"currency" dynamodbav:"currency,omitempty"`
-	Tax        string `json:"tax" dynamodbav:"tax,omitempty"`
+	Vat        string `json:"vat" dynamodbav:"vat,omitempty"`
 }
 
 type Invoice struct {
@@ -20,7 +20,7 @@ type Invoice struct {
 	TextractData string `json:"textractData" dynamodbav:"textractData,omitempty"`
 
 	InvoiceNumber string    `json:"invoiceNumber" dynamodbav:"invoiceNumber,omitempty"`
-	CustomerName  string    `json:"customerName" dynamodbav:"customerName,omitempty"`
+	VendorName    string    `json:"vendorName" dynamodbav:"vendorName,omitempty"`
 	AccountNumber string    `json:"accountNumber" dynamodbav:"accountNumber,omitempty"`
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
 	NetPrice      string    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
