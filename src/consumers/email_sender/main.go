@@ -18,21 +18,23 @@ import (
 )
 
 type dependencies struct {
-	domain     string
-	sender     string
-	apiKey     string
-	bucketName string
-	s3Client   *s3.Client
-	tableName  string
-	dbClient   *dynamodb.Client
+	domain         string
+	sender         string
+	apiKey         string
+	emailRecipient string
+	apiUrl         string
+	bucketName     string
+	s3Client       *s3.Client
+	tableName      string
+	dbClient       *dynamodb.Client
 }
 
-func SendEmail(d *dependencies, recipient string, subject string, body string, attachments map[string][]byte) error {
+func SendEmail(d *dependencies, subject string, body string, attachments map[string][]byte) error {
 	// Create an instance of the Mailgun Client
 	client := mailgun.NewMailgun(d.domain, d.apiKey)
 
 	// The message object allows you to add attachments and Bcc recipients
-	message := client.NewMessage(d.sender, subject, "Yeet boi", recipient)
+	message := client.NewMessage(d.sender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
 	for filename, attachment := range attachments {
 		message.AddBufferAttachment(filename, attachment)
 	}
@@ -58,7 +60,7 @@ func SendInvoiceSummary(d *dependencies) error {
 		return invoiceErr
 	}
 
-	html, htmlErr := create_email.GetHtmlSummary(invoices)
+	html, htmlErr := create_email.GetHtmlSummary(invoices, d.apiUrl)
 	if htmlErr != nil {
 		return htmlErr
 	}
@@ -67,10 +69,8 @@ func SendInvoiceSummary(d *dependencies) error {
 		return attachmentErr
 	}
 
-	subject := "SUBJECT"
-	recipient := "tom@apexlab.io"
-
-	emailErr := SendEmail(d, recipient, subject, html, attachments)
+	subject := models.EMAIL_SUMMARY_SUBJECT
+	emailErr := SendEmail(d, subject, html, attachments)
 	if emailErr != nil {
 		utils.LogError("Error while sending email", emailErr)
 		return emailErr
@@ -93,13 +93,15 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 func main() {
 	d := &dependencies{
-		domain:     os.Getenv("domain"),
-		apiKey:     os.Getenv("apiKey"),
-		sender:     os.Getenv("sender"),
-		bucketName: os.Getenv("bucketName"),
-		s3Client:   aws_clients.GetS3Client(),
-		tableName:  os.Getenv("tableName"),
-		dbClient:   aws_clients.GetDbClient(),
+		domain:         os.Getenv("domain"),
+		apiKey:         os.Getenv("apiKey"),
+		sender:         os.Getenv("sender"),
+		emailRecipient: os.Getenv("emailRecipient"),
+		apiUrl:         os.Getenv("apiUrl"),
+		bucketName:     os.Getenv("bucketName"),
+		s3Client:       aws_clients.GetS3Client(),
+		tableName:      os.Getenv("tableName"),
+		dbClient:       aws_clients.GetDbClient(),
 	}
 
 	lambda.Start(d.handler)

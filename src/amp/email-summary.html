@@ -27,23 +27,31 @@
       h1 {
         margin: 1rem;
       }
+      .row {
+        width: 100%;
+        display: flex;
+        align-items: space-between;
+      }
+      .row div {
+        padding-right: 10px;
+      }
     </style>
   </head>
   <body>
-    <h1>Hello, I am an AMP EMAIL!</h1>
-    <!-- TODO url from .env -->
+    <h3>Szia Lajos!</h3>
     <amp-list
-      src="https://gsgonnmz0k.execute-api.eu-central-1.amazonaws.com/api/invoices"
+      src="{{.ApiUrl}}/api/invoices"
       binding="no"
       layout="fixed-height"
       height="44"
       [height]="22 * invoices.items.length"
     >
       <template type="amp-mustache">
-        <div>
-          <div>{{iban}}</div>
-          <div>{{customerName}}</div>
-          <div>{{status}}</div>
+        <div class="row">
+          <div>{{"{{"}}customerName{{"}}"}}</div>
+          <div>{{"{{"}}iban{{"}}"}}</div>
+          <div>{{"{{"}}status{{"}}"}}</div>
+          <div>{{"{{"}}filename{{"}}"}}</div>
         </div>
       </template>
     </amp-list>

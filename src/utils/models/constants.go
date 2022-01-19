@@ -34,3 +34,9 @@ const (
 const (
 	EMAIL_SUMMARY string = "EMAIL_SUMMARY"
 )
+
+// Email Contents
+const (
+	EMAIL_SUMMARY_SUBJECT string = "Daily invoice summary email"
+	EMAIL_NO_AMP_BODY     string = "This email requires AMP to be enabled"
+)

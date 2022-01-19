@@ -31,11 +31,11 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 	return attachments, nil
 }
 
-func GetHtmlSummary(invoices []models.Invoice) (string, error) {
-	ids := make([]string, len(invoices))
-	for i, inv := range invoices {
-		ids[i] = inv.InvoiceId
-	}
+type EmailTemplateData struct {
+	ApiUrl string
+}
+
+func GetHtmlSummary(invoices []models.Invoice, apiUrl string) (string, error) {
 
 	wd, err := os.Getwd()
 	if err != nil {
@@ -47,7 +47,11 @@ func GetHtmlSummary(invoices []models.Invoice) (string, error) {
 		return "", err
 	}
 	var templateBuffer bytes.Buffer
-	execerr := t.Execute(&templateBuffer, ids)
+
+	templateData := EmailTemplateData{
+		ApiUrl: apiUrl,
+	}
+	execerr := t.Execute(&templateBuffer, templateData)
 	if execerr != nil {
 		return "", err
 	}
