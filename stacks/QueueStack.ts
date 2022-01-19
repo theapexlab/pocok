@@ -55,9 +55,12 @@ export class QueueStack extends Stack {
             apiKey: process.env.MAILGUN_API_KEY as string,
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
+            tableName: additionalStackProps?.storageStack.invoiceTable
+              .tableName as string,
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            additionalStackProps?.storageStack.invoiceTable as Table,
           ],
         },
         consumerProps: {

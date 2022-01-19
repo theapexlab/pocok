@@ -5,16 +5,24 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/models"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 func GetPendingInvoices(client *dynamodb.Client, tableName string) ([]models.Invoice, error) {
-	// TODO query the pending ones
-	resp, err := client.BatchGetItem(context.TODO(), &dynamodb.BatchGetItemInput{
-		RequestItems: map[string]types.KeysAndAttributes{
-			// "Invoices": types.KeysAndAttributes{},
+	resp, err := client.Query(context.TODO(), &dynamodb.QueryInput{
+		TableName:              &tableName,
+		IndexName:              aws.String(models.INVOICE_STATUS_INDEX),
+		KeyConditionExpression: aws.String("#PK = :PK and #SK = :SK"),
+		ExpressionAttributeNames: map[string]string{
+			"#PK": "pk",
+			"#SK": "lsi1sk",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":PK": &types.AttributeValueMemberS{Value: "ORG#" + models.APEX_ID},
+			":SK": &types.AttributeValueMemberS{Value: "STATUS#pending"},
 		},
 	})
 	if err != nil {
@@ -22,12 +30,10 @@ func GetPendingInvoices(client *dynamodb.Client, tableName string) ([]models.Inv
 		return []models.Invoice{}, err
 	}
 
-	invoiceTable := resp.Responses["Invoices"]
-
 	invoices := []models.Invoice{}
-	for _, item := range invoiceTable {
+	for _, item := range resp.Items {
 		invoice := models.Invoice{}
-		err := attributevalue.UnmarshalMap(item, invoice)
+		err := attributevalue.UnmarshalMap(item, &invoice)
 		if err != nil {
 			utils.LogError("Error while loading invoices", err)
 		}

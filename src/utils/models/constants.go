@@ -29,3 +29,8 @@ const (
 	ORG     string = "ORG"
 	INVOICE string = "INVOICE"
 )
+
+// Email Event Types
+const (
+	EMAIL_SUMMARY string = "EMAIL_SUMMARY"
+)

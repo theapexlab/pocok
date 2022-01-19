@@ -15,13 +15,6 @@
 </head>
 <body>
 <h1>Hello, I am an AMP EMAIL!</h1>
-<amp-state id="invoices">
-    <script type="application/json">
-        {
-            "items": {{.}}
-        }
-    </script>
-</amp-state>
 <amp-list layout="fixed-height" height="44" [height]="22 * invoices.items.length" src="amp-state:invoices" binding="no">
     <template type="amp-mustache">
         <div>{{"{{"}}.{{"}}"}}</div>

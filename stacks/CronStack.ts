@@ -1,10 +1,8 @@
 import { Construct } from "@aws-cdk/core";
-import { Cron, Stack, StackProps, Table } from "@serverless-stack/resources";
+import { Cron, Stack, StackProps, Queue } from "@serverless-stack/resources";
 import { QueueStack } from "./QueueStack";
-import { StorageStack } from "./StorageStack";
 
 type AdditionalStackProps = {
-  storageStack: StorageStack;
   queueStack: QueueStack;
 };
 
@@ -25,13 +23,11 @@ export class CronStack extends Stack {
         function: {
           handler: "src/cron/invoice_summary/main.go",
           environment: {
-            tableName: additionalStackProps?.storageStack.invoiceTable
-              .tableName as string,
             queueUrl: additionalStackProps?.queueStack.emailSenderQueue.sqsQueue
               .queueUrl as string,
           },
           permissions: [
-            additionalStackProps?.storageStack.invoiceTable as Table,
+            additionalStackProps?.queueStack.emailSenderQueue as Queue,
           ],
         },
       },
