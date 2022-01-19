@@ -35,12 +35,18 @@ type Invoice struct {
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
 	NetPrice      int       `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice    int       `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Tax           string    `json:"tax" dynamodbav:"tax,omitempty"`
+	Tax           int       `json:"tax" dynamodbav:"tax,omitempty"`
 	Currency      string    `json:"currency" dynamodbav:"currency,omitempty"`
 	DueDate       string    `json:"dueDate" dynamodbav:"dueDate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
 	TextractData  string    `json:"textractData" dynamodbav:"textractData,omitempty"`
 }
+
+type InvoiceResponse struct {
+	Items []Invoice `json:"items"`
+	Total int       `json:"total"`
+}
+
 type EmailAttachment struct {
 	ContentType string `json:"contentType"`
 	Content_b64 string `json:"content_b64"`
@@ -50,6 +56,7 @@ type EmailFrom struct {
 	Address string `json:"address"`
 	Name    string `json:"name"`
 }
+
 type EmailWebhookBody struct {
 	Attachments []*EmailAttachment `json:"attachments"`
 	Html        string             `json:"html"`

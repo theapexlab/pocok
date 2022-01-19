@@ -1,24 +1,51 @@
-<!doctype html>
+<!DOCTYPE html>
 <html ⚡4email data-css-strict>
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <script async src="https://cdn.ampproject.org/v0.js"></script>
-    <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
-    <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
-    <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
-    <style amp4email-boilerplate>body{visibility:hidden}</style>
-    <style amp-custom>
-        h1 {
-            margin: 1rem;
-        }
+    <script
+      async
+      custom-element="amp-bind"
+      src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
+    ></script>
+    <script
+      async
+      custom-template="amp-mustache"
+      src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"
+    ></script>
+    <script
+      async
+      custom-element="amp-list"
+      src="https://cdn.ampproject.org/v0/amp-list-0.1.js"
+    ></script>
+    <style amp4email-boilerplate>
+      body {
+        visibility: hidden;
+      }
     </style>
-</head>
-<body>
-<h1>Hello, I am an AMP EMAIL!</h1>
-<amp-list layout="fixed-height" height="44" [height]="22 * invoices.items.length" src="amp-state:invoices" binding="no">
-    <template type="amp-mustache">
-        <div>{{"{{"}}.{{"}}"}}</div>
-    </template>
-</amp-list>
-</body>
+    <style amp-custom>
+      h1 {
+        margin: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hello, I am an AMP EMAIL!</h1>
+    <!-- TODO url from .env -->
+    <amp-list
+      src="https://gsgonnmz0k.execute-api.eu-central-1.amazonaws.com/api/invoices"
+      binding="no"
+      layout="fixed-height"
+      height="44"
+      [height]="22 * invoices.items.length"
+    >
+      <template type="amp-mustache">
+        <div>
+          <div>{{iban}}</div>
+          <div>{{customerName}}</div>
+          <div>{{status}}</div>
+        </div>
+      </template>
+    </amp-list>
+  </body>
 </html>
