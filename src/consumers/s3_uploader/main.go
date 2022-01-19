@@ -20,7 +20,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/cavaliergopher/grab/v3"
-	"github.com/segmentio/ksuid"
 )
 
 type dependencies struct {
@@ -76,13 +75,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
-	invoice := models.Invoice{
-		Id:       ksuid.New().String(),
-		Filename: filename,
-		Status:   models.PENDING,
-		// Rest of the data is initialised to 0 and empty string
-	}
-	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)
+	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, filename)
 
 	if dbErr != nil {
 		utils.LogError("Error while inserting to db", dbErr)
