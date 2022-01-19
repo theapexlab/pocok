@@ -7,8 +7,9 @@ type ExtractDataFromFileInput struct {
 }
 
 type ExtractDataFromFileOutput struct {
-	Customer        string           `json:"customer"`
-	ExtractedFields []ExtractedField `json:"extracted_fields"`
+	Customer        string             `json:"customer"`
+	ExtractedFields []ExtractedField   `json:"extracted_fields"`
+	LineItems       [][]ExtractedField `json:"line_items"`
 }
 
 type ExtractedField struct {

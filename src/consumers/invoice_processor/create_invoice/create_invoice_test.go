@@ -34,7 +34,7 @@ var _ = Describe("CreateInvoice", func() {
 	When("gets ", func() {
 		BeforeEach(func() {
 			extractedData = parseMockJson("billingo.json")
-			invoice, err = create_invoice.CreateInvoice(extractedData)
+			invoice = create_invoice.CreateInvoice(extractedData)
 		})
 
 		It("not errors", func() {
@@ -49,8 +49,8 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.AccountNumber).To(Equal("HU40 12010501-00404056-00100008"))
 			Expect(invoice.CustomerName).To(Equal("John Doe"))
 			Expect(invoice.DueDate).To(Equal("2021. 10.08."))
-			Expect(invoice.GrossPrice).To(Equal("€322,50"))
-			Expect(invoice.NetPrice).To(Equal("€322,50"))
+			Expect(invoice.GrossPrice).To(Equal("322,50"))
+			Expect(invoice.NetPrice).To(Equal("322,50"))
 		})
 	})
 })
