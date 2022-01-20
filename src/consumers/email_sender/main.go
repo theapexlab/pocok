@@ -29,6 +29,35 @@ type dependencies struct {
 	dbClient       *dynamodb.Client
 }
 
+func main() {
+	d := &dependencies{
+		domain:         os.Getenv("domain"),
+		apiKey:         os.Getenv("apiKey"),
+		sender:         os.Getenv("sender"),
+		emailRecipient: os.Getenv("emailRecipient"),
+		apiUrl:         os.Getenv("apiUrl"),
+		bucketName:     os.Getenv("bucketName"),
+		s3Client:       aws_clients.GetS3Client(),
+		tableName:      os.Getenv("tableName"),
+		dbClient:       aws_clients.GetDbClient(),
+	}
+
+	lambda.Start(d.handler)
+}
+
+func (d *dependencies) handler(event events.SQSEvent) error {
+	for _, record := range event.Records {
+		if record.Body == models.EMAIL_SUMMARY {
+			err := SendInvoiceSummary(d)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 func SendEmail(d *dependencies, subject string, body string, attachments map[string][]byte) error {
 	// Create an instance of the Mailgun Client
 	client := mailgun.NewMailgun(d.domain, d.apiKey)
@@ -60,7 +89,7 @@ func SendInvoiceSummary(d *dependencies) error {
 		return invoiceErr
 	}
 
-	html, htmlErr := create_email.GetHtmlSummary(invoices, d.apiUrl)
+	html, htmlErr := create_email.GetHtmlSummary(d.apiUrl)
 	if htmlErr != nil {
 		return htmlErr
 	}
@@ -76,33 +105,4 @@ func SendInvoiceSummary(d *dependencies) error {
 		return emailErr
 	}
 	return nil
-}
-
-func (d *dependencies) handler(event events.SQSEvent) error {
-	for _, record := range event.Records {
-		if record.Body == models.EMAIL_SUMMARY {
-			err := SendInvoiceSummary(d)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
-}
-
-func main() {
-	d := &dependencies{
-		domain:         os.Getenv("domain"),
-		apiKey:         os.Getenv("apiKey"),
-		sender:         os.Getenv("sender"),
-		emailRecipient: os.Getenv("emailRecipient"),
-		apiUrl:         os.Getenv("apiUrl"),
-		bucketName:     os.Getenv("bucketName"),
-		s3Client:       aws_clients.GetS3Client(),
-		tableName:      os.Getenv("tableName"),
-		dbClient:       aws_clients.GetDbClient(),
-	}
-
-	lambda.Start(d.handler)
 }
