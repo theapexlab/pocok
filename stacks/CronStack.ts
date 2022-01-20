@@ -18,7 +18,7 @@ export class CronStack extends Stack {
     super(scope, id, props);
 
     this.emailCron = new Cron(this, "EmailCron", {
-      schedule: "cron(0 16 * * ? *)",
+      schedule: "cron(0 15 * * ? *)",
       job: {
         function: {
           handler: "src/cron/invoice_summary/main.go",
