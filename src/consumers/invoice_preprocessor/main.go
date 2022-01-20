@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -14,6 +15,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 	"github.com/aws/aws-sdk-go-v2/service/textract/types"
@@ -27,6 +29,8 @@ type dependencies struct {
 	textractRoleArn string
 	s3Client        *s3.Client
 	textractClient  *textract.Client
+	tableName       string
+	dbClient        *dynamodb.Client
 }
 
 func main() {
@@ -36,6 +40,8 @@ func main() {
 		textractRoleArn: os.Getenv("textractRoleArn"),
 		s3Client:        aws_clients.GetS3Client(),
 		textractClient:  aws_clients.GetTextractClient(),
+		tableName:       os.Getenv("tableName"),
+		dbClient:        aws_clients.GetDbClient(),
 	}
 
 	lambda.Start(d.handler)
@@ -98,6 +104,13 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 	if s3Err != nil {
 		utils.LogError("Error while uploading to s3", s3Err)
 		return s3Err
+	}
+
+	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, filename)
+
+	if dbErr != nil {
+		utils.LogError("Error while inserting to db", dbErr)
+		return dbErr
 	}
 
 	_, textractErr := d.textractClient.StartDocumentTextDetection(context.TODO(), &textract.StartDocumentTextDetectionInput{

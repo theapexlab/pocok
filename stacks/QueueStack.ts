@@ -5,19 +5,25 @@ import {
   Stack,
   StackProps,
   Table,
-  Topic
+  Topic,
 } from "@serverless-stack/resources";
 import { StorageStack } from "./StorageStack";
-import { PolicyStatement, Effect, Role, ServicePrincipal } from "@aws-cdk/aws-iam"
+import {
+  PolicyStatement,
+  Effect,
+  Role,
+  ServicePrincipal,
+} from "@aws-cdk/aws-iam";
 
 type AdditionalStackProps = {
   storageStack: StorageStack;
 };
 
 export class QueueStack extends Stack {
-  invoiceQueue: Queue;
   textractJobResultsQueue: Queue;
   textractJobCompletionTopic: Topic;
+  invoiceQueue: Queue;
+  emailSenderQueue: Queue;
 
   constructor(
     scope: Construct,
@@ -27,13 +33,15 @@ export class QueueStack extends Stack {
   ) {
     super(scope, id, props);
 
-    this.textractJobResultsQueue = this.createTextractJobResultsQueue(additionalStackProps)
-    this.textractJobCompletionTopic = this.createTextractJobCompletionTopic()
-    this.invoiceQueue = this.createInvoiceQueue(additionalStackProps)
+    this.textractJobResultsQueue =
+      this.createTextractJobResultsQueue(additionalStackProps);
+    this.textractJobCompletionTopic = this.createTextractJobCompletionTopic();
+    this.invoiceQueue = this.createInvoiceQueue(additionalStackProps);
+    this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
   }
 
   createTextractJobResultsQueue(additionalStackProps?: AdditionalStackProps) {
-    return  new Queue(this, "TextractJobResults", {
+    return new Queue(this, "TextractJobResults", {
       consumer: {
         function: {
           handler: "src/consumers/textractor/main.go",
@@ -50,22 +58,20 @@ export class QueueStack extends Stack {
           initialPolicy: [
             new PolicyStatement({
               resources: ["*"],
-              actions: ["textract:*"]
-            })
-          ]
+              actions: ["textract:*"],
+            }),
+          ],
         },
         consumerProps: {
           batchSize: 1,
         },
-      }
+      },
     });
   }
 
   createTextractJobCompletionTopic() {
     return new Topic(this, "TextractJobCompletion", {
-      subscribers: [
-        this.textractJobResultsQueue as Queue,
-      ],
+      subscribers: [this.textractJobResultsQueue as Queue],
     });
   }
 
@@ -89,20 +95,52 @@ export class QueueStack extends Stack {
           environment: {
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
-            textractQueueUrl:  this.textractJobResultsQueue.sqsQueue.queueUrl  as string,
+            textractQueueUrl: this.textractJobResultsQueue.sqsQueue
+              .queueUrl as string,
             snsTopicArn: this.textractJobCompletionTopic.topicArn as string,
-            textractRoleArn: textractServiceRole.roleArn as string
+            textractRoleArn: textractServiceRole.roleArn as string,
+            tableName: additionalStackProps?.storageStack.invoiceTable
+              .tableName as string,
           },
           permissions: [
             this.textractJobResultsQueue as Queue,
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            additionalStackProps?.storageStack.invoiceTable as Table,
           ],
           initialPolicy: [
             new PolicyStatement({
               resources: ["*"],
-              actions: ["textract:*"]
-            })
-          ]
+              actions: ["textract:*"],
+            }),
+          ],
+        },
+        consumerProps: {
+          batchSize: 1,
+        },
+      },
+    });
+  }
+
+  createEmailSenderQueue(additionalStackProps?: AdditionalStackProps) {
+    return new Queue(this, "EmailSender", {
+      consumer: {
+        function: {
+          handler: "src/consumers/email_sender/main.go",
+          environment: {
+            sender: process.env.MAILGUN_SENDER as string,
+            mailgunDomain: process.env.MAILGUN_DOMAIN as string,
+            mailgunApiKey: process.env.MAILGUN_API_KEY as string,
+            emailRecipient: process.env.EMAIL_RECIPIENT as string,
+            apiUrl: process.env.API_URL as string,
+            bucketName: additionalStackProps?.storageStack.invoiceBucket
+              .bucketName as string,
+            tableName: additionalStackProps?.storageStack.invoiceTable
+              .tableName as string,
+          },
+          permissions: [
+            additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            additionalStackProps?.storageStack.invoiceTable as Table,
+          ],
         },
         consumerProps: {
           batchSize: 1,
