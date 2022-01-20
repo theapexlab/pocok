@@ -3,10 +3,11 @@ package main
 import (
 	"context"
 	"os"
-	"pocok/src/consumers/email_sender/create_email"
+	. "pocok/src/consumers/email_sender/create_email"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/mailgun_client"
 	"pocok/src/utils/models"
 	"time"
 
@@ -14,13 +15,10 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/mailgun/mailgun-go/v4"
 )
 
 type dependencies struct {
-	domain         string
 	sender         string
-	apiKey         string
 	emailRecipient string
 	apiUrl         string
 	bucketName     string
@@ -31,8 +29,6 @@ type dependencies struct {
 
 func main() {
 	d := &dependencies{
-		domain:         os.Getenv("domain"),
-		apiKey:         os.Getenv("apiKey"),
 		sender:         os.Getenv("sender"),
 		emailRecipient: os.Getenv("emailRecipient"),
 		apiUrl:         os.Getenv("apiUrl"),
@@ -58,16 +54,54 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 	return nil
 }
 
-func SendEmail(d *dependencies, subject string, body string, attachments map[string][]byte) error {
+func SendInvoiceSummary(d *dependencies) error {
+	subject := models.EMAIL_SUMMARY_SUBJECT
+	emailData, err := CreateEmail(d)
+	if err != nil {
+		utils.LogError("Error while creating email", err)
+		return err
+	}
+	sendingErr := SendEmail(d, subject, emailData)
+	if sendingErr != nil {
+		utils.LogError("Error while sending email", sendingErr)
+		return err
+	}
+	return nil
+}
+
+func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
+	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName)
+	if err != nil {
+		utils.LogError("Error while loading invoices", err)
+		return nil, err
+	}
+
+	amp, err := GetHtmlSummary(d.apiUrl)
+	if err != nil {
+		return nil, err
+	}
+	attachments, err := GetAttachments(d.s3Client, d.bucketName, invoices)
+	if err != nil {
+		return nil, err
+	}
+
+	response := models.EmailResponseData{
+		Amp:         amp,
+		Attachments: attachments,
+	}
+	return &response, nil
+}
+
+func SendEmail(d *dependencies, subject string, data *models.EmailResponseData) error {
 	// Create an instance of the Mailgun Client
-	client := mailgun.NewMailgun(d.domain, d.apiKey)
+	client := mailgun_client.GetMailgunClient()
 
 	// The message object allows you to add attachments and Bcc recipients
 	message := client.NewMessage(d.sender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
-	for filename, attachment := range attachments {
+	for filename, attachment := range data.Attachments {
 		message.AddBufferAttachment(filename, attachment)
 	}
-	message.SetAMPHtml(body)
+	message.SetAMPHtml(data.Amp)
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 	defer cancel()
 
@@ -79,30 +113,5 @@ func SendEmail(d *dependencies, subject string, body string, attachments map[str
 		return sendErr
 	}
 
-	return nil
-}
-
-func SendInvoiceSummary(d *dependencies) error {
-	invoices, invoiceErr := db.GetPendingInvoices(d.dbClient, d.tableName)
-	if invoiceErr != nil {
-		utils.LogError("Error while loading invoices", invoiceErr)
-		return invoiceErr
-	}
-
-	html, htmlErr := create_email.GetHtmlSummary(d.apiUrl)
-	if htmlErr != nil {
-		return htmlErr
-	}
-	attachments, attachmentErr := create_email.GetAttachments(d.s3Client, d.bucketName, invoices)
-	if attachmentErr != nil {
-		return attachmentErr
-	}
-
-	subject := models.EMAIL_SUMMARY_SUBJECT
-	emailErr := SendEmail(d, subject, html, attachments)
-	if emailErr != nil {
-		utils.LogError("Error while sending email", emailErr)
-		return emailErr
-	}
 	return nil
 }

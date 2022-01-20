@@ -62,3 +62,8 @@ type EmailWebhookBody struct {
 	Html        string             `json:"html"`
 	From        []*EmailFrom       `json:"from"`
 }
+
+type EmailResponseData struct {
+	Amp string
+	Attachments map[string][]byte
+}

@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"html/template"
-	"log"
-	"os"
+	"path"
 	"pocok/src/utils/models"
+	"runtime"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
@@ -31,24 +31,21 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 	return attachments, nil
 }
 
-type EmailTemplateData struct {
+type emailTemplateData struct {
 	ApiUrl string
 }
 
-func GetHtmlSummary(invoices []models.Invoice, apiUrl string) (string, error) {
+func GetHtmlSummary(apiUrl string) (string, error) {
+	_, filename, _, _ := runtime.Caller(0)
+	currentPath := path.Dir(filename)
 
-	wd, err := os.Getwd()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	t, err := template.ParseFiles(wd + "/src/amp/email-summary.html")
+	t, err := template.ParseFiles(currentPath + "/../../../amp/email-summary.html")
 	if err != nil {
 		return "", err
 	}
 	var templateBuffer bytes.Buffer
 
-	templateData := EmailTemplateData{
+	templateData := emailTemplateData{
 		ApiUrl: apiUrl,
 	}
 	execerr := t.Execute(&templateBuffer, templateData)
