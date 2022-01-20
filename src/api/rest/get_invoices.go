@@ -20,15 +20,25 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	invoices, _ := db.GetPendingInvoices(d.dbClient, d.tableName)
+	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName)
+	if err != nil {
+		utils.LogError("Error while getting pending invoices from db", err)
+		return nil, err
+	}
 	// invoices := mock.Invoices
 	response := models.InvoiceResponse{
 		Items: invoices,
 		Total: len(invoices),
 	}
-	invoiceBytes, _ := json.Marshal(response)
+
+	invoiceBytes, err := json.Marshal(response)
+	if err != nil {
+		utils.LogError("Error while parsing invoices from db", err)
+		return nil, err
+	}
+
 	invoiceStr := string(invoiceBytes)
-	return utils.ApiResponse(http.StatusOK, invoiceStr)
+	return utils.MailApiResponse(http.StatusOK, invoiceStr), nil
 }
 
 func main() {
