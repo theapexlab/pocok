@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html ⚡4email data-css-strict>
+  <head>
+    <meta charset="utf-8" />
+    <script async src="https://cdn.ampproject.org/v0.js"></script>
+    <script
+      async
+      custom-element="amp-bind"
+      src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
+    ></script>
+    <script
+      async
+      custom-template="amp-mustache"
+      src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"
+    ></script>
+    <script
+      async
+      custom-element="amp-list"
+      src="https://cdn.ampproject.org/v0/amp-list-0.1.js"
+    ></script>
+    <style amp4email-boilerplate>
+      body {
+        visibility: hidden;
+      }
+    </style>
+    <style amp-custom>
+      h1 {
+        margin: 1rem;
+      }
+      .row {
+        width: 100%;
+        display: flex;
+        align-items: space-between;
+      }
+      .row div {
+        padding-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Szia Lajos!</h3>
+    <amp-list
+      src="{{.ApiUrl}}/api/invoices"
+      binding="no"
+      layout="fixed-height"
+      height="44"
+      [height]="22 * invoices.items.length"
+    >
+      <template type="amp-mustache">
+        <div class="row">
+          <div>{{"{{"}}filename{{"}}"}}</div>
+          <div>{{"{{"}}receivedAt{{"}}"}}</div>
+          <div>{{"{{"}}status{{"}}"}}</div>
+        </div>
+      </template>
+    </amp-list>
+  </body>
+</html>
