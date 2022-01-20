@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
@@ -17,23 +18,14 @@ type dependencies struct {
 	sqsClient *sqs.Client
 }
 
-func QueueEmailEvent(d *dependencies, emailType string) error {
+func (d *dependencies) handler(event events.CloudWatchEvent) error {
 	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-		MessageBody: &emailType,
+		MessageBody: aws.String(models.EMAIL_SUMMARY),
 		QueueUrl:    &d.queueUrl,
 	})
 	if sqsErr != nil {
 		utils.LogError("Error while sending message to SQS", sqsErr)
 		return sqsErr
-	}
-	return nil
-}
-
-func (d *dependencies) handler(event events.CloudWatchEvent) error {
-	err := QueueEmailEvent(d, models.EMAIL_SUMMARY)
-	if err != nil {
-
-		return err
 	}
 	return nil
 }
