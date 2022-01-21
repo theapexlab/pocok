@@ -10,7 +10,7 @@ import (
 )
 
 func CreateJwt(orgId string) (string, error) {
-	jwtKey := os.Getenv("jwtKey")
+	jwtKey := []byte(os.Getenv("jwtKey"))
 	claims := models.JWTClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Unix() + 86400*2,
@@ -28,7 +28,7 @@ func CreateJwt(orgId string) (string, error) {
 // Example creating a token using a custom claims type.  The StandardClaim is embedded
 // in the custom type to allow for easy encoding, parsing and validation of standard claims.
 func ParseJwt(tokenString string) (*models.JWTClaims, error) {
-	jwtKey := os.Getenv("jwtKey")
+	jwtKey := []byte(os.Getenv("jwtKey"))
 
 	token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil

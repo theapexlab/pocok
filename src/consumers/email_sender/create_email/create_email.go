@@ -47,6 +47,9 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 	}
 
 	jwt, err := auth.CreateJwt(models.APEX_ID)
+	if err != nil {
+		return "", err
+	}
 
 	templateData := emailTemplateData{
 		ApiUrl: apiUrl,

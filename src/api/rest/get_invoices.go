@@ -21,7 +21,7 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	jwt := request.QueryStringParameters["token"]
+	jwt := request.QueryStringParameters["jwt"]
 	claims, err := auth.ParseJwt(jwt)
 	if err != nil {
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
