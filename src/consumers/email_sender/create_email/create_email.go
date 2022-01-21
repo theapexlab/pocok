@@ -42,6 +42,8 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 	currentPath := path.Dir(filename)
 
 	t, err := template.ParseFiles(currentPath + "/../../../amp/email-summary.html")
+	t.Delims("[[", "]]")
+
 	if err != nil {
 		return "", err
 	}
