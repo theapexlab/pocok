@@ -2,7 +2,6 @@ package create_invoice_test
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"pocok/src/consumers/invoice_processor/create_invoice"
 	"pocok/src/services/typless"
@@ -32,9 +31,9 @@ var _ = Describe("CreateInvoice", func() {
 	var invoice *models.Invoice
 	var err error
 
-	When("handles billingo invoice correctly", func() {
+	When("gets billingo invoice with string fields", func() {
 		BeforeEach(func() {
-			extractedData = parseMockJson("billingo.json")
+			extractedData = parseMockJson("billingo_with_string_fields.json")
 			invoice = create_invoice.CreateInvoice(extractedData)
 		})
 
@@ -49,16 +48,41 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.Iban).To(Equal("HU19-120105010040405600200005"))
 			Expect(invoice.AccountNumber).To(Equal("HU40 12010501-00404056-00100008"))
 			Expect(invoice.VendorName).To(Equal("John Doe"))
-			Expect(invoice.DueDate).To(Equal("2021. 10.08."))
+			Expect(invoice.DueDate).To(Equal("2021-10-08"))
 			Expect(invoice.GrossPrice).To(Equal("322,50"))
+			Expect(invoice.Currency).To(Equal("USD"))
 			Expect(invoice.NetPrice).To(Equal("322,50"))
 			Expect(len(invoice.Services)).To(Equal(1))
+			Expect(invoice.Services[0].Name).To(Equal("Tanácsadás"))
+			Expect(invoice.Services[0].Amount).To(Equal("4.5000"))
+			Expect(invoice.Services[0].NetPrice).To(Equal("322,50"))
+
+		})
+	})
+	When("gets billingo invoice with number fields", func() {
+		BeforeEach(func() {
+			extractedData = parseMockJson("billingo_with_number_fields.json")
+			invoice = create_invoice.CreateInvoice(extractedData)
+		})
+
+		It("not errors", func() {
+			Expect(err).To(BeNil())
+		})
+
+		It("return invoice with correct fields", func() {
+			Expect(invoice).NotTo(BeNil())
+
+			Expect(invoice.InvoiceNumber).To(Equal("E-2021-16"))
+			Expect(invoice.Iban).To(Equal("HU19-12345678910"))
+			Expect(invoice.AccountNumber).To(Equal("HU40 12345-12345-00100008"))
+			Expect(invoice.VendorName).To(Equal("dr. Test Elek ev."))
+			Expect(invoice.DueDate).To(Equal("2021-10-08"))
+			Expect(invoice.GrossPrice).To(Equal("322.5000"))
+			Expect(invoice.NetPrice).To(Equal("322.5000"))
+			Expect(len(invoice.Services)).To(Equal(1))
 			Expect(invoice.Services[0].Name).To(Equal("Óradíjas tanácsadás"))
-			Expect(invoice.Services[0].Amount).To(Equal("7.5 óra"))
-			Expect(invoice.Services[0].Currency).To(Equal("EUR"))
-			Expect(invoice.Services[0].GrossPrice).To(Equal("322,50"))
-			Expect(invoice.Services[0].Tax).To(Equal("AAM ÁFA:"))
-			fmt.Println(invoice)
+			Expect(invoice.Services[0].Amount).To(Equal("7.5000"))
+			Expect(invoice.Services[0].NetPrice).To(Equal("322.5000"))
 		})
 	})
 })

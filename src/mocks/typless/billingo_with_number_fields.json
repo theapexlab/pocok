@@ -1,0 +1,348 @@
+{
+  "customer": null,
+  "extracted_fields": [
+    {
+      "data_type": "AUTHOR",
+      "name": "supplier_name",
+      "values": [
+        {
+          "confidence_score": 0.955,
+          "height": -1,
+          "page_number": -1,
+          "value": "dr. Test Elek ev.",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "account_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "HU40 12345-12345-00100008",
+          "width": 968,
+          "x": 158,
+          "y": 1145
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "total_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 35,
+          "page_number": 0,
+          "value": "322.5000",
+          "width": 150,
+          "x": 1665,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.875,
+          "height": 34,
+          "page_number": 0,
+          "value": "43.0000",
+          "width": 130,
+          "x": 1386,
+          "y": 1633
+        },
+        {
+          "confidence_score": 0.8703,
+          "height": 35,
+          "page_number": 0,
+          "value": "322.5000",
+          "width": 155,
+          "x": 2160,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.66,
+          "height": 32,
+          "page_number": 0,
+          "value": "7.5000",
+          "width": 129,
+          "x": 937,
+          "y": 1632
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vat_rate",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 31,
+          "page_number": 0,
+          "value": "AAM",
+          "width": 82,
+          "x": 1928,
+          "y": 1633
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 41,
+          "page_number": 0,
+          "value": "Óradíjas tanácsadás",
+          "width": 379,
+          "x": 160,
+          "y": 1630
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "€322,50",
+          "width": 150,
+          "x": 1665,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.5657,
+          "height": 35,
+          "page_number": 0,
+          "value": "€322,50",
+          "width": 155,
+          "x": 2160,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.5657,
+          "height": 34,
+          "page_number": 0,
+          "value": "€43,00",
+          "width": 130,
+          "x": 1386,
+          "y": 1633
+        }
+      ]
+    },
+    {
+      "data_type": "DATE",
+      "name": "pay_due_date",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 32,
+          "page_number": 0,
+          "value": "2021-10-08",
+          "width": 271,
+          "x": 1276,
+          "y": 1430
+        },
+        {
+          "confidence_score": 0.7893,
+          "height": 31,
+          "page_number": 0,
+          "value": "2021-09-30",
+          "width": 245,
+          "x": 738,
+          "y": 1431
+        },
+        {
+          "confidence_score": 0.5886,
+          "height": 31,
+          "page_number": 0,
+          "value": "2021-09-30",
+          "width": 245,
+          "x": 160,
+          "y": 1431
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "net_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 35,
+          "page_number": 0,
+          "value": "322.5000",
+          "width": 150,
+          "x": 1665,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.875,
+          "height": 34,
+          "page_number": 0,
+          "value": "43.0000",
+          "width": 130,
+          "x": 1386,
+          "y": 1633
+        },
+        {
+          "confidence_score": 0.8703,
+          "height": 35,
+          "page_number": 0,
+          "value": "322.5000",
+          "width": 155,
+          "x": 2160,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.66,
+          "height": 32,
+          "page_number": 0,
+          "value": "7.5000",
+          "width": 129,
+          "x": 937,
+          "y": 1632
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "currency",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 34,
+          "page_number": 0,
+          "value": "€",
+          "width": 130,
+          "x": 1386,
+          "y": 1633
+        },
+        {
+          "confidence_score": 0.75,
+          "height": 35,
+          "page_number": 0,
+          "value": "€",
+          "width": 150,
+          "x": 1665,
+          "y": 1632
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "€",
+          "width": 155,
+          "x": 2160,
+          "y": 1632
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "iban",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "HU19-12345678910",
+          "width": 730,
+          "x": 159,
+          "y": 1198
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "invoice_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 54,
+          "page_number": 0,
+          "value": "E-2021-16",
+          "width": 334,
+          "x": 151,
+          "y": 336
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "vat_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    }
+  ],
+  "file_name": "test.pdf",
+  "line_items": [
+    [
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 41,
+            "page_number": 0,
+            "value": "Óradíjas tanácsadás",
+            "width": 379,
+            "x": 160,
+            "y": 1630
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 32,
+            "page_number": 0,
+            "value": "óra",
+            "width": 129,
+            "x": 937,
+            "y": 1632
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "322.5000",
+            "width": 150,
+            "x": 1665,
+            "y": 1632
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 32,
+            "page_number": 0,
+            "value": "7.5000",
+            "width": 129,
+            "x": 937,
+            "y": 1632
+          }
+        ]
+      }
+    ]
+  ],
+  "object_id": "0e7889ff69af2d0a3a94ad2971e01cd3759262ff",
+  "vat_rates": []
+}
