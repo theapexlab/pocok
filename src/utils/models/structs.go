@@ -1,5 +1,7 @@
 package models
 
+import "github.com/golang-jwt/jwt"
+
 type UploadInvoiceMessage struct {
 	Type string `json:"type"` // "url","base64"
 	Body string `json:"body"`
@@ -64,6 +66,14 @@ type EmailWebhookBody struct {
 }
 
 type EmailResponseData struct {
-	Amp string
+	Amp         string
 	Attachments map[string][]byte
+}
+
+type JWTPayload struct {
+	OrgId string `json:"orgId"`
+}
+type JWTClaims struct {
+	jwt.StandardClaims
+	JWTPayload
 }

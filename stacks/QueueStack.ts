@@ -132,6 +132,7 @@ export class QueueStack extends Stack {
             mailgunApiKey: process.env.MAILGUN_API_KEY as string,
             emailRecipient: process.env.EMAIL_RECIPIENT as string,
             apiUrl: process.env.API_URL as string,
+            jwtKey: process.env.JWT_KEY as string,
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
             tableName: additionalStackProps?.storageStack.invoiceTable
