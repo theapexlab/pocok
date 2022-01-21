@@ -2,15 +2,21 @@ package typless
 
 const (
 	INVOICE_NUMBER      string = "invoice_number"
-	GROSS_PRICE         string = "gross_price"
-	NET_PRICE           string = "net_price"
-	VENDOR_NAME         string = "vendor_name"
+	GROSS_PRICE         string = "total_amount"
+	NET_PRICE           string = "net_amount"
+	VENDOR_NAME         string = "supplier_name"
 	ACCOUNT_NUMBER      string = "account_number"
 	IBAN                string = "iban"
-	DUE_DATE            string = "due_date"
-	SERVICE_NAME        string = "service_name"
-	SERVICE_AMOUNT      string = "service_amount"
-	SERVICE_NET_PRICE   string = "service_net_price"
+	DUE_DATE            string = "pay_due_date"
+
+	CURRENCY            string = "currency"
+	VAT_RATE            string = "vat_rate"
+	VAT_AMOUNT          string = "vat_amount"
+
+	SERVICE_NAME        string = "product_description"
+	SERVICE_AMOUNT      string = "quantity"
+	SERVICE_AMOUNT_UNIT string = "unit"
+	SERVICE_NET_PRICE   string = "price"
 	SERVICE_GROSS_PRICE string = "service_gross_price"
 	SERVICE_VAT         string = "service_vat"
 )

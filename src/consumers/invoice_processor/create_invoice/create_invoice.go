@@ -32,6 +32,10 @@ func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Inv
 		case typless.GROSS_PRICE:
 			invoice.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
 			invoice.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
+		case typless.CURRENCY:
+			if invoice.Currency == "" {		
+				invoice.Currency = getFieldValue(field)
+			}
 		case typless.DUE_DATE:
 			invoice.DueDate = getFieldValue(field)
 		}
@@ -46,7 +50,7 @@ LineItemsLoop:
 			case typless.SERVICE_AMOUNT:
 				service.Amount = getFieldValue(field)
 			case typless.SERVICE_NET_PRICE:
-				service.NetPrice = currency.GetCurrencyFromPrice(getFieldValue(field))
+				service.NetPrice = currency.GetValueFromPrice(getFieldValue(field))
 			case typless.SERVICE_GROSS_PRICE:
 				service.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
 				service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
