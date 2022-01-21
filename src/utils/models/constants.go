@@ -9,6 +9,7 @@ const (
 const (
 	PENDING  string = "pending"
 	ACCEPTED string = "approved"
+	REJECTED string = "rejected"
 )
 
 // Field
