@@ -1,5 +1,11 @@
 import { Construct } from "@aws-cdk/core";
-import { Bucket, Queue, Stack, StackProps } from "@serverless-stack/resources";
+import {
+  Bucket,
+  Queue,
+  Stack,
+  StackProps,
+  Table,
+} from "@serverless-stack/resources";
 import { StorageStack } from "./StorageStack";
 
 type AdditionalStackProps = {
@@ -9,6 +15,7 @@ type AdditionalStackProps = {
 export class QueueStack extends Stack {
   invoiceQueue: Queue;
   processInvoiceQueue: Queue;
+  emailSenderQueue: Queue;
 
   constructor(
     scope: Construct,
@@ -21,6 +28,7 @@ export class QueueStack extends Stack {
     this.processInvoiceQueue =
       this.createProcessInvoiceQueue(additionalStackProps);
     this.invoiceQueue = this.createInvoiceQueue(additionalStackProps);
+    this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -58,6 +66,34 @@ export class QueueStack extends Stack {
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
             this.processInvoiceQueue as Queue,
+          ],
+        },
+        consumerProps: {
+          batchSize: 1,
+        },
+      },
+    });
+  }
+
+  createEmailSenderQueue(additionalStackProps?: AdditionalStackProps) {
+    return new Queue(this, "EmailSender", {
+      consumer: {
+        function: {
+          handler: "src/consumers/email_sender/main.go",
+          environment: {
+            sender: process.env.MAILGUN_SENDER as string,
+            mailgunDomain: process.env.MAILGUN_DOMAIN as string,
+            mailgunApiKey: process.env.MAILGUN_API_KEY as string,
+            emailRecipient: process.env.EMAIL_RECIPIENT as string,
+            apiUrl: process.env.API_URL as string,
+            bucketName: additionalStackProps?.storageStack.invoiceBucket
+              .bucketName as string,
+            tableName: additionalStackProps?.storageStack.invoiceTable
+              .tableName as string,
+          },
+          permissions: [
+            additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            additionalStackProps?.storageStack.invoiceTable as Table,
           ],
         },
         consumerProps: {

@@ -51,7 +51,7 @@ LineItemsLoop:
 				service.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
 				service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
 			case typless.SERVICE_VAT:
-				service.Vat = getFieldValue(field)
+				service.Tax = getFieldValue(field)
 			}
 		}
 

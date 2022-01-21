@@ -69,7 +69,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="13" value="/webhooks/pipedream&lt;br&gt;JSON" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" parent="12" vertex="1" connectable="0">
+                <mxCell id="13" value="/webhooks/mailgun&lt;br&gt;JSON" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#FFFFFF;" parent="12" vertex="1" connectable="0">
                     <mxGeometry x="0.0346" y="2" relative="1" as="geometry">
                         <mxPoint x="-13" y="2" as="offset"/>
                     </mxGeometry>

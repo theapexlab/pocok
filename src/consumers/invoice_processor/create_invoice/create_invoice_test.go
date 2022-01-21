@@ -57,7 +57,7 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.Services[0].Amount).To(Equal("7.5 óra"))
 			Expect(invoice.Services[0].Currency).To(Equal("EUR"))
 			Expect(invoice.Services[0].GrossPrice).To(Equal("322,50"))
-			Expect(invoice.Services[0].Vat).To(Equal("AAM ÁFA:"))
+			Expect(invoice.Services[0].Tax).To(Equal("AAM ÁFA:"))
 			fmt.Println(invoice)
 		})
 	})

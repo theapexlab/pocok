@@ -4,6 +4,7 @@ import {
   StackProps,
   Api,
   Queue,
+  Table,
 } from "@serverless-stack/resources";
 import { QueueStack } from "./QueueStack";
 import { StorageStack } from "./StorageStack";
@@ -31,7 +32,21 @@ export class ApiStack extends Stack {
               queueUrl: additionalStackProps?.queueStack.invoiceQueue.sqsQueue
                 .queueUrl as string,
             },
-            permissions: [additionalStackProps?.queueStack.invoiceQueue as Queue],
+            permissions: [
+              additionalStackProps?.queueStack.invoiceQueue as Queue,
+            ],
+          },
+        },
+        "GET /api/invoices": {
+          function: {
+            handler: "src/api/rest/get_invoices.go",
+            environment: {
+              tableName: additionalStackProps?.storageStack.invoiceTable
+                .tableName as string,
+            },
+            permissions: [
+              additionalStackProps?.storageStack.invoiceTable as Table,
+            ],
           },
         },
       },

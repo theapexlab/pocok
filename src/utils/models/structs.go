@@ -6,18 +6,28 @@ type UploadInvoiceMessage struct {
 }
 
 type Service struct {
-	Name       string `json:"name" dynamodbav:"name,omitempty"`
-	Amount     string `json:"amount" dynamodbav:"amount,omitempty"`
-	NetPrice   string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
-	GrossPrice string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Currency   string `json:"currency" dynamodbav:"currency,omitempty"`
-	Vat        string `json:"vat" dynamodbav:"vat,omitempty"`
+	Name         string `json:"name" dynamodbav:"name,omitempty"`
+	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
+	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
+	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
+	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
+	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
+	Tax          string `json:"tax" dynamodbav:"tax,omitempty"`
 }
 
 type Invoice struct {
-	Id           string `json:"id" dynamodbav:"id"`
-	Filename     string `json:"filename" dynamodbav:"filename"`
-	TextractData string `json:"textractData" dynamodbav:"textractData,omitempty"`
+	Pk     string `json:"pk" dynamodbav:"pk"`
+	Sk     string `json:"sk" dynamodbav:"sk"`
+	Lsi1sk string `json:"lsi1sk" dynamodbav:"lsi1sk"`
+	Lsi2sk string `json:"lsi2sk" dynamodbav:"lsi2sk"`
+
+	InvoiceId  string `json:"invoiceId" dynamodbav:"invoiceId"`
+	EntityType string `json:"entityType" dynamodbav:"entityType"`
+	Status     string `json:"status" dynamodbav:"status"`
+	ReceivedAt string `json:"receivedAt" dynamodbav:"receivedAt"`
+	Filename   string `json:"filename" dynamodbav:"filename"`
+
+	CustomerEmail string `json:"customerEmail" dynamodbav:"customerEmail,omitempty"`
 
 	InvoiceNumber string    `json:"invoiceNumber" dynamodbav:"invoiceNumber,omitempty"`
 	VendorName    string    `json:"vendorName" dynamodbav:"vendorName,omitempty"`
@@ -25,13 +35,17 @@ type Invoice struct {
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
 	NetPrice      string    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice    string    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
+	Tax           string    `json:"tax" dynamodbav:"tax,omitempty"`
 	Currency      string    `json:"currency" dynamodbav:"currency,omitempty"`
 	DueDate       string    `json:"dueDate" dynamodbav:"dueDate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
-
-	CustomerEmail string `json:"custmerEmail" dynamodbav:"custmerEmail,omitempty"`
-	Status        string `json:"status" dynamodbav:"status,omitempty"` // InvoiceStatus
 }
+
+type InvoiceResponse struct {
+	Items []Invoice `json:"items"`
+	Total int       `json:"total"`
+}
+
 type EmailAttachment struct {
 	ContentType string `json:"contentType"`
 	Content_b64 string `json:"content_b64"`
@@ -41,8 +55,14 @@ type EmailFrom struct {
 	Address string `json:"address"`
 	Name    string `json:"name"`
 }
+
 type EmailWebhookBody struct {
 	Attachments []*EmailAttachment `json:"attachments"`
 	Html        string             `json:"html"`
 	From        []*EmailFrom       `json:"from"`
+}
+
+type EmailResponseData struct {
+	Amp         string
+	Attachments map[string][]byte
 }

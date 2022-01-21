@@ -23,7 +23,7 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	invoiceMessage, emailParseErr := parse_email.ParseEmail(request.Body)
 	if emailParseErr != nil {
 		utils.LogError("Error while parsing email", emailParseErr)
-		return utils.ApiResponse(http.StatusInternalServerError, "")
+		return utils.ApiResponse(http.StatusInternalServerError, ""), emailParseErr
 	}
 
 	invoiceMessageByteArr, _ := json.Marshal(invoiceMessage)
@@ -35,10 +35,10 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	})
 	if sqsErr != nil {
 		utils.LogError("Error while sending message to SQS", emailParseErr)
-		return utils.ApiResponse(http.StatusInternalServerError, "")
+		return utils.ApiResponse(http.StatusInternalServerError, ""), sqsErr
 	}
 
-	return utils.ApiResponse(http.StatusOK, "")
+	return utils.ApiResponse(http.StatusOK, ""), nil
 }
 
 func main() {

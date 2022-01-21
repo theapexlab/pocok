@@ -16,15 +16,19 @@ export class StorageStack extends Stack {
 
     this.invoiceTable = new Table(this, "Invoices", {
       fields: {
-        id: TableFieldType.STRING,
-        filename: TableFieldType.STRING,
+        // Keys
+        pk: TableFieldType.STRING,
+        sk: TableFieldType.STRING,
+        lsi1sk: TableFieldType.STRING,
+        lsi2sk: TableFieldType.STRING,
       },
-      primaryIndex: { partitionKey: "id", sortKey: "filename" },
+      primaryIndex: { partitionKey: "pk", sortKey: "sk" },
       localIndexes: {
-        invoiceNumberIndex: { sortKey: "invoiceNumber" },
-        vendorIndex: { sortKey: "vendorName" },
+        invoiceStatusIndex: { sortKey: "lsi1sk" },
+        customerEmailIndex: { sortKey: "lsi2sk" },
       },
     });
+
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");
   }
 }

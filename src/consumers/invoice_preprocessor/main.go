@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -14,6 +15,7 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/cavaliergopher/grab/v3"
@@ -23,16 +25,19 @@ import (
 type dependencies struct {
 	bucketName             string
 	processInvoiceQueueUrl string
-	s3Client               *s3.Client
 	sqsClient              *sqs.Client
+	s3Client               *s3.Client
+	tableName              string
+	dbClient               *dynamodb.Client
 }
 
 func main() {
 	d := &dependencies{
-		bucketName:             os.Getenv("bucketName"),
 		processInvoiceQueueUrl: os.Getenv("processInvoiceQueueUrl"),
 		s3Client:               aws_clients.GetS3Client(),
 		sqsClient:              aws_clients.GetSQSClient(),
+		tableName:              os.Getenv("tableName"),
+		dbClient:               aws_clients.GetDbClient(),
 	}
 
 	lambda.Start(d.handler)
@@ -114,6 +119,13 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		}
 
 		return sqsErr
+	}
+
+	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, filename)
+
+	if dbErr != nil {
+		utils.LogError("Error while inserting to db", dbErr)
+		return dbErr
 	}
 
 	return nil
