@@ -18,6 +18,12 @@
       custom-element="amp-list"
       src="https://cdn.ampproject.org/v0/amp-list-0.1.js"
     ></script>
+    <script
+      async
+      custom-element="amp-form"
+      src="https://cdn.ampproject.org/v0/amp-form-0.1.js"
+    ></script>
+
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
@@ -40,7 +46,7 @@
   <body>
     <h3>Szia Lajos!</h3>
     <amp-list
-      src="{{.ApiUrl}}/api/invoices?token={{.Token}}"
+      src="[[.ApiUrl]]/api/invoices?jwt=[[.Jwt]]"
       binding="no"
       layout="fixed-height"
       height="44"
@@ -48,9 +54,44 @@
     >
       <template type="amp-mustache">
         <div class="row">
-          <div>{{"{{"}}filename{{"}}"}}</div>
-          <div>{{"{{"}}receivedAt{{"}}"}}</div>
-          <div>{{"{{"}}status{{"}}"}}</div>
+          <div>{{id}}</div>
+          <div>{{filename}}</div>
+          <div>{{receivedAt}}</div>
+          <div>{{status}}</div>
+          <form
+            method="post"
+            action-xhr="[[.ApiUrl]]/updateInvoice?jwt=[[.Jwt]]"
+            target="_top"
+          >
+            <fieldset>
+              <input type="hidden" name="id" value="{{id}}" />
+              <input type="hidden" name="status" value="approved" />
+              <input type="submit" value="Approve" />
+            </fieldset>
+            <div submit-success>
+              <template type="amp-mustache"> Approve successful! </template>
+            </div>
+            <div submit-error>
+              <template type="amp-mustache"> Approve failed! </template>
+            </div>
+          </form>
+          <form
+            method="post"
+            action-xhr="[[.ApiUrl]]/updateInvoice?jwt=[[.Jwt]]"
+            target="_top"
+          >
+            <fieldset>
+              <input type="hidden" name="id" value="{{id}}" />
+              <input type="hidden" name="status" value="rejected" />
+              <input type="submit" value="Decline" />
+            </fieldset>
+            <div submit-success>
+              <template type="amp-mustache"> Decline successful! </template>
+            </div>
+            <div submit-error>
+              <template type="amp-mustache"> Decline failed! </template>
+            </div>
+          </form>
         </div>
       </template>
     </amp-list>
