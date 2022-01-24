@@ -8,7 +8,7 @@ const (
 // InvoiceStatus Options
 const (
 	PENDING  string = "pending"
-	ACCEPTED string = "approved"
+	ACCEPTED string = "accepted"
 	REJECTED string = "rejected"
 )
 

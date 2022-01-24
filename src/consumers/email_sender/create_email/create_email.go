@@ -33,8 +33,10 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 }
 
 type emailTemplateData struct {
-	ApiUrl string
-	Token  string
+	ApiUrl   string
+	Token    string
+	Accepted string
+	Rejected string
 }
 
 func GetHtmlSummary(apiUrl string) (string, error) {
@@ -54,8 +56,10 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 	}
 
 	templateData := emailTemplateData{
-		ApiUrl: apiUrl,
-		Token:  token,
+		ApiUrl:   apiUrl,
+		Token:    token,
+		Accepted: models.ACCEPTED,
+		Rejected: models.REJECTED,
 	}
 
 	var templateBuffer bytes.Buffer

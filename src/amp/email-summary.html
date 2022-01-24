@@ -65,14 +65,14 @@
           >
             <fieldset>
               <input type="hidden" name="id" value="{{id}}" />
-              <input type="hidden" name="status" value="approved" />
-              <input type="submit" value="Approve" />
+              <input type="hidden" name="status" value="[[.Accepted]]" />
+              <input type="submit" value="Accept" />
             </fieldset>
             <div submit-success>
-              <template type="amp-mustache"> Approve successful! </template>
+              <template type="amp-mustache">Accept successful!</template>
             </div>
             <div submit-error>
-              <template type="amp-mustache"> Approve failed! </template>
+              <template type="amp-mustache">Accept failed!</template>
             </div>
           </form>
           <form
@@ -82,14 +82,14 @@
           >
             <fieldset>
               <input type="hidden" name="id" value="{{id}}" />
-              <input type="hidden" name="status" value="rejected" />
-              <input type="submit" value="Decline" />
+              <input type="hidden" name="status" value="[[.Rejected]]" />
+              <input type="submit" value="Reject" />
             </fieldset>
             <div submit-success>
-              <template type="amp-mustache"> Decline successful! </template>
+              <template type="amp-mustache">Reject successful!</template>
             </div>
             <div submit-error>
-              <template type="amp-mustache"> Decline failed! </template>
+              <template type="amp-mustache">Reject failed!</template>
             </div>
           </form>
         </div>
