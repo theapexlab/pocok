@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"os"
 	"path"
+	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/models"
 	"runtime"
@@ -42,19 +44,24 @@ type emailTemplateData struct {
 func GetHtmlSummary(apiUrl string) (string, error) {
 	_, filename, _, _ := runtime.Caller(0)
 	currentPath := path.Dir(filename)
-
-	t, err := template.ParseFiles(currentPath + "/../../../amp/email-summary.html")
-	t.Delims("[[", "]]")
-
-	if err != nil {
-		return "", err
+	filePath := currentPath + "/../../../amp/email-summary.html"
+	file, fileErr := os.ReadFile(filePath)
+	if fileErr != nil {
+		utils.LogError("Error while reading in the html file.", fileErr)
+		return "", fileErr
 	}
 
-	token, err := auth.CreateToken(models.APEX_ID)
-	if err != nil {
-		return "", err
+	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(string(file))
+	if templateErr != nil {
+		utils.LogError("Error while creating template.", templateErr)
+		return "", templateErr
 	}
 
+	token, tokenErr := auth.CreateToken(models.APEX_ID)
+	if tokenErr != nil {
+		utils.LogError("Error while creating token.", tokenErr)
+		return "", tokenErr
+	}
 	templateData := emailTemplateData{
 		ApiUrl:   apiUrl,
 		Token:    token,
@@ -63,9 +70,10 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 	}
 
 	var templateBuffer bytes.Buffer
-	execerr := t.Execute(&templateBuffer, templateData)
-	if execerr != nil {
-		return "", err
+	executionErr := t.Execute(&templateBuffer, templateData)
+	if executionErr != nil {
+		utils.LogError("Error while executing template insetion.", executionErr)
+		return "", executionErr
 	}
 	return templateBuffer.String(), nil
 }
