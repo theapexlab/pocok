@@ -35,9 +35,9 @@ func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Inv
 		case typless.DUE_DATE:
 			invoice.DueDate = getFieldValue(field)
 		case typless.VAT_RATE:
-			invoice.DueDate = getFieldValue(field)
+			invoice.VatRate = getFieldValue(field)
 		case typless.VAT_AMOUNT:
-			invoice.DueDate = getFieldValue(field)
+			invoice.VatAmount = getFieldValue(field)
 		}
 	}
 LineItemsLoop:
