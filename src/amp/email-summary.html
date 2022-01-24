@@ -5,11 +5,6 @@
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script
       async
-      custom-element="amp-bind"
-      src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
-    ></script>
-    <script
-      async
       custom-template="amp-mustache"
       src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"
     ></script>
@@ -61,36 +56,26 @@
           <form
             method="post"
             action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-            target="_top"
           >
             <fieldset>
               <input type="hidden" name="id" value="{{id}}" />
               <input type="hidden" name="status" value="[[.Accepted]]" />
               <input type="submit" value="Accept" />
             </fieldset>
-            <div submit-success>
-              <template type="amp-mustache">Accept successful!</template>
-            </div>
-            <div submit-error>
-              <template type="amp-mustache">Accept failed!</template>
-            </div>
+            <div submit-success>Accept successful!</div>
+            <div submit-error>Accept failed!</div>
           </form>
           <form
             method="post"
             action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-            target="_top"
           >
             <fieldset>
               <input type="hidden" name="id" value="{{id}}" />
               <input type="hidden" name="status" value="[[.Rejected]]" />
               <input type="submit" value="Reject" />
             </fieldset>
-            <div submit-success>
-              <template type="amp-mustache">Reject successful!</template>
-            </div>
-            <div submit-error>
-              <template type="amp-mustache">Reject failed!</template>
-            </div>
+            <div submit-success>Reject successful!</div>
+            <div submit-error>Reject failed!</div>
           </form>
         </div>
       </template>
