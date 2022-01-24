@@ -13,12 +13,11 @@ func CreateJwt(orgId string) (string, error) {
 	jwtKey := []byte(os.Getenv("jwtKey"))
 	expiry := time.Now().Unix() + 86400*2 // 2 days
 
-	// TODO: fix this MF'ker: "models.JWTClaims composite literal uses unkeyed fields"
 	claims := models.JWTClaims{
-		jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiry,
 		},
-		models.JWTPayload{
+		JWTPayload: models.JWTPayload{
 			OrgId: orgId,
 		},
 	}
