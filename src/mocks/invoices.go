@@ -22,7 +22,8 @@ var MockInvoice = models.Invoice{
 	Iban:          "HU69119800810030005009212644",
 	NetPrice:      "10000",
 	GrossPrice:    "20000",
-	Tax:           "27",
+	VatRate:       "27%",
+	VatAmount:     "2700",
 	Currency:      "huf",
 	DueDate:       "2050.01.01.",
 	Services: []models.Service{
@@ -33,7 +34,8 @@ var MockInvoice = models.Invoice{
 			NetPrice:     "5000",
 			GrossPrice:   "10000",
 			Currency:     "huf",
-			Tax:          "100",
+			VatRate:      "27%",
+			VatAmount:    "2700",
 		},
 		{
 			Name:         "Cica",
@@ -42,7 +44,8 @@ var MockInvoice = models.Invoice{
 			NetPrice:     "5000",
 			GrossPrice:   "10000",
 			Currency:     "huf",
-			Tax:          "100",
+			VatRate:      "27%",
+			VatAmount:    "2700",
 		},
 	},
 }
@@ -61,7 +64,8 @@ var MockInvoice2 = models.Invoice{
 
 	VendorEmail: "wojak@example.com",
 
-	Tax:           "AAM",
+	VatRate:       "AAM",
+	VatAmount:     "0",
 	InvoiceNumber: "1",
 	VendorName:    "Wojak",
 	AccountNumber: "10001000-10001000-10001000",
