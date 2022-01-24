@@ -34,7 +34,7 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 
 type emailTemplateData struct {
 	ApiUrl string
-	Jwt    string
+	Token  string
 }
 
 func GetHtmlSummary(apiUrl string) (string, error) {
@@ -46,14 +46,14 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 		return "", err
 	}
 
-	jwt, err := auth.CreateJwt(models.APEX_ID)
+	token, err := auth.CreateToken(models.APEX_ID)
 	if err != nil {
 		return "", err
 	}
 
 	templateData := emailTemplateData{
 		ApiUrl: apiUrl,
-		Jwt:    jwt,
+		Token:  token,
 	}
 
 	var templateBuffer bytes.Buffer

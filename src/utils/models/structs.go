@@ -70,10 +70,10 @@ type EmailResponseData struct {
 	Attachments map[string][]byte
 }
 
-type JWTPayload struct {
+type JWTCustomClaims struct {
 	OrgId string `json:"orgId"`
 }
 type JWTClaims struct {
 	jwt.StandardClaims
-	JWTPayload
+	JWTCustomClaims
 }
