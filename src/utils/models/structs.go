@@ -29,10 +29,10 @@ type Invoice struct {
 	ReceivedAt string `json:"receivedAt" dynamodbav:"receivedAt"`
 	Filename   string `json:"filename" dynamodbav:"filename"`
 
-	CustomerEmail string `json:"customerEmail" dynamodbav:"customerEmail,omitempty"`
+	VendorEmail string `json:"vendorEmail" dynamodbav:"vendorEmail,omitempty"`
 
 	InvoiceNumber string    `json:"invoiceNumber" dynamodbav:"invoiceNumber,omitempty"`
-	CustomerName  string    `json:"customerName" dynamodbav:"customerName,omitempty"`
+	VendorName    string    `json:"vendorName" dynamodbav:"vendorName,omitempty"`
 	AccountNumber string    `json:"accountNumber" dynamodbav:"accountNumber,omitempty"`
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
 	NetPrice      int       `json:"netPrice" dynamodbav:"netPrice,omitempty"`
@@ -70,10 +70,10 @@ type EmailResponseData struct {
 	Attachments map[string][]byte
 }
 
-type JWTPayload struct {
+type JWTCustomClaims struct {
 	OrgId string `json:"orgId"`
 }
 type JWTClaims struct {
 	jwt.StandardClaims
-	JWTPayload
+	JWTCustomClaims
 }

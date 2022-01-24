@@ -46,7 +46,7 @@
   <body>
     <h3>Szia Lajos!</h3>
     <amp-list
-      src="[[.ApiUrl]]/api/invoices?jwt=[[.Jwt]]"
+      src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
       binding="no"
       layout="fixed-height"
       height="44"
@@ -60,7 +60,7 @@
           <div>{{status}}</div>
           <form
             method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?jwt=[[.Jwt]]"
+            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
             target="_top"
           >
             <fieldset>
@@ -77,7 +77,7 @@
           </form>
           <form
             method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?jwt=[[.Jwt]]"
+            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
             target="_top"
           >
             <fieldset>

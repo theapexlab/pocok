@@ -14,15 +14,15 @@ const (
 
 // Field
 const (
-	STATUS   string = "STATUS"
-	CUSTOMER string = "CUSTOMER"
-	DATE     string = "DATE"
+	STATUS string = "STATUS"
+	VENDOR string = "VENDOR"
+	DATE   string = "DATE"
 )
 
 // Indexes
 const (
-	INVOICE_STATUS_INDEX string = "invoiceStatusIndex"
-	CUSTOMER_EMAIL_INDEX string = "customerEmailIndex"
+	LOCAL_SECONDARY_INDEX_1 string = "localSecondaryIndex1"
+	LOCAL_SECONDARY_INDEX_2 string = "localSecondaryIndex2"
 )
 
 // Entity Types

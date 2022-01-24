@@ -14,7 +14,7 @@ import (
 func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string) ([]models.Invoice, error) {
 	resp, err := client.Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              &tableName,
-		IndexName:              aws.String(models.INVOICE_STATUS_INDEX),
+		IndexName:              aws.String(models.LOCAL_SECONDARY_INDEX_1),
 		KeyConditionExpression: aws.String("#PK = :PK and #SK = :SK"),
 		ExpressionAttributeNames: map[string]string{
 			"#PK": "pk",

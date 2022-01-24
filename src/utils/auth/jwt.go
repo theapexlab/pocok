@@ -4,21 +4,19 @@ import (
 	"errors"
 	"os"
 	"pocok/src/utils/models"
-	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
-func CreateJwt(orgId string) (string, error) {
+func CreateToken(orgId string) (string, error) {
 	jwtKey := []byte(os.Getenv("jwtKey"))
-	expiry := time.Now().Unix() + 86400*2 // 2 days
+	expiry := jwt.TimeFunc().Unix() + 86400*2 // 2 days
 
-	// TODO: fix this MF'ker: "models.JWTClaims composite literal uses unkeyed fields"
 	claims := models.JWTClaims{
-		jwt.StandardClaims{
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiry,
 		},
-		models.JWTPayload{
+		JWTCustomClaims: models.JWTCustomClaims{
 			OrgId: orgId,
 		},
 	}
@@ -30,7 +28,7 @@ func CreateJwt(orgId string) (string, error) {
 
 // Example creating a token using a custom claims type.  The StandardClaim is embedded
 // in the custom type to allow for easy encoding, parsing and validation of standard claims.
-func ParseJwt(tokenString string) (*models.JWTClaims, error) {
+func ParseToken(tokenString string) (*models.JWTClaims, error) {
 	jwtKey := []byte(os.Getenv("jwtKey"))
 
 	token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
