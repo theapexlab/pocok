@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/base64"
-	"fmt"
 	"io"
 	"log"
 	"mime"
@@ -11,8 +10,11 @@ import (
 
 	"net/http"
 	"os"
+	"pocok/src/db"
 	"pocok/src/utils"
+	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -34,55 +36,62 @@ func main() {
 }
 
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	n, err := base64.StdEncoding.DecodeString(r.Body)
+	token := r.QueryStringParameters["token"]
+	claims, err := auth.ParseToken(token)
+	if err != nil {
+		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
+	}
+	data, err := parseFormBody(r)
+	if err != nil {
+		return utils.MailApiResponse(http.StatusBadRequest, ""), nil
+	}
+	id := data["id"]
+	status := data["status"]
+
+	if id == "" || (status != models.ACCEPTED && status != models.REJECTED) {
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, ""), nil
+	}
+	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, id, status)
+	if updateErr != nil {
+		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	}
+
+	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func parseFormBody(r events.APIGatewayProxyRequest) (map[string]string, error) {
+	data, err := base64.StdEncoding.DecodeString(r.Body)
 	if err != nil {
 		log.Fatal("Error decoding base64 message content", err)
 	}
-
-	fmt.Println("------------------------")
-	// fmt.Println(string(n))
-	reader := bytes.NewReader(n)
+	reader := bytes.NewReader(data)
 	contentType := r.Headers["content-type"]
 
-	mediaType, params, err := mime.ParseMediaType(contentType)
-	fmt.Println("-----------mediaType-------------")
-	fmt.Println(mediaType)
-	fmt.Println("-----------params-------------")
-	fmt.Println(params)
-	fmt.Println("------------------------")
+	_, params, err := mime.ParseMediaType(contentType)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	mr := multipart.NewReader(reader, params["boundary"])
+
+	result := map[string]string{}
 	for {
-		p, err := mr.NextPart()
-		if err != nil {
-			log.Fatal(err)
+		part, err := mr.NextPart()
+		if err == io.EOF {
+			break
 		}
-		slurp, err := io.ReadAll(p)
 		if err != nil {
-			log.Fatal(err)
+			return result, err
 		}
-		// fmt.Println(p.Header)
-		fmt.Printf("Part %q: %q\n", p.Header.Get("Content-Disposition"), slurp)
+		slurp, err := io.ReadAll(part)
+		if err != nil {
+			return result, err
+		}
+
+		key := part.FormName()
+		value := string(slurp)
+		result[key] = value
 	}
-
-	// fmt.Println("------------------------")
-
-	// token := r.QueryStringParameters["token"]
-	// claims, err := auth.ParseToken(token)
-	// if err != nil {
-	// 	return utils.MailApiResponse(http.StatusUnauthorized, ""), err
-	// }
-
-	// id := ""
-	// status := ""
-	// updateErr := db.UpdateInvoiceStatus(client, tableName, claims.OrgId, id, status)
-	// if updateErr != nil {
-	// 	return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-	// }
-
-	return utils.MailApiResponse(http.StatusOK, ""), nil
+	return result, nil
 }
