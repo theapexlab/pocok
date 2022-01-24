@@ -21,8 +21,8 @@ func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string)
 			"#SK": "lsi1sk",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":PK": &types.AttributeValueMemberS{Value: "ORG#" + orgId},
-			":SK": &types.AttributeValueMemberS{Value: "STATUS#pending"},
+			":PK": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			":SK": &types.AttributeValueMemberS{Value: models.STATUS + "#pending"},
 		},
 	})
 	if err != nil {
