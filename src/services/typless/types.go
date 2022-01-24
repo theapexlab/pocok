@@ -1,17 +1,17 @@
 package typless
 
 const (
-	INVOICE_NUMBER      string = "invoice_number"
-	GROSS_PRICE         string = "total_amount"
-	NET_PRICE           string = "net_amount"
-	VENDOR_NAME         string = "supplier_name"
-	ACCOUNT_NUMBER      string = "account_number"
-	IBAN                string = "iban"
-	DUE_DATE            string = "pay_due_date"
+	INVOICE_NUMBER string = "invoice_number"
+	GROSS_PRICE    string = "total_amount"
+	NET_PRICE      string = "net_amount"
+	VENDOR_NAME    string = "supplier_name"
+	ACCOUNT_NUMBER string = "account_number"
+	IBAN           string = "iban"
+	DUE_DATE       string = "pay_due_date"
 
-	CURRENCY            string = "currency"
-	VAT_RATE            string = "vat_rate"
-	VAT_AMOUNT          string = "vat_amount"
+	CURRENCY   string = "currency"
+	VAT_RATE   string = "vat_rate"
+	VAT_AMOUNT string = "vat_amount"
 
 	SERVICE_NAME        string = "product_description"
 	SERVICE_AMOUNT      string = "quantity"
@@ -20,6 +20,11 @@ const (
 	SERVICE_GROSS_PRICE string = "service_gross_price"
 	SERVICE_VAT         string = "service_vat"
 )
+
+type Config struct {
+	Token   string
+	DocType string
+}
 
 type ExtractDataFromFileInput struct {
 	DocumentTypeName string `json:"document_type_name"`

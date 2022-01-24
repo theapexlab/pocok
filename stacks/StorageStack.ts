@@ -24,8 +24,8 @@ export class StorageStack extends Stack {
       },
       primaryIndex: { partitionKey: "pk", sortKey: "sk" },
       localIndexes: {
-        invoiceStatusIndex: { sortKey: "lsi1sk" },
-        customerEmailIndex: { sortKey: "lsi2sk" },
+        localSecondaryIndex1: { sortKey: "lsi1sk" },
+        localSecondaryIndex2: { sortKey: "lsi2sk" },
       },
     });
 

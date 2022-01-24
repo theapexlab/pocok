@@ -27,7 +27,7 @@ export class QueueStack extends Stack {
 
     this.processInvoiceQueue =
       this.createProcessInvoiceQueue(additionalStackProps);
-    this.invoiceQueue = this.createInvoiceQueue(additionalStackProps);
+    this.invoiceQueue = this.createPreprocessInvoiceQueue(additionalStackProps);
     this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
   }
 
@@ -39,10 +39,14 @@ export class QueueStack extends Stack {
           environment: {
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
-            typlessToken: process.env.TYPLESS_TOKEN as string,
+            typlessToken: process.env.TYPLESS_TOKEN  || "",
+            typlessDocType: process.env.TYPLESS_DOC_TYPE || "",
+            tableName: additionalStackProps?.storageStack.invoiceTable
+            .tableName as string,
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            additionalStackProps?.storageStack.invoiceTable as Table
           ],
         },
         consumerProps: {
@@ -52,7 +56,7 @@ export class QueueStack extends Stack {
     });
   }
 
-  createInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
+  createPreprocessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
     return new Queue(this, "Invoice", {
       consumer: {
         function: {
@@ -62,6 +66,8 @@ export class QueueStack extends Stack {
               .bucketName as string,
             processInvoiceQueueUrl: this.processInvoiceQueue.sqsQueue
               .queueUrl as string,
+            tableName: additionalStackProps?.storageStack.invoiceTable
+              .tableName as string,
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,

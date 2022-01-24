@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -38,6 +37,7 @@ func main() {
 		sqsClient:              aws_clients.GetSQSClient(),
 		tableName:              os.Getenv("tableName"),
 		dbClient:               aws_clients.GetDbClient(),
+		bucketName:             os.Getenv("bucketName"),
 	}
 
 	lambda.Start(d.handler)
@@ -119,13 +119,6 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		}
 
 		return sqsErr
-	}
-
-	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, filename)
-
-	if dbErr != nil {
-		utils.LogError("Error while inserting to db", dbErr)
-		return dbErr
 	}
 
 	return nil

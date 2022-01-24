@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"os"
 	"pocok/src/consumers/invoice_processor/create_invoice"
+	"pocok/src/db"
 	"pocok/src/services/typless"
+	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -16,18 +18,22 @@ import (
 )
 
 type dependencies struct {
-	bucketName   string
-	typlessToken string
-	s3Client     *s3.Client
-	dbClient     *dynamodb.Client
+	bucketName     string
+	typlessToken   string
+	typlessDocType string
+	tableName      string
+	s3Client       *s3.Client
+	dbClient       *dynamodb.Client
 }
 
 func main() {
 	d := &dependencies{
-		bucketName:   os.Getenv("bucketName"),
-		typlessToken: os.Getenv("typlessToken"),
-		s3Client:     aws_clients.GetS3Client(),
-		dbClient:     aws_clients.GetDbClient(),
+		bucketName:     os.Getenv("bucketName"),
+		typlessToken:   os.Getenv("typlessToken"),
+		typlessDocType: os.Getenv("typlessDocType"),
+		tableName:      os.Getenv("tableName"),
+		s3Client:       aws_clients.GetS3Client(),
+		dbClient:       aws_clients.GetDbClient(),
 	}
 
 	lambda.Start(d.handler)
@@ -43,14 +49,35 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return err
 		}
 
+		typlessConfig := &typless.Config{
+			Token:   d.typlessToken,
+			DocType: d.typlessDocType,
+		}
+
 		// extract the text from the invoice
-		extractedData, err := typless.ExtractData(invoicePdf, "en-invoice", d.typlessToken)
+		// todo: in some cases this func makes lambe function disconnect
+		//  todo: Failed to send response because the Lambda function is disconnected
+		extractedData, err := typless.ExtractData(invoicePdf, typlessConfig)
+		fmt.Println(extractedData) // todo: remove this line
 		if err != nil {
+			utils.LogError("Failed to extract data", err)
 			return err
 		}
 
 		invoice := create_invoice.CreateInvoice(extractedData)
-		fmt.Println(invoice)
+
+		// todo: add VendorEmail
+		invoice.Filename = filename
+
+		fmt.Println(invoice) // todo: remove this line
+		putOutput, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)
+		fmt.Println(putOutput.Attributes) // todo: remove this line
+
+		if dbErr != nil {
+			utils.LogError("Failed to save invoice to db", dbErr)
+			return dbErr
+		}
+
 	}
 
 	return nil
