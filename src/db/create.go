@@ -20,7 +20,7 @@ func PutInvoice(client *dynamodb.Client, tableName string, filename string) (*dy
 		Pk:         models.ORG + "#" + models.APEX_ID,
 		Sk:         models.INVOICE + "#" + id,
 		Lsi1sk:     models.STATUS + "#" + status,
-		Lsi2sk:     models.CUSTOMER + "#unknown#" + models.DATE + "#" + reveicedAt,
+		Lsi2sk:     models.VENDOR + "#unknown#" + models.DATE + "#" + reveicedAt,
 		ReceivedAt: reveicedAt,
 		InvoiceId:  id,
 		EntityType: models.INVOICE,

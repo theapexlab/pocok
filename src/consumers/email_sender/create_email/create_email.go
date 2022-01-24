@@ -5,6 +5,7 @@ import (
 	"context"
 	"html/template"
 	"path"
+	"pocok/src/utils/auth"
 	"pocok/src/utils/models"
 	"runtime"
 
@@ -33,6 +34,7 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 
 type emailTemplateData struct {
 	ApiUrl string
+	Token  string
 }
 
 func GetHtmlSummary(apiUrl string) (string, error) {
@@ -43,11 +45,18 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var templateBuffer bytes.Buffer
+
+	token, err := auth.CreateToken(models.APEX_ID)
+	if err != nil {
+		return "", err
+	}
 
 	templateData := emailTemplateData{
 		ApiUrl: apiUrl,
+		Token:  token,
 	}
+
+	var templateBuffer bytes.Buffer
 	execerr := t.Execute(&templateBuffer, templateData)
 	if execerr != nil {
 		return "", err

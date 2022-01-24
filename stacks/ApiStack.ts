@@ -32,13 +32,16 @@ export class ApiStack extends Stack {
               queueUrl: additionalStackProps?.queueStack.invoiceQueue.sqsQueue
                 .queueUrl as string,
             },
-            permissions: [additionalStackProps?.queueStack.invoiceQueue as Queue],
+            permissions: [
+              additionalStackProps?.queueStack.invoiceQueue as Queue,
+            ],
           },
         },
         "GET /api/invoices": {
           function: {
             handler: "src/api/rest/get_invoices.go",
             environment: {
+              jwtKey: process.env.JWT_KEY as string,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
             },

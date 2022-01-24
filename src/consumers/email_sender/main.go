@@ -70,7 +70,7 @@ func SendInvoiceSummary(d *dependencies) error {
 }
 
 func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
-	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName)
+	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, models.APEX_ID)
 	if err != nil {
 		utils.LogError("Error while loading invoices", err)
 		return nil, err
