@@ -4,14 +4,13 @@ import (
 	"errors"
 	"os"
 	"pocok/src/utils/models"
-	"time"
 
 	"github.com/golang-jwt/jwt"
 )
 
 func CreateToken(orgId string) (string, error) {
 	jwtKey := []byte(os.Getenv("jwtKey"))
-	expiry := time.Now().Unix() + 86400*2 // 2 days
+	expiry := jwt.TimeFunc().Unix() + 86400*2 // 2 days
 
 	claims := models.JWTClaims{
 		StandardClaims: jwt.StandardClaims{
