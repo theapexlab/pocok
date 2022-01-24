@@ -1,15 +1,19 @@
 package typless
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"pocok/src/utils"
 	"strings"
+	"time"
 )
 
-func ExtractData(file []byte, config *Config) (*ExtractDataFromFileOutput, error) {
+func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFileOutput, error) {
 	url := "https://developers.typless.com/api/extract-data"
 
 	payload := ExtractDataFromFileInput{
@@ -31,10 +35,23 @@ func ExtractData(file []byte, config *Config) (*ExtractDataFromFileOutput, error
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Token "+config.Token)
 
-	res, err := http.DefaultClient.Do(req)
+	client := http.Client{
+		Timeout: time.Duration(timeout) * time.Second,
+	}
+	res, err := client.Do(req)
+
 	if err != nil {
 		utils.LogError("Failed to http.DefaultClient.Do() request", err)
 		return nil, err
+	}
+
+	if res.StatusCode != 200 {
+		fmt.Printf("Status:  %s  \n", res.Status)
+		buf := new(bytes.Buffer)
+		buf.ReadFrom(res.Body)
+		bodyString := buf.String()
+		fmt.Printf("Body:  %s  \n", bodyString)
+		return nil, errors.New("Request to typless api errored")
 	}
 
 	defer res.Body.Close()
@@ -49,6 +66,7 @@ func ExtractData(file []byte, config *Config) (*ExtractDataFromFileOutput, error
 
 	unmarshalErr := json.Unmarshal(body, &output)
 	if unmarshalErr != nil {
+		utils.LogError("Failed to unmarshal", err)
 		return nil, unmarshalErr
 	}
 

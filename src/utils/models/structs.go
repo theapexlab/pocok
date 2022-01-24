@@ -10,11 +10,13 @@ type UploadInvoiceMessage struct {
 type Service struct {
 	Name         string `json:"name" dynamodbav:"name,omitempty"`
 	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
+	Unit         string `json:"" dynamodbav:"unit,omitempty"`
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
-	Tax          string `json:"tax" dynamodbav:"tax,omitempty"`
+	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
+	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 }
 
 type Invoice struct {
@@ -37,9 +39,10 @@ type Invoice struct {
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
 	NetPrice      string    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice    string    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Tax           string    `json:"tax" dynamodbav:"tax,omitempty"`
 	Currency      string    `json:"currency" dynamodbav:"currency,omitempty"`
 	DueDate       string    `json:"dueDate" dynamodbav:"dueDate,omitempty"`
+	VatAmount     string    `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
+	VatRate       string    `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
 }
 

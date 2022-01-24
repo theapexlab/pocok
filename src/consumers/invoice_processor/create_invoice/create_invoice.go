@@ -2,7 +2,6 @@ package create_invoice
 
 import (
 	"pocok/src/services/typless"
-	"pocok/src/utils/currency"
 	"pocok/src/utils/models"
 	"strings"
 )
@@ -28,15 +27,16 @@ func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Inv
 		case typless.IBAN:
 			invoice.Iban = getFieldValue(field)
 		case typless.NET_PRICE:
-			invoice.NetPrice = currency.GetValueFromPrice(getFieldValue(field))
+			invoice.NetPrice = getFieldValue(field)
 		case typless.GROSS_PRICE:
-			invoice.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
-			invoice.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
+			invoice.GrossPrice = getFieldValue(field)
 		case typless.CURRENCY:
-			if invoice.Currency == "" {		
-				invoice.Currency = getFieldValue(field)
-			}
+			invoice.Currency = getFieldValue(field)
 		case typless.DUE_DATE:
+			invoice.DueDate = getFieldValue(field)
+		case typless.VAT_RATE:
+			invoice.DueDate = getFieldValue(field)
+		case typless.VAT_AMOUNT:
 			invoice.DueDate = getFieldValue(field)
 		}
 	}
@@ -49,17 +49,22 @@ LineItemsLoop:
 				service.Name = getFieldValue(field)
 			case typless.SERVICE_AMOUNT:
 				service.Amount = getFieldValue(field)
+			case typless.SERVICE_UNIT:
+				service.Unit = getFieldValue(field)
 			case typless.SERVICE_NET_PRICE:
-				service.NetPrice = currency.GetValueFromPrice(getFieldValue(field))
+				service.NetPrice = getFieldValue(field)
 			case typless.SERVICE_GROSS_PRICE:
-				service.GrossPrice = currency.GetValueFromPrice(getFieldValue(field))
-				service.Currency = currency.GetCurrencyFromPrice(getFieldValue(field))
-			case typless.SERVICE_VAT:
-				service.Tax = getFieldValue(field)
+				service.GrossPrice = getFieldValue(field)
+			case typless.SERVICE_CURRENCY:
+				service.Currency = getFieldValue(field)
+			case typless.SERVICE_VAT_RATE:
+				service.VatRate = getFieldValue(field)
+			case typless.SERVICE_VAT_AMOUNT:
+				service.VatAmount = getFieldValue(field)
 			}
 		}
 
-		if service.Name == "" || (service.GrossPrice == "" && currency.GetValueFromPrice(service.Amount) == "" && service.NetPrice == "") {
+		if service.Name == "" || (service.GrossPrice == "" && service.Currency == "" && service.NetPrice == "") {
 			continue LineItemsLoop
 		}
 

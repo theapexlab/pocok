@@ -7,7 +7,6 @@ import (
 )
 
 func GetValueFromPrice(price string) string {
-	// TODO: handle decimal point for both , and .
 	r := regexp.MustCompile(`[^0-9,\.]*([0-9,\.]*)[^0-9,\.\n]*`)
 	firstMatch := r.FindStringSubmatch(price)[1]
 	if num, err := strconv.ParseFloat(strings.ReplaceAll(firstMatch, ",", ""), 32); err == nil && num > 0 {

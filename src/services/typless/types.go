@@ -15,10 +15,12 @@ const (
 
 	SERVICE_NAME        string = "product_description"
 	SERVICE_AMOUNT      string = "quantity"
-	SERVICE_AMOUNT_UNIT string = "unit"
-	SERVICE_NET_PRICE   string = "price"
-	SERVICE_GROSS_PRICE string = "service_gross_price"
-	SERVICE_VAT         string = "service_vat"
+	SERVICE_UNIT        string = "unit"
+	SERVICE_NET_PRICE   string = "net_price"
+	SERVICE_GROSS_PRICE string = "price"
+	SERVICE_CURRENCY    string = "currency"
+	SERVICE_VAT_RATE    string = "vat_rate"
+	SERVICE_VAT_AMOUNT  string = "vat_amount"
 )
 
 type Config struct {
