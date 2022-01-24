@@ -14,10 +14,10 @@ var MockInvoice = models.Invoice{
 	ReceivedAt: "2022.01.18",
 	Filename:   "filename1",
 
-	CustomerEmail: "wojak@example.com",
+	VendorEmail: "wojak@example.com",
 
 	InvoiceNumber: "500000",
-	CustomerName:  "Csipkés Zoltán",
+	VendorName:    "Csipkés Zoltán",
 	AccountNumber: "10001000-10001000-10001000",
 	Iban:          "HU69119800810030005009212644",
 	NetPrice:      10000,
@@ -60,11 +60,11 @@ var MockInvoice2 = models.Invoice{
 	ReceivedAt: "2022.01.19",
 	Filename:   "filename2",
 
-	CustomerEmail: "wojak@example.com",
+	VendorEmail: "wojak@example.com",
 
 	Tax:           27,
 	InvoiceNumber: "1",
-	CustomerName:  "Wojak",
+	VendorName:    "Wojak",
 	AccountNumber: "10001000-10001000-10001000",
 	Iban:          "PL69119800810030005009212644",
 	NetPrice:      1,
