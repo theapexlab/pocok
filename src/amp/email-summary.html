@@ -40,7 +40,7 @@
   <body>
     <h3>Szia Lajos!</h3>
     <amp-list
-      src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+      src="{{.ApiUrl}}/api/invoices?token={{.Token}}"
       binding="no"
       layout="fixed-height"
       height="44"
@@ -48,44 +48,9 @@
     >
       <template type="amp-mustache">
         <div class="row">
-          <div>{{id}}</div>
-          <div>{{filename}}</div>
-          <div>{{receivedAt}}</div>
-          <div>{{status}}</div>
-          <form
-            method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-            target="_top"
-          >
-            <fieldset>
-              <input type="hidden" name="id" value="{{id}}" />
-              <input type="hidden" name="status" value="approved" />
-              <input type="submit" value="Approve" />
-            </fieldset>
-            <div submit-success>
-              <template type="amp-mustache"> Approve successful! </template>
-            </div>
-            <div submit-error>
-              <template type="amp-mustache"> Approve failed! </template>
-            </div>
-          </form>
-          <form
-            method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-            target="_top"
-          >
-            <fieldset>
-              <input type="hidden" name="id" value="{{id}}" />
-              <input type="hidden" name="status" value="rejected" />
-              <input type="submit" value="Decline" />
-            </fieldset>
-            <div submit-success>
-              <template type="amp-mustache"> Decline successful!</template>
-            </div>
-            <div submit-error>
-              <template type="amp-mustache"> Decline failed!</template>
-            </div>
-          </form>
+          <div>{{"{{"}}filename{{"}}"}}</div>
+          <div>{{"{{"}}receivedAt{{"}}"}}</div>
+          <div>{{"{{"}}status{{"}}"}}</div>
         </div>
       </template>
     </amp-list>
