@@ -25,6 +25,8 @@ var testOrg string = "TEST_ORGANIZATION"
 // this is a parsed token, created at unix time 0, valid for 2 days containing testOrg
 var testToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjgwMCwib3JnSWQiOiJURVNUX09SR0FOSVpBVElPTiJ9.9a-pE-EBjV6kDx7SflhmWpj1Th42-tWI2NI437JJU9w"
 
+// TODO: JWT_ENV variable not filled in tests
+
 var _ = Describe("Auth", func() {
 	var err error
 	var token string

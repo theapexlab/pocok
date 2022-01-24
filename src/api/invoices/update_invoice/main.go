@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/base64"
 	"io"
-	"log"
 	"mime"
 	"mime/multipart"
-
 	"net/http"
 	"os"
 	"pocok/src/db"
@@ -31,7 +29,6 @@ func main() {
 		tableName: os.Getenv("tableName"),
 		dbClient:  aws_clients.GetDbClient(),
 	}
-
 	lambda.Start(d.handler)
 }
 
@@ -47,35 +44,32 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 	id := data["id"]
 	status := data["status"]
-
 	if id == "" || (status != models.ACCEPTED && status != models.REJECTED) {
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, ""), nil
 	}
 	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, id, status)
 	if updateErr != nil {
+		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
-
 	return utils.MailApiResponse(http.StatusOK, ""), nil
 }
 
 func parseFormBody(r events.APIGatewayProxyRequest) (map[string]string, error) {
 	data, err := base64.StdEncoding.DecodeString(r.Body)
+	result := map[string]string{}
 	if err != nil {
-		log.Fatal("Error decoding base64 message content", err)
+		utils.LogError("Error decoding base64 message content", err)
+		return result, err
 	}
 	reader := bytes.NewReader(data)
 	contentType := r.Headers["content-type"]
-
 	_, params, err := mime.ParseMediaType(contentType)
-
 	if err != nil {
-		log.Fatal(err)
+		utils.LogError("Error during parse form media type", err)
+		return result, err
 	}
-
 	mr := multipart.NewReader(reader, params["boundary"])
-
-	result := map[string]string{}
 	for {
 		part, err := mr.NextPart()
 		if err == io.EOF {
@@ -88,7 +82,6 @@ func parseFormBody(r events.APIGatewayProxyRequest) (map[string]string, error) {
 		if err != nil {
 			return result, err
 		}
-
 		key := part.FormName()
 		value := string(slurp)
 		result[key] = value
