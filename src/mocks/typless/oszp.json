@@ -17,6 +17,21 @@
       ]
     },
     {
+      "data_type": "STRING",
+      "name": "vendor_name",
+      "values": [
+        {
+          "confidence_score": 0.975,
+          "height": -1,
+          "page_number": -1,
+          "value": "TEST BETÉTI TÁRSASÁG",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
       "data_type": "DATE",
       "name": "pay_due_date",
       "values": [
