@@ -28,3 +28,5 @@ jobs:
 
     - name: Deploy stack
       run: yarn sst deploy --stage production
+      with:
+        TYPLESS_TOKEN: ${{ secrets.TYPLESS_TOKEN }}
