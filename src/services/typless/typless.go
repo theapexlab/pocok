@@ -1,7 +1,6 @@
 package typless
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -45,17 +44,15 @@ func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFile
 		return nil, err
 	}
 
-	if res.StatusCode != 200 {
-		fmt.Printf("Status:  %s  \n", res.Status)
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(res.Body)
-		bodyString := buf.String()
-		fmt.Printf("Body:  %s  \n", bodyString)
-		return nil, errors.New("Request to typless api errored")
-	}
-
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
+
+	if res.StatusCode != 200 {
+		fmt.Printf("Status:  %s  \n", res.Status)
+		fmt.Printf("Body:  %s  \n", string(body))
+		err := errors.New("request to typless api failed")
+		return nil, err
+	}
 
 	if err != nil {
 		utils.LogError("Failed to ioutil.ReadAll() request", err)
