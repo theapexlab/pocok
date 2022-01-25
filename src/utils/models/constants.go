@@ -8,26 +8,23 @@ const (
 // InvoiceStatus Options
 const (
 	PENDING  string = "pending"
-	ACCEPTED string = "approved"
+	ACCEPTED string = "accepted"
+	REJECTED string = "rejected"
 )
 
-// Field
+// Dynamo Key Constants
 const (
-	STATUS string = "STATUS"
-	VENDOR string = "VENDOR"
-	DATE   string = "DATE"
+	ORG     string = "ORG"
+	INVOICE string = "INVOICE"
+	STATUS  string = "STATUS"
+	VENDOR  string = "VENDOR"
+	DATE    string = "DATE"
 )
 
 // Indexes
 const (
 	LOCAL_SECONDARY_INDEX_1 string = "localSecondaryIndex1"
 	LOCAL_SECONDARY_INDEX_2 string = "localSecondaryIndex2"
-)
-
-// Entity Types
-const (
-	ORG     string = "ORG"
-	INVOICE string = "INVOICE"
 )
 
 // Email Event Types

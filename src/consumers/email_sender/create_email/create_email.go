@@ -4,7 +4,10 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"io/ioutil"
+	"os"
 	"path"
+	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/models"
 	"runtime"
@@ -22,10 +25,9 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 		if s3Err != nil {
 			return attachments, s3Err
 		}
-		file := []byte{}
-		_, err := s3Resp.Body.Read(file)
-		if err != nil {
-			return attachments, err
+		file, readErr := ioutil.ReadAll(s3Resp.Body)
+		if readErr != nil {
+			return attachments, readErr
 		}
 		attachments[invoice.Filename] = file
 	}
@@ -33,33 +35,45 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 }
 
 type emailTemplateData struct {
-	ApiUrl string
-	Token  string
+	ApiUrl   string
+	Token    string
+	Accepted string
+	Rejected string
 }
 
 func GetHtmlSummary(apiUrl string) (string, error) {
 	_, filename, _, _ := runtime.Caller(0)
 	currentPath := path.Dir(filename)
-
-	t, err := template.ParseFiles(currentPath + "/../../../amp/email-summary.html")
-	if err != nil {
-		return "", err
+	filePath := currentPath + "/../../../amp/email-summary.html"
+	file, fileErr := os.ReadFile(filePath)
+	if fileErr != nil {
+		utils.LogError("Error while reading in the html file.", fileErr)
+		return "", fileErr
 	}
 
-	token, err := auth.CreateToken(models.APEX_ID)
-	if err != nil {
-		return "", err
+	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(string(file))
+	if templateErr != nil {
+		utils.LogError("Error while creating template.", templateErr)
+		return "", templateErr
 	}
 
+	token, tokenErr := auth.CreateToken(models.APEX_ID)
+	if tokenErr != nil {
+		utils.LogError("Error while creating token.", tokenErr)
+		return "", tokenErr
+	}
 	templateData := emailTemplateData{
-		ApiUrl: apiUrl,
-		Token:  token,
+		ApiUrl:   apiUrl,
+		Token:    token,
+		Accepted: models.ACCEPTED,
+		Rejected: models.REJECTED,
 	}
 
 	var templateBuffer bytes.Buffer
-	execerr := t.Execute(&templateBuffer, templateData)
-	if execerr != nil {
-		return "", err
+	executionErr := t.Execute(&templateBuffer, templateData)
+	if executionErr != nil {
+		utils.LogError("Error while executing template insetion.", executionErr)
+		return "", executionErr
 	}
 	return templateBuffer.String(), nil
 }

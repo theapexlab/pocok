@@ -20,6 +20,15 @@ type dependencies struct {
 	tableName string
 }
 
+func main() {
+	d := &dependencies{
+		tableName: os.Getenv("tableName"),
+		dbClient:  aws_clients.GetDbClient(),
+	}
+
+	lambda.Start(d.handler)
+}
+
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := request.QueryStringParameters["token"]
 	claims, err := auth.ParseToken(token)
@@ -46,13 +55,4 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 
 	invoiceStr := string(invoiceBytes)
 	return utils.MailApiResponse(http.StatusOK, invoiceStr), nil
-}
-
-func main() {
-	d := &dependencies{
-		tableName: os.Getenv("tableName"),
-		dbClient:  aws_clients.GetDbClient(),
-	}
-
-	lambda.Start(d.handler)
 }
