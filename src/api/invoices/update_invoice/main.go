@@ -36,21 +36,35 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Token validation failed", err)
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
 	}
+
 	data, err := request_parser.ParseUrlEncodedFormData(r)
 	if err != nil {
 		utils.LogError("Form body parse failed", err)
 		return utils.MailApiResponse(http.StatusBadRequest, ""), err
 	}
-	invoiceId := data["invoiceId"]
-	status := data["status"]
-	if invoiceId == "" || (status != models.ACCEPTED && status != models.REJECTED) {
-		utils.LogError("Invalid update payload", errors.New(""))
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, ""), nil
+
+	validateError := validateUpdateRequest(data)
+	if validateError != nil {
+		utils.LogError("Invalid update payload", validateError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, validateError.Error()), nil
 	}
-	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, invoiceId, status)
+
+	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, data["invoiceId"], data["status"])
 	if updateErr != nil {
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
 	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func validateUpdateRequest(data map[string]string) error {
+	invoiceId := data["invoiceId"]
+	status := data["status"]
+	if invoiceId == "" {
+		return errors.New("invalid invoiceId")
+	}
+	if status != models.ACCEPTED && status != models.REJECTED {
+		return errors.New("invalid status")
+	}
+	return nil
 }
