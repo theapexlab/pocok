@@ -80,7 +80,7 @@
                     method="post"
                     action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
                   >
-                    <input type="hidden" name="id" value="{{id}}" />
+                    <input type="hidden" name="invoiceId" value="{{invoiceId}}" />
                     <input type="hidden" name="status" value="[[.Accepted]]" />
                     <input type="submit" value="Accept" />
                     <div submit-success>Accept successful.</div>
@@ -90,7 +90,7 @@
                     method="post"
                     action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
                   >
-                    <input type="hidden" name="id" value="{{id}}" />
+                    <input type="hidden" name="invoiceId" value="{{invoiceId}}" />
                     <input type="hidden" name="status" value="[[.Rejected]]" />
                     <input type="submit" value="Reject" />
                     <div submit-success>Reject successful.</div>
