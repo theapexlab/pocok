@@ -18,11 +18,6 @@
       custom-element="amp-form"
       src="https://cdn.ampproject.org/v0/amp-form-0.1.js"
     ></script>
-    <script
-      async
-      custom-element="amp-accordion"
-      src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"
-    ></script>
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
@@ -59,7 +54,8 @@
 
   <body>
     <div>
-      <h3>Your daily invoices are here!</h3>
+      <h3>Szia Lajos!</h3>
+      <p>Számláidat sétáltatod? Hát bazmeg!</p>
     </div>
     <div>
       <amp-list
@@ -83,36 +79,22 @@
                   <form
                     method="post"
                     action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-                    target="_top"
                   >
                     <input type="hidden" name="id" value="{{id}}" />
                     <input type="hidden" name="status" value="[[.Accepted]]" />
                     <input type="submit" value="Accept" />
-                    <div submit-success>
-                      <template type="amp-mustache"
-                        >Accept successful!</template
-                      >
-                    </div>
-                    <div submit-error>
-                      <template type="amp-mustache">Accept failed!</template>
-                    </div>
+                    <div submit-success>Accept successful.</div>
+                    <div submit-error>Accept failed.</div>
                   </form>
                   <form
                     method="post"
                     action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-                    target="_top"
                   >
                     <input type="hidden" name="id" value="{{id}}" />
                     <input type="hidden" name="status" value="[[.Rejected]]" />
                     <input type="submit" value="Reject" />
-                    <div submit-success>
-                      <template type="amp-mustache"
-                        >Reject successful!</template
-                      >
-                    </div>
-                    <div submit-error>
-                      <template type="amp-mustache">Reject failed!</template>
-                    </div>
+                    <div submit-success>Reject successful.</div>
+                    <div submit-error>Reject failed.</div>
                   </form>
                 </div>
               </div>
