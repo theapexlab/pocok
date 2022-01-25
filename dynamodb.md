@@ -33,13 +33,13 @@
 ## Invoice
 - CRUD
 - Find invoices by status
-- Find latest invoice by customerName
+- Find latest invoice by vendorName
 
 ### Keys
 - PK: ORG#{orgId}
 - SK: INVOICE#{invId}
 - LSI1SK: STATUS#{status}
     - all attributes projected
-- LSI2SK: CUSTOMER#{customerName}#DATE#{createdAt}
-    - customerEmail projected
+- LSI2SK: VENDOR#{vendorName}#DATE#{createdAt}
+    - vendorEmail projected
 

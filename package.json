@@ -9,6 +9,7 @@
     "deploy": "sst deploy",
     "remove": "cross-env NODE_ENV=development sst remove",
     "go-test": "go test -v ./src/...",
+    "go-watch-test": "nodemon --exec 'yarn go-test'",
     "go-tidy": "go mod tidy"
   },
   "eslintConfig": {
@@ -21,7 +22,8 @@
     "@tsconfig/node14": "^1.0.1",
     "@types/aws-lambda": "^8.10.70",
     "@types/node": "<15.0.0",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "nodemon": "^2.0.15"
   },
   "dependencies": {
     "@aws-cdk/core": "1.138.0",

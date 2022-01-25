@@ -11,17 +11,17 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
-func GetPendingInvoices(client *dynamodb.Client, tableName string) ([]models.Invoice, error) {
+func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string) ([]models.Invoice, error) {
 	resp, err := client.Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              &tableName,
-		IndexName:              aws.String(models.INVOICE_STATUS_INDEX),
+		IndexName:              aws.String(models.LOCAL_SECONDARY_INDEX_1),
 		KeyConditionExpression: aws.String("#PK = :PK and #SK = :SK"),
 		ExpressionAttributeNames: map[string]string{
 			"#PK": "pk",
 			"#SK": "lsi1sk",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":PK": &types.AttributeValueMemberS{Value: "ORG#" + models.APEX_ID},
+			":PK": &types.AttributeValueMemberS{Value: "ORG#" + orgId},
 			":SK": &types.AttributeValueMemberS{Value: "STATUS#pending"},
 		},
 	})
