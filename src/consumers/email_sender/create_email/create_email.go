@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"html/template"
+	"io/ioutil"
 	"os"
 	"path"
 	"pocok/src/utils"
@@ -24,10 +25,9 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 		if s3Err != nil {
 			return attachments, s3Err
 		}
-		file := []byte{}
-		_, err := s3Resp.Body.Read(file)
-		if err != nil {
-			return attachments, err
+		file, readErr := ioutil.ReadAll(s3Resp.Body)
+		if readErr != nil {
+			return attachments, readErr
 		}
 		attachments[invoice.Filename] = file
 	}
