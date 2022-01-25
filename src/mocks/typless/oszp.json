@@ -1,0 +1,385 @@
+{
+  "customer": null,
+  "extracted_fields": [
+    {
+      "data_type": "AUTHOR",
+      "name": "supplier_name",
+      "values": [
+        {
+          "confidence_score": 0.975,
+          "height": -1,
+          "page_number": -1,
+          "value": "TEST BETÉTI TÁRSASÁG",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "DATE",
+      "name": "pay_due_date",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 34,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 483,
+          "x": 658,
+          "y": 1399
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 31,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 391,
+          "x": 1211,
+          "y": 1400
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 40,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 524,
+          "x": 1662,
+          "y": 1399
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "net_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 37,
+          "page_number": 1,
+          "value": "24800.0000",
+          "width": 248,
+          "x": 2101,
+          "y": 513
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "invoice_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 54,
+          "page_number": 0,
+          "value": "TEST-2021-42",
+          "width": 464,
+          "x": 634,
+          "y": 260
+        },
+        {
+          "confidence_score": 0.7144,
+          "height": 56,
+          "page_number": 1,
+          "value": "TEST-2021-42",
+          "width": 987,
+          "x": 116,
+          "y": 259
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 38,
+          "page_number": 0,
+          "value": "Sorszám / Invoice number:",
+          "width": 502,
+          "x": 116,
+          "y": 278
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "currency",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 39,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 267,
+          "x": 125,
+          "y": 1522
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "total_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 37,
+          "page_number": 1,
+          "value": "24800.0000",
+          "width": 248,
+          "x": 2101,
+          "y": 513
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vat_rate",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "AAM",
+          "width": 80,
+          "x": 1330,
+          "y": 2215
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 36,
+          "page_number": 0,
+          "value": "standup",
+          "width": 211,
+          "x": 123,
+          "y": 2216
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 33,
+          "page_number": 0,
+          "value": "Ora / Hour",
+          "width": 176,
+          "x": 726,
+          "y": 2214
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "23,600.00",
+          "width": 166,
+          "x": 2175,
+          "y": 2215
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "23,600.00",
+          "width": 164,
+          "x": 1846,
+          "y": 2214
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "account_number",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "iban",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "vat_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    }
+  ],
+  "file_name": "test.pdf",
+  "line_items": [
+    [
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 33,
+            "page_number": 0,
+            "value": "Ora / Hour",
+            "width": 176,
+            "x": 726,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "23600.0000",
+            "width": 164,
+            "x": 1846,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "23600.0000",
+            "width": 164,
+            "x": 1846,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 36,
+            "page_number": 0,
+            "value": "standup",
+            "width": 211,
+            "x": 123,
+            "y": 2216
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "2.0000",
+            "width": 72,
+            "x": 498,
+            "y": 2215
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 33,
+            "page_number": 0,
+            "value": "Darab / Piece",
+            "width": 226,
+            "x": 701,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "4000.0000",
+            "width": 145,
+            "x": 1856,
+            "y": 2550
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "4000.0000",
+            "width": 145,
+            "x": 1856,
+            "y": 2550
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 32,
+            "page_number": 0,
+            "value": "travel costs",
+            "width": 211,
+            "x": 123,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "1.0000",
+            "width": 70,
+            "x": 500,
+            "y": 2551
+          }
+        ]
+      }
+    ]
+  ],
+  "object_id": "0e7c8a1bd63f2b9df43ec1559b421d8ddf2e607b"
+}

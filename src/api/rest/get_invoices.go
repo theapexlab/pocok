@@ -32,7 +32,7 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 		utils.LogError("Error while getting pending invoices from db", err)
 		return nil, err
 	}
-	// invoices := mock.Invoices
+	// invoices := mocks.Invoices
 	response := models.InvoiceResponse{
 		Items: invoices,
 		Total: len(invoices),

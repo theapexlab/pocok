@@ -9,12 +9,14 @@ type UploadInvoiceMessage struct {
 
 type Service struct {
 	Name         string `json:"name" dynamodbav:"name,omitempty"`
-	Amount       int    `json:"amount" dynamodbav:"amount,omitempty"`
-	UnitNetPrice int    `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
-	NetPrice     int    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
-	GrossPrice   int    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
+	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
+	Unit         string `json:"" dynamodbav:"unit,omitempty"`
+	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
+	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
+	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
-	Tax          int    `json:"tax" dynamodbav:"tax,omitempty"`
+	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
+	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 }
 
 type Invoice struct {
@@ -35,13 +37,13 @@ type Invoice struct {
 	VendorName    string    `json:"vendorName" dynamodbav:"vendorName,omitempty"`
 	AccountNumber string    `json:"accountNumber" dynamodbav:"accountNumber,omitempty"`
 	Iban          string    `json:"iban" dynamodbav:"iban,omitempty"`
-	NetPrice      int       `json:"netPrice" dynamodbav:"netPrice,omitempty"`
-	GrossPrice    int       `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Tax           int       `json:"tax" dynamodbav:"tax,omitempty"`
+	NetPrice      string    `json:"netPrice" dynamodbav:"netPrice,omitempty"`
+	GrossPrice    string    `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	Currency      string    `json:"currency" dynamodbav:"currency,omitempty"`
 	DueDate       string    `json:"dueDate" dynamodbav:"dueDate,omitempty"`
+	VatAmount     string    `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
+	VatRate       string    `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
-	TextractData  string    `json:"textractData" dynamodbav:"textractData,omitempty"`
 }
 
 type InvoiceResponse struct {

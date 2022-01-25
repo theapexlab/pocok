@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
-	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -17,31 +16,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/textract"
-	"github.com/aws/aws-sdk-go-v2/service/textract/types"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/segmentio/ksuid"
 )
 
 type dependencies struct {
-	bucketName      string
-	snsTopicArn     string
-	textractRoleArn string
-	s3Client        *s3.Client
-	textractClient  *textract.Client
-	tableName       string
-	dbClient        *dynamodb.Client
+	bucketName             string
+	processInvoiceQueueUrl string
+	sqsClient              *sqs.Client
+	s3Client               *s3.Client
+	tableName              string
+	dbClient               *dynamodb.Client
 }
 
 func main() {
 	d := &dependencies{
-		bucketName:      os.Getenv("bucketName"),
-		snsTopicArn:     os.Getenv("snsTopicArn"),
-		textractRoleArn: os.Getenv("textractRoleArn"),
-		s3Client:        aws_clients.GetS3Client(),
-		textractClient:  aws_clients.GetTextractClient(),
-		tableName:       os.Getenv("tableName"),
-		dbClient:        aws_clients.GetDbClient(),
+		processInvoiceQueueUrl: os.Getenv("processInvoiceQueueUrl"),
+		s3Client:               aws_clients.GetS3Client(),
+		sqsClient:              aws_clients.GetSQSClient(),
+		tableName:              os.Getenv("tableName"),
+		dbClient:               aws_clients.GetDbClient(),
+		bucketName:             os.Getenv("bucketName"),
 	}
 
 	lambda.Start(d.handler)
@@ -106,27 +102,13 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return s3Err
 	}
 
-	_, dbErr := db.PutInvoice(d.dbClient, d.tableName, filename)
-
-	if dbErr != nil {
-		utils.LogError("Error while inserting to db", dbErr)
-		return dbErr
-	}
-
-	_, textractErr := d.textractClient.StartDocumentTextDetection(context.TODO(), &textract.StartDocumentTextDetectionInput{
-		DocumentLocation: &types.DocumentLocation{
-			S3Object: &types.S3Object{
-				Bucket: &d.bucketName,
-				Name:   &filename,
-			},
-		},
-		NotificationChannel: &types.NotificationChannel{
-			SNSTopicArn: &d.snsTopicArn,
-			RoleArn:     &d.textractRoleArn,
-		},
+	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		MessageBody: aws.String(filename),
+		QueueUrl:    &d.processInvoiceQueueUrl,
 	})
-	if textractErr != nil {
-		utils.LogError("Error while starting textract", textractErr)
+
+	if sqsErr != nil {
+		utils.LogError("Error while sending message to ProcessInvoice queue", sqsErr)
 
 		_, s3Err := d.s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 			Bucket: &d.bucketName,
@@ -136,7 +118,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 			utils.LogError("Error while deleting file from s3", s3Err)
 		}
 
-		return textractErr
+		return sqsErr
 	}
 
 	return nil
