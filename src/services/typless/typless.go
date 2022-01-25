@@ -40,12 +40,17 @@ func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFile
 	res, err := client.Do(req)
 
 	if err != nil {
-		utils.LogError("Failed to http.DefaultClient.Do() request", err)
+		utils.LogError("Failed to http.Client.Do() request", err)
 		return nil, err
 	}
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		utils.LogError("Failed to ioutil.ReadAll() request", err)
+		return nil, err
+	}
 
 	if res.StatusCode != 200 {
 		fmt.Printf("Status:  %s  \n", res.Status)
@@ -54,17 +59,12 @@ func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFile
 		return nil, err
 	}
 
-	if err != nil {
-		utils.LogError("Failed to ioutil.ReadAll() request", err)
-		return nil, err
-	}
-
 	output := ExtractDataFromFileOutput{}
 
-	unmarshalErr := json.Unmarshal(body, &output)
-	if unmarshalErr != nil {
+	err = json.Unmarshal(body, &output)
+	if err != nil {
 		utils.LogError("Failed to unmarshal", err)
-		return nil, unmarshalErr
+		return nil, err
 	}
 
 	return &output, nil
