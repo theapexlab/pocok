@@ -4,7 +4,7 @@ const (
 	INVOICE_NUMBER string = "invoice_number"
 	GROSS_PRICE    string = "total_amount"
 	NET_PRICE      string = "net_amount"
-	VENDOR_NAME    string = "supplier_name"
+	VENDOR_NAME    string = "vendor_name"
 	ACCOUNT_NUMBER string = "account_number"
 	IBAN           string = "iban"
 	DUE_DATE       string = "pay_due_date"
