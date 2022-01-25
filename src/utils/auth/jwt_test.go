@@ -1,6 +1,7 @@
 package auth_test
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -20,17 +21,16 @@ func at(t time.Time, f func()) {
 	jwt.TimeFunc = time.Now
 }
 
-var testOrg string = "TEST_ORGANIZATION"
-
 // this is a parsed token, created at unix time 0, valid for 2 days containing testOrg
-var testToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjgwMCwib3JnSWQiOiJURVNUX09SR0FOSVpBVElPTiJ9.9a-pE-EBjV6kDx7SflhmWpj1Th42-tWI2NI437JJU9w"
-
-// TODO: JWT_ENV variable not filled in tests
+var testToken string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjgwMCwib3JnSWQiOiJURVNUX09SR0FOSVpBVElPTiJ9.vMVdagL7KXcmudO4O1M6_pvEvHC2uLfyoH9QtTqoOJU"
+var testOrg string = "TEST_ORGANIZATION"
+var testJwtKey string = "TEST_KICSI_CICA"
 
 var _ = Describe("Auth", func() {
 	var err error
 	var token string
 	var payload *models.JWTClaims
+	os.Setenv("jwtKey", testJwtKey)
 
 	When("Creating token", func() {
 		BeforeEach(func() {
