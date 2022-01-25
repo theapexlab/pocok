@@ -18,7 +18,11 @@
       custom-element="amp-form"
       src="https://cdn.ampproject.org/v0/amp-form-0.1.js"
     ></script>
-
+    <script
+      async
+      custom-element="amp-accordion"
+      src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"
+    ></script>
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
@@ -28,57 +32,106 @@
       h1 {
         margin: 1rem;
       }
-      .row {
-        width: 100%;
-        display: flex;
-        align-items: space-between;
+      .list {
+        position: relative;
       }
-      .row div {
+      .item-wrapper {
+        padding: 8px;
+      }
+      .item {
+        display: flex;
+        flex-direction: column;
+        align-items: space-between;
+        padding: 8px;
+        border-radius: 16px;
+        border: 1px solid black;
+      }
+      .item div {
         padding-right: 10px;
+      }
+      .item-head {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
       }
     </style>
   </head>
+
   <body>
-    <h3>Szia Lajos!</h3>
-    <amp-list
-      src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-      binding="no"
-      layout="fixed-height"
-      height="44"
-      [height]="22 * invoices.items.length"
-    >
-      <template type="amp-mustache">
-        <div class="row">
-          <div>{{invoiceId}}</div>
-          <div>{{filename}}</div>
-          <div>{{receivedAt}}</div>
-          <div>{{status}}</div>
-          <form
-            method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-          >
-            <fieldset>
-              <input type="hidden" name="invoiceId" value="{{invoiceId}}" />
-              <input type="hidden" name="status" value="[[.Accepted]]" />
-              <input type="submit" value="Accept" />
-            </fieldset>
-            <div submit-success>Accept successful!</div>
-            <div submit-error>Accept failed!</div>
-          </form>
-          <form
-            method="post"
-            action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-          >
-            <fieldset>
-              <input type="hidden" name="invoiceId" value="{{invoiceId}}" />
-              <input type="hidden" name="status" value="[[.Rejected]]" />
-              <input type="submit" value="Reject" />
-            </fieldset>
-            <div submit-success>Reject successful!</div>
-            <div submit-error>Reject failed!</div>
-          </form>
-        </div>
-      </template>
-    </amp-list>
+    <div>
+      <h3>Your daily invoices are here!</h3>
+    </div>
+    <div>
+      <amp-list
+        src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+        binding="no"
+        layout="fixed-height"
+        height="10"
+      >
+        <template type="amp-mustache">
+          <div class="item-wrapper">
+            <div class="item">
+              <div class="item-head">
+                <div>
+                  <div>{{accountNumber}}</div>
+                  <div>{{vendorName}}</div>
+                </div>
+                <div>{{receivedAt}}</div>
+                <div>{{dueDate}}</div>
+                <div>{{status}}</div>
+                <div>
+                  <form
+                    method="post"
+                    action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                    target="_top"
+                  >
+                    <input type="hidden" name="id" value="{{id}}" />
+                    <input type="hidden" name="status" value="[[.Accepted]]" />
+                    <input type="submit" value="Accept" />
+                    <div submit-success>
+                      <template type="amp-mustache"
+                        >Accept successful!</template
+                      >
+                    </div>
+                    <div submit-error>
+                      <template type="amp-mustache">Accept failed!</template>
+                    </div>
+                  </form>
+                  <form
+                    method="post"
+                    action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                    target="_top"
+                  >
+                    <input type="hidden" name="id" value="{{id}}" />
+                    <input type="hidden" name="status" value="[[.Rejected]]" />
+                    <input type="submit" value="Reject" />
+                    <div submit-success>
+                      <template type="amp-mustache"
+                        >Reject successful!</template
+                      >
+                    </div>
+                    <div submit-error>
+                      <template type="amp-mustache">Reject failed!</template>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="item-content">
+                <div>
+                  <div>ID: {{invoiceId}}</div>
+                  <div>Iban: {{iban}}</div>
+                  <div>InvoiceNumber: {{invoiceNumber}}</div>
+                  <div>Vendor Email: {{vendorEmail}}</div>
+                  <div>Net Price: {{netPrice}}</div>
+                  <div>Gross Price: {{grossPrice}}</div>
+                  <div>Currency: {{currency}}</div>
+                  <div>Tax: {{tax}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </amp-list>
+    </div>
   </body>
 </html>
