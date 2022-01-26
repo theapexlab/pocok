@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"pocok/src/amp/summary_email_template"
@@ -12,6 +13,8 @@ func main() {
 	writeFileRelative(summary_email_template.Get(), "/templates/summary_email.html")
 	email_content, _ := create_email.GetHtmlSummary("https://test.com")
 	writeFileRelative(email_content, "/emails/summary_email.html")
+
+	fmt.Println("⚡️ Succesfully generated HTML files.")
 }
 
 func writeFileRelative(content string, filepath string) {
