@@ -27,6 +27,7 @@ func parseMockJson(filename string) *typless.ExtractDataFromFileOutput {
 }
 
 var _ = Describe("CreateInvoice", func() {
+	var createInvoiceService *create_invoice.CreateInvoiceService
 	var extractedData *typless.ExtractDataFromFileOutput
 	var invoice *models.Invoice
 	var err error
@@ -34,7 +35,10 @@ var _ = Describe("CreateInvoice", func() {
 	When("recieves billingo invoice with normal fields", func() {
 		BeforeEach(func() {
 			extractedData = parseMockJson("billingo.json")
-			invoice = create_invoice.CreateInvoice(extractedData)
+			createInvoiceService = &create_invoice.CreateInvoiceService{
+				OriginalFilename: "A-1984-145.pdf",
+			}
+			invoice = createInvoiceService.CreateInvoice(extractedData)
 		})
 
 		It("not errors", func() {
@@ -69,7 +73,10 @@ var _ = Describe("CreateInvoice", func() {
 	When("recieves Online számlázo program invoice with multiple line items", func() {
 		BeforeEach(func() {
 			extractedData = parseMockJson("oszp.json")
-			invoice = create_invoice.CreateInvoice(extractedData)
+			createInvoiceService = &create_invoice.CreateInvoiceService{
+				OriginalFilename: "TEST-2021-42.pdf",
+			}
+			invoice = createInvoiceService.CreateInvoice(extractedData)
 		})
 
 		It("not errors", func() {
@@ -107,6 +114,47 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.Services[1].UnitNetPrice).To(Equal(""))
 			Expect(invoice.Services[1].VatRate).To(Equal(""))
 			Expect(invoice.Services[1].VatAmount).To(Equal(""))
+
+		})
+	})
+	When("recieves Online számlázo program invoice with no service description line item", func() {
+		BeforeEach(func() {
+			extractedData = parseMockJson("oszp.json")
+			extractedData.LineItems[0][3].Values[0].Value = ""
+			createInvoiceService = &create_invoice.CreateInvoiceService{
+				OriginalFilename: "TEST-2021-42.pdf",
+			}
+			invoice = createInvoiceService.CreateInvoice(extractedData)
+		})
+
+		It("not errors", func() {
+			Expect(err).To(BeNil())
+		})
+
+		It("skips line item with no service description", func() {
+			Expect(invoice).NotTo(BeNil())
+			Expect(len(invoice.Services)).To(Equal(1))
+
+		})
+	})
+	When("recieves Online számlázo program invoice with no grossprice, netprice and currency line item", func() {
+		BeforeEach(func() {
+			extractedData = parseMockJson("oszp.json")
+			extractedData.LineItems[0][1].Values[0].Value = ""
+			extractedData.LineItems[0][2].Values[0].Value = ""
+			createInvoiceService = &create_invoice.CreateInvoiceService{
+				OriginalFilename: "TEST-2021-42.pdf",
+			}
+			invoice = createInvoiceService.CreateInvoice(extractedData)
+		})
+
+		It("not errors", func() {
+			Expect(err).To(BeNil())
+		})
+
+		It("skips line item with empty field no grossprice, netprice and currency", func() {
+			Expect(invoice).NotTo(BeNil())
+			Expect(len(invoice.Services)).To(Equal(1))
 
 		})
 	})

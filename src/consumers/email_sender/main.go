@@ -80,6 +80,7 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	attachments, err := GetAttachments(d.s3Client, d.bucketName, invoices)
 	if err != nil {
 		return nil, err
