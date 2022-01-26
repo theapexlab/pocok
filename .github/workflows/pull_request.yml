@@ -1,9 +1,9 @@
-name: Go
+name: PR
 
 on: pull_request
 
 jobs:
-  build:
+  go_build_and_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -18,3 +18,19 @@ jobs:
 
     - name: Test
       run: go test -v ./src/...
+
+  amp_validate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Install amphtml-validator
+      run: yarn amphtml-validator
+    
+    - name: Validate
+      run: yarn amp-validate

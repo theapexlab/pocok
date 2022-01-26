@@ -5,12 +5,10 @@ import (
 	"context"
 	"html/template"
 	"io/ioutil"
-	"os"
-	"path"
+	"pocok/src/amp/summary_email_template"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/models"
-	"runtime"
 
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
@@ -42,16 +40,7 @@ type emailTemplateData struct {
 }
 
 func GetHtmlSummary(apiUrl string) (string, error) {
-	_, filename, _, _ := runtime.Caller(0)
-	currentPath := path.Dir(filename)
-	filePath := currentPath + "/../../../amp/email-summary.html"
-	file, fileErr := os.ReadFile(filePath)
-	if fileErr != nil {
-		utils.LogError("Error while reading in the html file.", fileErr)
-		return "", fileErr
-	}
-
-	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(string(file))
+	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summary_email_template.Get())
 	if templateErr != nil {
 		utils.LogError("Error while creating template.", templateErr)
 		return "", templateErr
