@@ -30,7 +30,7 @@ jobs:
         go-version: 1.17
 
     - name: Install amphtml-validator
-      run: yarn add amphtml-validator
+      run: yarn global add amphtml-validator
     
     - name: Validate
       run: yarn amp-validate
