@@ -7,10 +7,11 @@
     "start": "cross-env NODE_ENV=development sst start",
     "build": "sst build",
     "deploy": "sst deploy",
-    "remove": "cross-env NODE_ENV=development sst remove",
+    "destroy": "cross-env NODE_ENV=development sst remove",
     "go-test": "go test -v ./src/...",
     "go-watch-test": "nodemon --exec 'yarn go-test'",
-    "go-tidy": "go mod tidy"
+    "go-tidy": "go mod tidy",
+    "nuke-aws": "./aws-nuke/setup.sh && docker run --rm -it -v $PWD/aws-nuke/config.yml:/home/aws-nuke/config.yml -v ~/.aws:/home/aws-nuke/.aws rebuy/aws-nuke:latest --profile default --config /home/aws-nuke/config.yml --no-dry-run"
   },
   "eslintConfig": {
     "extends": [
