@@ -9,7 +9,10 @@
     "deploy": "sst deploy",
     "remove": "cross-env NODE_ENV=development sst remove",
     "go-test": "go test -v ./src/...",
-    "go-watch-test": "nodemon --exec 'yarn go-test'",
+    "go-watch-test": "nodemon --watch src -e go,json --exec 'yarn go-test'",
+    "go-amp": "go run ./src/amp/generate_htmls.go",
+    "amp-validate": "yarn go-amp && amphtml-validator ./src/amp/emails/*.html --html_format=AMP4EMAIL",
+    "go-watch-amp": "nodemon --watch src/amp -e go --exec 'yarn amp-validate'",
     "go-tidy": "go mod tidy"
   },
   "eslintConfig": {
@@ -22,6 +25,7 @@
     "@tsconfig/node14": "^1.0.1",
     "@types/aws-lambda": "^8.10.70",
     "@types/node": "<15.0.0",
+    "amphtml-validator": "^1.0.35",
     "cross-env": "^7.0.3",
     "nodemon": "^2.0.15"
   },
