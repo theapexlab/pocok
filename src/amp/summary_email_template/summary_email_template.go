@@ -75,9 +75,12 @@ func body() string {
 				id="invoiceList"
 				binding="no"
 				layout="fixed-height"
+				single-item
+				items="."
 				height="10"
 			>
 				<template type="amp-mustache">
+					{{#items}}
 					<div class="item-wrapper">
 						<div class="item">
 							<div class="item-head">
@@ -128,6 +131,17 @@ func body() string {
 							</div>
 						</div>
 					</div>
+					{{/items}} 
+					{{^items}}
+					<div>Nincs több pàlinka. Elfogyott.</div>
+					<amp-img 
+						alt="Pocok logo"
+						src="[[.PocokLogo]]"
+						width="200px"
+						height="200px"
+						>
+					</amp-img>
+					{{/items}}
 				</template>
 			</amp-list>
 		</div>
