@@ -95,6 +95,7 @@ export class QueueStack extends Stack {
             mailgunDomain: process.env.MAILGUN_DOMAIN as string,
             mailgunApiKey: process.env.MAILGUN_API_KEY as string,
             emailRecipient: process.env.EMAIL_RECIPIENT as string,
+            assetBucketName: process.env.AWS_ASSET_BUCKET_NAME as string,
             apiUrl: process.env.API_URL as string,
             jwtKey: process.env.JWT_KEY as string,
             bucketName: additionalStackProps?.storageStack.invoiceBucket

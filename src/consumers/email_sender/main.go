@@ -18,24 +18,26 @@ import (
 )
 
 type dependencies struct {
-	sender         string
-	emailRecipient string
-	apiUrl         string
-	bucketName     string
-	s3Client       *s3.Client
-	tableName      string
-	dbClient       *dynamodb.Client
+	sender          string
+	emailRecipient  string
+	apiUrl          string
+	bucketName      string
+	s3Client        *s3.Client
+	tableName       string
+	dbClient        *dynamodb.Client
+	assetBucketName string
 }
 
 func main() {
 	d := &dependencies{
-		sender:         os.Getenv("sender"),
-		emailRecipient: os.Getenv("emailRecipient"),
-		apiUrl:         os.Getenv("apiUrl"),
-		bucketName:     os.Getenv("bucketName"),
-		s3Client:       aws_clients.GetS3Client(),
-		tableName:      os.Getenv("tableName"),
-		dbClient:       aws_clients.GetDbClient(),
+		sender:          os.Getenv("sender"),
+		emailRecipient:  os.Getenv("emailRecipient"),
+		apiUrl:          os.Getenv("apiUrl"),
+		bucketName:      os.Getenv("bucketName"),
+		s3Client:        aws_clients.GetS3Client(),
+		tableName:       os.Getenv("tableName"),
+		dbClient:        aws_clients.GetDbClient(),
+		assetBucketName: os.Getenv("assetBucketName"),
 	}
 
 	lambda.Start(d.handler)
@@ -76,7 +78,7 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 		return nil, err
 	}
 
-	amp, err := GetHtmlSummary(d.apiUrl)
+	amp, err := GetHtmlSummary(d.apiUrl, d.assetBucketName)
 	if err != nil {
 		return nil, err
 	}

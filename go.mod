@@ -35,6 +35,7 @@ require (
 	github.com/aws/smithy-go v1.10.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
@@ -46,6 +47,7 @@ require (
 
 require (
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
+	github.com/aws/aws-sdk-go v1.42.42
 	github.com/aws/aws-sdk-go-v2/credentials v1.8.0 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.10.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.4 // indirect

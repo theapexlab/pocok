@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "test": "sst test",
-    "start": "cross-env NODE_ENV=development sst start",
+    "start": "yarn upload-assets && cross-env NODE_ENV=development sst start",
     "build": "sst build",
     "deploy": "sst deploy",
     "remove": "cross-env NODE_ENV=development sst remove",
@@ -13,7 +13,8 @@
     "go-amp": "go run ./src/amp/generate_htmls.go",
     "amp-validate": "yarn go-amp && amphtml-validator ./src/amp/emails/*.html --html_format=AMP4EMAIL",
     "go-watch-amp": "nodemon --watch src/amp -e go --exec 'yarn amp-validate'",
-    "go-tidy": "go mod tidy"
+    "go-tidy": "go mod tidy",
+    "upload-assets": "go run assets/uploader/asset_uploader.go"
   },
   "eslintConfig": {
     "extends": [
