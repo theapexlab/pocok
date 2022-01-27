@@ -1,6 +1,226 @@
 {
     "customer": null,
-    "extracted_fields": [],
+    "extracted_fields": [
+      {
+        "data_type": "AUTHOR",
+        "name": "supplier_name",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "invoice_number",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "DATE",
+        "name": "pay_due_date",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "total_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "currency",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vendor_name",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "account_number",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "iban",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ],
     "file_name": "test.pdf",
     "line_items": [],
     "object_id": "0e7f04ea6123472e0042b38220fff7ce0dfc49b1",
@@ -45,7 +265,7 @@
         "height": 62,
         "number": 4,
         "page_number": 1,
-        "value": "TEST (Kisadózó)",
+        "value": "Teszt Elek (Kisadózó)",
         "width": 623,
         "x": 160,
         "y": 620
@@ -54,7 +274,7 @@
         "height": 46,
         "number": 5,
         "page_number": 1,
-        "value": "test Labs Kft.",
+        "value": "Test Labs Kft.",
         "width": 378,
         "x": 1269,
         "y": 626
@@ -141,6 +361,24 @@
         "y": 918
       },
       {
+        "height": 32,
+        "number": 14,
+        "page_number": 1,
+        "value": "HU19-12345678910",
+        "width": 255,
+        "x": 1271,
+        "y": 918
+      },
+      {
+        "height": 32,
+        "number": 14,
+        "page_number": 1,
+        "value": "HU93116000060000000012345676",
+        "width": 255,
+        "x": 1271,
+        "y": 918
+      },
+      {
         "height": 33,
         "number": 15,
         "page_number": 1,
@@ -163,6 +401,15 @@
         "number": 17,
         "page_number": 1,
         "value": "BANKSZÁMLASZÁM: 12345678-10589326-49010011",
+        "width": 805,
+        "x": 159,
+        "y": 1063
+      },
+      {
+        "height": 33,
+        "number": 17,
+        "page_number": 1,
+        "value": "12345678-10589326-49010011",
         "width": 805,
         "x": 159,
         "y": 1063

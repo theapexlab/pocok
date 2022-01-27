@@ -18,12 +18,13 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/mailgun/mailgun-go/v4 v4.6.0
-	github.com/onsi/ginkgo/v2 v2.0.0
-	github.com/onsi/gomega v1.17.0
+	github.com/onsi/ginkgo/v2 v2.1.0
+	github.com/onsi/gomega v1.18.0
 	github.com/segmentio/ksuid v1.0.4
 )
 
 require (
+	github.com/almerlucke/go-iban v0.0.0-20170112082528-316a6e2335b3 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.2.0 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.4 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.2.0 // indirect
@@ -33,6 +34,9 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.11.0 // indirect
 	github.com/aws/smithy-go v1.10.0 // indirect
+	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/google/pprof v0.0.0-20210407192527-94a9f03dee38 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
@@ -41,6 +45,8 @@ require (
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f // indirect
+	golang.org/x/tools v0.0.0-20201224043029-2b0845dc783e // indirect
+	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 
@@ -53,7 +59,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.24.0
 	github.com/aws/aws-sdk-go-v2/service/sso v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0 // indirect
-	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

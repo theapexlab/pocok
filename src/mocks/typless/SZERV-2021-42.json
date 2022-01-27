@@ -1,0 +1,1453 @@
+{
+  "customer": null,
+  "extracted_fields": [
+    {
+      "data_type": "AUTHOR",
+      "name": "supplier_name",
+      "values": [
+        {
+          "confidence_score": 0.975,
+          "height": -1,
+          "page_number": -1,
+          "value": "SZERVEZET- ÉS EGÉSZSÉGFEJLESZTÉSI KÖZPONT BETÉTI TÁRSASÁG",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vat_rate",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "AAM",
+          "width": 80,
+          "x": 1330,
+          "y": 2215
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "23,600.00",
+          "width": 166,
+          "x": 2175,
+          "y": 2215
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 35,
+          "page_number": 0,
+          "value": "23,600.00",
+          "width": 164,
+          "x": 1846,
+          "y": 2214
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 36,
+          "page_number": 0,
+          "value": "Acupressure",
+          "width": 211,
+          "x": 123,
+          "y": 2216
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 33,
+          "page_number": 0,
+          "value": "Ora / Hour",
+          "width": 176,
+          "x": 726,
+          "y": 2214
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "net_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 37,
+          "page_number": 1,
+          "value": "24800.0000",
+          "width": 248,
+          "x": 2101,
+          "y": 513
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "invoice_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 56,
+          "page_number": 1,
+          "value": "SZERV-2021-42",
+          "width": 987,
+          "x": 116,
+          "y": 259
+        }
+      ]
+    },
+    {
+      "data_type": "DATE",
+      "name": "pay_due_date",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 40,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 524,
+          "x": 1662,
+          "y": 1399
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 31,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 391,
+          "x": 1211,
+          "y": 1400
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 34,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 483,
+          "x": 658,
+          "y": 1399
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "total_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 37,
+          "page_number": 1,
+          "value": "24800.0000",
+          "width": 248,
+          "x": 2101,
+          "y": 513
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "currency",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 39,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 267,
+          "x": 125,
+          "y": 1522
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vendor_name",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "account_number",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "iban",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "vat_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    }
+  ],
+  "file_name": "test.pdf",
+  "line_items": [
+    [
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 33,
+            "page_number": 0,
+            "value": "Ora / Hour",
+            "width": 176,
+            "x": 726,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "2.0000",
+            "width": 72,
+            "x": 498,
+            "y": 2215
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "23600.0000",
+            "width": 164,
+            "x": 1846,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "23600.0000",
+            "width": 164,
+            "x": 1846,
+            "y": 2214
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 36,
+            "page_number": 0,
+            "value": "Acupressure",
+            "width": 211,
+            "x": 123,
+            "y": 2216
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 30,
+            "page_number": 0,
+            "value": "AAM",
+            "width": 80,
+            "x": 1330,
+            "y": 2215
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 33,
+            "page_number": 0,
+            "value": "Darab / Piece",
+            "width": 226,
+            "x": 701,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "1.0000",
+            "width": 70,
+            "x": 500,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "4000.0000",
+            "width": 145,
+            "x": 1856,
+            "y": 2550
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 35,
+            "page_number": 0,
+            "value": "4000.0000",
+            "width": 145,
+            "x": 1856,
+            "y": 2550
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 32,
+            "page_number": 0,
+            "value": "/travel costs",
+            "width": 211,
+            "x": 123,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 30,
+            "page_number": 0,
+            "value": "AAM",
+            "width": 79,
+            "x": 1330,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ]
+  ],
+  "object_id": "0e801c84dd43fd63c6f31bd1cc87ac8c1368a353",
+  "text_blocks": [
+    {
+      "height": 70,
+      "number": 0,
+      "page_number": 1,
+      "value": "online",
+      "width": 228,
+      "x": 1081,
+      "y": 73
+    },
+    {
+      "height": 51,
+      "number": 1,
+      "page_number": 1,
+      "value": "-SZAMLA/",
+      "width": 300,
+      "x": 2058,
+      "y": 93
+    },
+    {
+      "height": 51,
+      "number": 2,
+      "page_number": 1,
+      "value": "számlázó",
+      "width": 320,
+      "x": 1079,
+      "y": 135
+    },
+    {
+      "height": 27,
+      "number": 3,
+      "page_number": 1,
+      "value": "program",
+      "width": 131,
+      "x": 1269,
+      "y": 191
+    },
+    {
+      "height": 47,
+      "number": 4,
+      "page_number": 1,
+      "value": "e-INVOICE",
+      "width": 276,
+      "x": 2083,
+      "y": 171
+    },
+    {
+      "height": 38,
+      "number": 5,
+      "page_number": 1,
+      "value": "Sorszám / Invoice number:",
+      "width": 502,
+      "x": 116,
+      "y": 278
+    },
+    {
+      "height": 54,
+      "number": 6,
+      "page_number": 1,
+      "value": "SZERV-2021-42",
+      "width": 464,
+      "x": 634,
+      "y": 260
+    },
+    {
+      "height": 42,
+      "number": 7,
+      "page_number": 1,
+      "value": "ELADO / SUPPLIER:",
+      "width": 403,
+      "x": 118,
+      "y": 431
+    },
+    {
+      "height": 42,
+      "number": 8,
+      "page_number": 1,
+      "value": "VEVÖ / CUSTOMER:",
+      "width": 410,
+      "x": 1268,
+      "y": 431
+    },
+    {
+      "height": 55,
+      "number": 9,
+      "page_number": 1,
+      "value": "SZERVEZET- ÉS",
+      "width": 472,
+      "x": 118,
+      "y": 575
+    },
+    {
+      "height": 51,
+      "number": 10,
+      "page_number": 1,
+      "value": "APEX LAB LTD",
+      "width": 437,
+      "x": 1269,
+      "y": 577
+    },
+    {
+      "height": 58,
+      "number": 11,
+      "page_number": 1,
+      "value": "EGÉSZSÉGFEJLESZTÉSI KOZPONT",
+      "width": 1031,
+      "x": 125,
+      "y": 659
+    },
+    {
+      "height": 40,
+      "number": 12,
+      "page_number": 1,
+      "value": "Egyesült Királyság WC2H9JQ London",
+      "width": 624,
+      "x": 1269,
+      "y": 675
+    },
+    {
+      "height": 32,
+      "number": 13,
+      "page_number": 1,
+      "value": "Shelton Street 71-75",
+      "width": 346,
+      "x": 1271,
+      "y": 725
+    },
+    {
+      "height": 57,
+      "number": 14,
+      "page_number": 1,
+      "value": "BETETI TÁRSASAG",
+      "width": 561,
+      "x": 119,
+      "y": 750
+    },
+    {
+      "height": 40,
+      "number": 15,
+      "page_number": 1,
+      "value": "Magyarország 1126 BUDAPEST",
+      "width": 531,
+      "x": 118,
+      "y": 853
+    },
+    {
+      "height": 37,
+      "number": 16,
+      "page_number": 1,
+      "value": "MÁRVÁNY UTCA 48 2 em. 8/A",
+      "width": 506,
+      "x": 117,
+      "y": 898
+    },
+    {
+      "height": 40,
+      "number": 17,
+      "page_number": 1,
+      "value": "Magyar adószám /",
+      "width": 315,
+      "x": 118,
+      "y": 994
+    },
+    {
+      "height": 38,
+      "number": 18,
+      "page_number": 1,
+      "value": "Hungarian tax number: 25050727-1-43",
+      "width": 686,
+      "x": 118,
+      "y": 1045
+    },
+    {
+      "height": 33,
+      "number": 19,
+      "page_number": 1,
+      "value": "Számlaszám /",
+      "width": 241,
+      "x": 117,
+      "y": 1096
+    },
+    {
+      "height": 31,
+      "number": 20,
+      "page_number": 1,
+      "value": "Bank acc. num.:",
+      "width": 264,
+      "x": 118,
+      "y": 1147
+    },
+    {
+      "height": 32,
+      "number": 21,
+      "page_number": 1,
+      "value": "2010611-01473104-00100003",
+      "width": 524,
+      "x": 569,
+      "y": 1146
+    },
+    {
+      "height": 39,
+      "number": 22,
+      "page_number": 1,
+      "value": "Kisadózó / Low tax-bracket enterprise",
+      "width": 643,
+      "x": 117,
+      "y": 1196
+    },
+    {
+      "height": 35,
+      "number": 23,
+      "page_number": 1,
+      "value": "Fizetési mód /",
+      "width": 240,
+      "x": 126,
+      "y": 1349
+    },
+    {
+      "height": 36,
+      "number": 24,
+      "page_number": 1,
+      "value": "Átutalás /",
+      "width": 166,
+      "x": 436,
+      "y": 1347
+    },
+    {
+      "height": 39,
+      "number": 25,
+      "page_number": 1,
+      "value": "Teljesités /",
+      "width": 187,
+      "x": 657,
+      "y": 1349
+    },
+    {
+      "height": 34,
+      "number": 26,
+      "page_number": 1,
+      "value": "Keltezés /",
+      "width": 170,
+      "x": 1208,
+      "y": 1349
+    },
+    {
+      "height": 34,
+      "number": 27,
+      "page_number": 1,
+      "value": "Fizetési határidö /",
+      "width": 305,
+      "x": 1663,
+      "y": 1348
+    },
+    {
+      "height": 40,
+      "number": 28,
+      "page_number": 1,
+      "value": "Payment method: Transfer",
+      "width": 453,
+      "x": 126,
+      "y": 1399
+    },
+    {
+      "height": 34,
+      "number": 29,
+      "page_number": 1,
+      "value": "Fulfillment date: 2021.09.23.",
+      "width": 483,
+      "x": 658,
+      "y": 1399
+    },
+    {
+      "height": 31,
+      "number": 30,
+      "page_number": 1,
+      "value": "Issue date: 2021.09.23.",
+      "width": 391,
+      "x": 1211,
+      "y": 1400
+    },
+    {
+      "height": 40,
+      "number": 31,
+      "page_number": 1,
+      "value": "Payment due date: 2021.09.23.",
+      "width": 524,
+      "x": 1662,
+      "y": 1399
+    },
+    {
+      "height": 33,
+      "number": 32,
+      "page_number": 1,
+      "value": "Pénznem /",
+      "width": 180,
+      "x": 128,
+      "y": 1472
+    },
+    {
+      "height": 39,
+      "number": 33,
+      "page_number": 1,
+      "value": "Currency: HUF",
+      "width": 267,
+      "x": 125,
+      "y": 1522
+    },
+    {
+      "height": 33,
+      "number": 34,
+      "page_number": 1,
+      "value": "Ellenérték",
+      "width": 165,
+      "x": 2179,
+      "y": 1658
+    },
+    {
+      "height": 33,
+      "number": 35,
+      "page_number": 1,
+      "value": "Tétel neve /",
+      "width": 197,
+      "x": 122,
+      "y": 1709
+    },
+    {
+      "height": 39,
+      "number": 36,
+      "page_number": 1,
+      "value": "Mennyiség /",
+      "width": 207,
+      "x": 431,
+      "y": 1709
+    },
+    {
+      "height": 40,
+      "number": 37,
+      "page_number": 1,
+      "value": "Mennyiségi",
+      "width": 193,
+      "x": 722,
+      "y": 1708
+    },
+    {
+      "height": 39,
+      "number": 38,
+      "page_number": 1,
+      "value": "Nettó egységár",
+      "width": 256,
+      "x": 971,
+      "y": 1709
+    },
+    {
+      "height": 38,
+      "number": 39,
+      "page_number": 1,
+      "value": "ÁFA kulcs /",
+      "width": 193,
+      "x": 1276,
+      "y": 1704
+    },
+    {
+      "height": 41,
+      "number": 40,
+      "page_number": 1,
+      "value": "ÁFA összege /",
+      "width": 243,
+      "x": 1530,
+      "y": 1707
+    },
+    {
+      "height": 31,
+      "number": 41,
+      "page_number": 1,
+      "value": "Tételsor nettó",
+      "width": 236,
+      "x": 1818,
+      "y": 1709
+    },
+    {
+      "height": 43,
+      "number": 42,
+      "page_number": 1,
+      "value": "ÁFA-val együtt",
+      "width": 251,
+      "x": 2101,
+      "y": 1705
+    },
+    {
+      "height": 31,
+      "number": 43,
+      "page_number": 1,
+      "value": "Item",
+      "width": 73,
+      "x": 124,
+      "y": 1759
+    },
+    {
+      "height": 38,
+      "number": 44,
+      "page_number": 1,
+      "value": "Quantity",
+      "width": 142,
+      "x": 468,
+      "y": 1759
+    },
+    {
+      "height": 40,
+      "number": 45,
+      "page_number": 1,
+      "value": "egység / Unit",
+      "width": 225,
+      "x": 706,
+      "y": 1758
+    },
+    {
+      "height": 39,
+      "number": 46,
+      "page_number": 1,
+      "value": "/ Net unit price",
+      "width": 251,
+      "x": 972,
+      "y": 1758
+    },
+    {
+      "height": 31,
+      "number": 47,
+      "page_number": 1,
+      "value": "VAT rate",
+      "width": 146,
+      "x": 1303,
+      "y": 1759
+    },
+    {
+      "height": 31,
+      "number": 48,
+      "page_number": 1,
+      "value": "VAT amount",
+      "width": 212,
+      "x": 1551,
+      "y": 1759
+    },
+    {
+      "height": 39,
+      "number": 49,
+      "page_number": 1,
+      "value": "érték / Net price",
+      "width": 269,
+      "x": 1801,
+      "y": 1758
+    },
+    {
+      "height": 34,
+      "number": 50,
+      "page_number": 1,
+      "value": "/ Total value",
+      "width": 212,
+      "x": 2130,
+      "y": 1758
+    },
+    {
+      "height": 40,
+      "number": 51,
+      "page_number": 1,
+      "value": "(incl. VAT)",
+      "width": 172,
+      "x": 2179,
+      "y": 1807
+    },
+    {
+      "height": 39,
+      "number": 52,
+      "page_number": 1,
+      "value": "Egyéb Humán",
+      "width": 232,
+      "x": 123,
+      "y": 1916
+    },
+    {
+      "height": 39,
+      "number": 53,
+      "page_number": 1,
+      "value": "Egészségügy",
+      "width": 227,
+      "x": 123,
+      "y": 1964
+    },
+    {
+      "height": 31,
+      "number": 54,
+      "page_number": 1,
+      "value": "ellátás",
+      "width": 112,
+      "x": 123,
+      "y": 2014
+    },
+    {
+      "height": 38,
+      "number": 55,
+      "page_number": 1,
+      "value": "Akupresszúra /",
+      "width": 257,
+      "x": 123,
+      "y": 2064
+    },
+    {
+      "height": 31,
+      "number": 56,
+      "page_number": 1,
+      "value": "Other Human",
+      "width": 224,
+      "x": 123,
+      "y": 2114
+    },
+    {
+      "height": 31,
+      "number": 57,
+      "page_number": 1,
+      "value": "Health care -",
+      "width": 215,
+      "x": 124,
+      "y": 2165
+    },
+    {
+      "height": 36,
+      "number": 58,
+      "page_number": 1,
+      "value": "Acupressure",
+      "width": 211,
+      "x": 123,
+      "y": 2216
+    },
+    {
+      "height": 31,
+      "number": 59,
+      "page_number": 1,
+      "value": "2.00",
+      "width": 72,
+      "x": 498,
+      "y": 2215
+    },
+    {
+      "height": 33,
+      "number": 60,
+      "page_number": 1,
+      "value": "Ora / Hour",
+      "width": 176,
+      "x": 726,
+      "y": 2214
+    },
+    {
+      "height": 35,
+      "number": 61,
+      "page_number": 1,
+      "value": "11,800.00",
+      "width": 162,
+      "x": 1012,
+      "y": 2215
+    },
+    {
+      "height": 30,
+      "number": 62,
+      "page_number": 1,
+      "value": "AAM",
+      "width": 80,
+      "x": 1330,
+      "y": 2215
+    },
+    {
+      "height": 32,
+      "number": 63,
+      "page_number": 1,
+      "value": "0.00",
+      "width": 73,
+      "x": 1612,
+      "y": 2215
+    },
+    {
+      "height": 35,
+      "number": 64,
+      "page_number": 1,
+      "value": "23,600.00",
+      "width": 164,
+      "x": 1846,
+      "y": 2214
+    },
+    {
+      "height": 35,
+      "number": 65,
+      "page_number": 1,
+      "value": "23,600.00",
+      "width": 166,
+      "x": 2175,
+      "y": 2215
+    },
+    {
+      "height": 35,
+      "number": 66,
+      "page_number": 1,
+      "value": "Alanyi adómentes / Personal tax exemption; TESZOR: 8690",
+      "width": 881,
+      "x": 123,
+      "y": 2283
+    },
+    {
+      "height": 35,
+      "number": 67,
+      "page_number": 1,
+      "value": "Adómentesség leirása / Reason of tax exemption: Alanyi adómentes",
+      "width": 1018,
+      "x": 121,
+      "y": 2348
+    },
+    {
+      "height": 39,
+      "number": 68,
+      "page_number": 1,
+      "value": "Kiszállási díj",
+      "width": 210,
+      "x": 123,
+      "y": 2451
+    },
+    {
+      "height": 39,
+      "number": 69,
+      "page_number": 1,
+      "value": "(Budapest)",
+      "width": 183,
+      "x": 124,
+      "y": 2500
+    },
+    {
+      "height": 32,
+      "number": 70,
+      "page_number": 1,
+      "value": "/travel costs",
+      "width": 211,
+      "x": 123,
+      "y": 2551
+    },
+    {
+      "height": 31,
+      "number": 71,
+      "page_number": 1,
+      "value": "1.00",
+      "width": 70,
+      "x": 500,
+      "y": 2551
+    },
+    {
+      "height": 33,
+      "number": 72,
+      "page_number": 1,
+      "value": "Darab / Piece",
+      "width": 226,
+      "x": 701,
+      "y": 2551
+    },
+    {
+      "height": 34,
+      "number": 73,
+      "page_number": 1,
+      "value": "4,000.00",
+      "width": 144,
+      "x": 1021,
+      "y": 2551
+    },
+    {
+      "height": 30,
+      "number": 74,
+      "page_number": 1,
+      "value": "AAM",
+      "width": 79,
+      "x": 1330,
+      "y": 2551
+    },
+    {
+      "height": 32,
+      "number": 75,
+      "page_number": 1,
+      "value": "0.00",
+      "width": 73,
+      "x": 1612,
+      "y": 2550
+    },
+    {
+      "height": 35,
+      "number": 76,
+      "page_number": 1,
+      "value": "4,000.00",
+      "width": 145,
+      "x": 1856,
+      "y": 2550
+    },
+    {
+      "height": 35,
+      "number": 77,
+      "page_number": 1,
+      "value": "4,000.00",
+      "width": 146,
+      "x": 2195,
+      "y": 2550
+    },
+    {
+      "height": 35,
+      "number": 78,
+      "page_number": 1,
+      "value": "Alanyi adómentes / Personal tax exemption.",
+      "width": 657,
+      "x": 123,
+      "y": 2620
+    },
+    {
+      "height": 36,
+      "number": 79,
+      "page_number": 1,
+      "value": "Adómentesség leirása / Reason of tax exemption: Alanyi adómentes",
+      "width": 1018,
+      "x": 122,
+      "y": 2684
+    },
+    {
+      "height": 31,
+      "number": 80,
+      "page_number": 1,
+      "value": "Tételre adott",
+      "width": 215,
+      "x": 122,
+      "y": 2787
+    },
+    {
+      "height": 35,
+      "number": 81,
+      "page_number": 1,
+      "value": "nettó 2,800",
+      "width": 188,
+      "x": 123,
+      "y": 2838
+    },
+    {
+      "height": 30,
+      "number": 82,
+      "page_number": 1,
+      "value": "HUF",
+      "width": 72,
+      "x": 124,
+      "y": 2888
+    },
+    {
+      "height": 39,
+      "number": 83,
+      "page_number": 1,
+      "value": "kedvezmény",
+      "width": 210,
+      "x": 123,
+      "y": 2936
+    },
+    {
+      "height": 30,
+      "number": 84,
+      "page_number": 1,
+      "value": "AAM",
+      "width": 79,
+      "x": 1330,
+      "y": 2938
+    },
+    {
+      "height": 31,
+      "number": 85,
+      "page_number": 1,
+      "value": "0.00",
+      "width": 73,
+      "x": 1612,
+      "y": 2937
+    },
+    {
+      "height": 35,
+      "number": 86,
+      "page_number": 1,
+      "value": "-2,800.00",
+      "width": 157,
+      "x": 1851,
+      "y": 2937
+    },
+    {
+      "height": 36,
+      "number": 87,
+      "page_number": 1,
+      "value": "-2,800.00",
+      "width": 155,
+      "x": 2185,
+      "y": 2937
+    },
+    {
+      "height": 40,
+      "number": 88,
+      "page_number": 1,
+      "value": "Készült / Issued by: Online Számlázó Program I szamlazo.nav.gov.hr",
+      "width": 1146,
+      "x": 117,
+      "y": 3300
+    },
+    {
+      "height": 40,
+      "number": 89,
+      "page_number": 1,
+      "value": "Oldalszám / Page: 1/2",
+      "width": 374,
+      "x": 1984,
+      "y": 3300
+    },
+    {
+      "height": 70,
+      "number": 90,
+      "page_number": 2,
+      "value": "online",
+      "width": 228,
+      "x": 1081,
+      "y": 73
+    },
+    {
+      "height": 51,
+      "number": 91,
+      "page_number": 2,
+      "value": "-SZAMLA/",
+      "width": 300,
+      "x": 2058,
+      "y": 93
+    },
+    {
+      "height": 51,
+      "number": 92,
+      "page_number": 2,
+      "value": "számlázó",
+      "width": 319,
+      "x": 1080,
+      "y": 134
+    },
+    {
+      "height": 27,
+      "number": 93,
+      "page_number": 2,
+      "value": "program",
+      "width": 132,
+      "x": 1269,
+      "y": 191
+    },
+    {
+      "height": 46,
+      "number": 94,
+      "page_number": 2,
+      "value": "e-INVOICE",
+      "width": 277,
+      "x": 2082,
+      "y": 171
+    },
+    {
+      "height": 56,
+      "number": 95,
+      "page_number": 2,
+      "value": "Sorszám / Invoice number: SZERV-2021-42",
+      "width": 987,
+      "x": 116,
+      "y": 259
+    },
+    {
+      "height": 34,
+      "number": 96,
+      "page_number": 2,
+      "value": "Számla nettó értéke /",
+      "width": 360,
+      "x": 1248,
+      "y": 464
+    },
+    {
+      "height": 33,
+      "number": 97,
+      "page_number": 2,
+      "value": "Net total",
+      "width": 143,
+      "x": 1248,
+      "y": 514
+    },
+    {
+      "height": 37,
+      "number": 98,
+      "page_number": 2,
+      "value": "24,800.00 HUF",
+      "width": 248,
+      "x": 2101,
+      "y": 513
+    },
+    {
+      "height": 37,
+      "number": 99,
+      "page_number": 2,
+      "value": "ÁFA százaléka és értéke /",
+      "width": 432,
+      "x": 1246,
+      "y": 570
+    },
+    {
+      "height": 40,
+      "number": 100,
+      "page_number": 2,
+      "value": "VAT rate percentage and VAT total",
+      "width": 582,
+      "x": 1245,
+      "y": 623
+    },
+    {
+      "height": 30,
+      "number": 101,
+      "page_number": 2,
+      "value": "AAM",
+      "width": 79,
+      "x": 1966,
+      "y": 624
+    },
+    {
+      "height": 32,
+      "number": 102,
+      "page_number": 2,
+      "value": "0.00 HUF",
+      "width": 157,
+      "x": 2193,
+      "y": 623
+    },
+    {
+      "height": 32,
+      "number": 103,
+      "page_number": 2,
+      "value": "Alanyi adómentes",
+      "width": 237,
+      "x": 1681,
+      "y": 681
+    },
+    {
+      "height": 41,
+      "number": 104,
+      "page_number": 2,
+      "value": "Számla bruttó végösszege /",
+      "width": 470,
+      "x": 1247,
+      "y": 732
+    },
+    {
+      "height": 31,
+      "number": 105,
+      "page_number": 2,
+      "value": "Gross total",
+      "width": 184,
+      "x": 1247,
+      "y": 784
+    },
+    {
+      "height": 36,
+      "number": 106,
+      "page_number": 2,
+      "value": "24,800.00 HUF",
+      "width": 247,
+      "x": 2102,
+      "y": 783
+    },
+    {
+      "height": 67,
+      "number": 107,
+      "page_number": 2,
+      "value": "Fizetendö osszeg /",
+      "width": 566,
+      "x": 1791,
+      "y": 895
+    },
+    {
+      "height": 56,
+      "number": 108,
+      "page_number": 2,
+      "value": "Total due",
+      "width": 282,
+      "x": 2076,
+      "y": 983
+    },
+    {
+      "height": 72,
+      "number": 109,
+      "page_number": 2,
+      "value": "24,800.00 HUF",
+      "width": 536,
+      "x": 1822,
+      "y": 1079
+    },
+    {
+      "height": 40,
+      "number": 110,
+      "page_number": 2,
+      "value": "Készült / Issued by: Online Számlázó Program I szamlazo.nav.gov.hr",
+      "width": 1144,
+      "x": 117,
+      "y": 3300
+    },
+    {
+      "height": 40,
+      "number": 111,
+      "page_number": 2,
+      "value": "Oldalszám / Page: 2/2",
+      "width": 374,
+      "x": 1984,
+      "y": 3300
+    }
+  ],
+  "vat_rates": []
+}

@@ -1,6 +1,7 @@
 package create_invoice
 
 import (
+	"pocok/src/consumers/invoice_processor/guesser_functions"
 	"pocok/src/services/typless"
 	"pocok/src/utils/models"
 	"strings"
@@ -10,23 +11,18 @@ type CreateInvoiceService struct {
 	OriginalFilename string
 }
 
-func (c *CreateInvoiceService) getFallbackValue(field *typless.ExtractedField, textBlocks *[]typless.TextBlock) string {
+func (c *CreateInvoiceService) getFieldFallbackValue(field *typless.ExtractedField, textBlocks *[]typless.TextBlock) string {
 	switch field.Name {
 	case typless.INVOICE_NUMBER:
-		// todo: implement
-		return ""
+		return guesser_functions.GuessInvoiceNumberFromFilename(c.OriginalFilename, textBlocks)
 	case typless.VENDOR_NAME:
-		// todo: implement
-		return ""
+		return guesser_functions.GuessVendorName(textBlocks)
 	case typless.ACCOUNT_NUMBER:
-		// todo: implement
-		return ""
+		return guesser_functions.GuessHunBankAccountNumberFromTextBlocks(textBlocks)
 	case typless.IBAN:
-		// todo: implement
-		return ""
+		return guesser_functions.GuessIbanFromTextBlocks(textBlocks)
 	case typless.GROSS_PRICE:
-		// todo: implement
-		return ""
+		return guesser_functions.GuessGrossPriceFromTextBlocks(textBlocks)
 	default:
 		return ""
 	}
@@ -37,7 +33,7 @@ func (c *CreateInvoiceService) getExtractedFieldValue(extractedData *typless.Ext
 	if firstValueField.ConfidenceScore > 0 {
 		return strings.TrimSpace(firstValueField.Value)
 	}
-	return c.getFallbackValue(&extractedData.ExtractedFields[fieldIndex], &extractedData.TextBlocks)
+	return c.getFieldFallbackValue(&extractedData.ExtractedFields[fieldIndex], &extractedData.TextBlocks)
 }
 
 func (c *CreateInvoiceService) getLineItemFieldValue(field typless.ExtractedField) string {

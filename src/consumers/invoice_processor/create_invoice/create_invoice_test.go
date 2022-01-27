@@ -1,30 +1,14 @@
 package create_invoice_test
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"pocok/src/consumers/invoice_processor/create_invoice"
+	"pocok/src/mocks/typless/parse_mock_json"
 	"pocok/src/services/typless"
 	"pocok/src/utils/models"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-func parseMockJson(filename string) *typless.ExtractDataFromFileOutput {
-	var extractedData *typless.ExtractDataFromFileOutput
-
-	mock, readFileErr := ioutil.ReadFile("../../../mocks/typless/" + filename)
-	if readFileErr != nil {
-		panic("Failed to read mock file")
-	}
-
-	if err := json.Unmarshal(mock, &extractedData); err != nil {
-		panic("Failed to unmarshal mock file")
-	}
-
-	return extractedData
-}
 
 var _ = Describe("CreateInvoice", func() {
 	var createInvoiceService *create_invoice.CreateInvoiceService
@@ -34,7 +18,7 @@ var _ = Describe("CreateInvoice", func() {
 
 	When("recieves billingo invoice with normal fields", func() {
 		BeforeEach(func() {
-			extractedData = parseMockJson("billingo.json")
+			extractedData = parse_mock_json.Parse("billingo.json")
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "A-1984-145.pdf",
 			}
@@ -72,7 +56,7 @@ var _ = Describe("CreateInvoice", func() {
 	})
 	When("recieves Online számlázo program invoice with multiple line items", func() {
 		BeforeEach(func() {
-			extractedData = parseMockJson("oszp.json")
+			extractedData = parse_mock_json.Parse("oszp.json")
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "TEST-2021-42.pdf",
 			}
@@ -83,7 +67,7 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(err).To(BeNil())
 		})
 
-		It("return invoice with correct fields", func() {
+		It("return invoice with correct main fields", func() {
 			Expect(invoice).NotTo(BeNil())
 
 			Expect(invoice.InvoiceNumber).To(Equal("TEST-2021-42"))
@@ -95,7 +79,9 @@ var _ = Describe("CreateInvoice", func() {
 			Expect(invoice.Currency).To(Equal("HUF"))
 			Expect(invoice.VatRate).To(Equal("AAM"))
 			Expect(invoice.NetPrice).To(Equal("24800.0000"))
+		})
 
+		It("return invoice with correct line item fields", func() {
 			Expect(len(invoice.Services)).To(Equal(2))
 			Expect(invoice.Services[0].Name).To(Equal("standup"))
 			Expect(invoice.Services[0].Unit).To(Equal("Ora / Hour"))
@@ -119,7 +105,7 @@ var _ = Describe("CreateInvoice", func() {
 	})
 	When("recieves Online számlázo program invoice with no service description line item", func() {
 		BeforeEach(func() {
-			extractedData = parseMockJson("oszp.json")
+			extractedData = parse_mock_json.Parse("oszp.json")
 			extractedData.LineItems[0][3].Values[0].Value = ""
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "TEST-2021-42.pdf",
@@ -139,7 +125,7 @@ var _ = Describe("CreateInvoice", func() {
 	})
 	When("recieves Online számlázo program invoice with no grossprice, netprice and currency line item", func() {
 		BeforeEach(func() {
-			extractedData = parseMockJson("oszp.json")
+			extractedData = parse_mock_json.Parse("oszp.json")
 			extractedData.LineItems[0][1].Values[0].Value = ""
 			extractedData.LineItems[0][2].Values[0].Value = ""
 			createInvoiceService = &create_invoice.CreateInvoiceService{

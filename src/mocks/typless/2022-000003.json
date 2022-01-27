@@ -1,0 +1,806 @@
+{
+  "customer": null,
+  "extracted_fields": [
+    {
+      "data_type": "AUTHOR",
+      "name": "supplier_name",
+      "values": [
+        {
+          "confidence_score": 0.953,
+          "height": -1,
+          "page_number": -1,
+          "value": "PASZTOR TAMAS EV. (KISADÓZÕ)",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "account_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 32,
+          "page_number": 0,
+          "value": "HU49117730850055602000000000",
+          "width": 891,
+          "x": 197,
+          "y": 1130
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "currency",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 33,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 181,
+          "x": 1117,
+          "y": 1505
+        },
+        {
+          "confidence_score": 0.66,
+          "height": 33,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 182,
+          "x": 1522,
+          "y": 1505
+        },
+        {
+          "confidence_score": 0.66,
+          "height": 35,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 183,
+          "x": 2095,
+          "y": 1503
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 37,
+          "page_number": 0,
+          "value": "Hosting",
+          "width": 244,
+          "x": 197,
+          "y": 1505
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 29,
+          "page_number": 0,
+          "value": "1",
+          "width": 67,
+          "x": 833,
+          "y": 1505
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "invoice_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 39,
+          "page_number": 0,
+          "value": "2022-000003",
+          "width": 296,
+          "x": 199,
+          "y": 272
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vendor_name",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 60,
+          "page_number": 0,
+          "value": "PASZTOR TAMAS EV. (KISADÓZÕ)",
+          "width": 952,
+          "x": 198,
+          "y": 672
+        },
+        {
+          "confidence_score": 0.66,
+          "height": 59,
+          "page_number": 0,
+          "value": "APEXLAB OÜ",
+          "width": 365,
+          "x": 1314,
+          "y": 670
+        }
+      ]
+    },
+    {
+      "data_type": "DATE",
+      "name": "pay_due_date",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 34,
+          "page_number": 0,
+          "value": "2022-09-01",
+          "width": 212,
+          "x": 1317,
+          "y": 1211
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vat_rate",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "EU",
+          "width": 394,
+          "x": 196,
+          "y": 1074
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "iban",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 32,
+          "page_number": 0,
+          "value": "HU49117730850055602000000000",
+          "width": 891,
+          "x": 197,
+          "y": 1130
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "total_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "net_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "vat_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    }
+  ],
+  "file_name": "test.pdf",
+  "line_items": [
+    [
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 37,
+            "page_number": 0,
+            "value": "Hosting service",
+            "width": 244,
+            "x": 197,
+            "y": 1505
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 29,
+            "page_number": 0,
+            "value": "db",
+            "width": 67,
+            "x": 833,
+            "y": 1505
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 30,
+            "page_number": 0,
+            "value": "EU",
+            "width": 394,
+            "x": 196,
+            "y": 1074
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 41,
+            "page_number": 0,
+            "value": "1.0000",
+            "width": 581,
+            "x": 197,
+            "y": 773
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ]
+  ],
+  "object_id": "0e801a525a16d664b776cb43ab6a2f478be03a1d",
+  "text_blocks": [
+    {
+      "height": 42,
+      "number": 0,
+      "page_number": 1,
+      "value": "ELECTRONIC INVOICE",
+      "width": 498,
+      "x": 198,
+      "y": 213
+    },
+    {
+      "height": 39,
+      "number": 1,
+      "page_number": 1,
+      "value": "2022-000003",
+      "width": 296,
+      "x": 199,
+      "y": 272
+    },
+    {
+      "height": 30,
+      "number": 2,
+      "page_number": 1,
+      "value": "Seller",
+      "width": 90,
+      "x": 196,
+      "y": 627
+    },
+    {
+      "height": 36,
+      "number": 3,
+      "page_number": 1,
+      "value": "Buyer",
+      "width": 91,
+      "x": 1317,
+      "y": 628
+    },
+    {
+      "height": 60,
+      "number": 4,
+      "page_number": 1,
+      "value": "PASZTOR TAMAS EV. (KISADÓZÕ)",
+      "width": 952,
+      "x": 198,
+      "y": 672
+    },
+    {
+      "height": 59,
+      "number": 5,
+      "page_number": 1,
+      "value": "APEXLAB OÜ",
+      "width": 365,
+      "x": 1314,
+      "y": 670
+    },
+    {
+      "height": 41,
+      "number": 6,
+      "page_number": 1,
+      "value": "Fogadó utca 1/B C lph. fszt 06 a.",
+      "width": 581,
+      "x": 197,
+      "y": 773
+    },
+    {
+      "height": 41,
+      "number": 7,
+      "page_number": 1,
+      "value": "Sepapaja 6",
+      "width": 196,
+      "x": 1317,
+      "y": 774
+    },
+    {
+      "height": 40,
+      "number": 8,
+      "page_number": 1,
+      "value": "1107 Budapest",
+      "width": 268,
+      "x": 198,
+      "y": 829
+    },
+    {
+      "height": 34,
+      "number": 9,
+      "page_number": 1,
+      "value": "15551 Tallinn",
+      "width": 244,
+      "x": 1317,
+      "y": 828
+    },
+    {
+      "height": 40,
+      "number": 10,
+      "page_number": 1,
+      "value": "Hungary",
+      "width": 151,
+      "x": 197,
+      "y": 885
+    },
+    {
+      "height": 33,
+      "number": 11,
+      "page_number": 1,
+      "value": "Estonia",
+      "width": 132,
+      "x": 1317,
+      "y": 884
+    },
+    {
+      "height": 31,
+      "number": 12,
+      "page_number": 1,
+      "value": "VAT ID: 68626855-2-41",
+      "width": 384,
+      "x": 195,
+      "y": 957
+    },
+    {
+      "height": 33,
+      "number": 13,
+      "page_number": 1,
+      "value": "EE102235883",
+      "width": 245,
+      "x": 1320,
+      "y": 939
+    },
+    {
+      "height": 39,
+      "number": 14,
+      "page_number": 1,
+      "value": "Company registration number: 52017409",
+      "width": 650,
+      "x": 196,
+      "y": 1015
+    },
+    {
+      "height": 28,
+      "number": 15,
+      "page_number": 1,
+      "value": "Issue Date :",
+      "width": 182,
+      "x": 1317,
+      "y": 1033
+    },
+    {
+      "height": 30,
+      "number": 16,
+      "page_number": 1,
+      "value": "Fulfillment Date:",
+      "width": 257,
+      "x": 1796,
+      "y": 1031
+    },
+    {
+      "height": 30,
+      "number": 17,
+      "page_number": 1,
+      "value": "EU VAT ID: HU68626855",
+      "width": 394,
+      "x": 196,
+      "y": 1074
+    },
+    {
+      "height": 34,
+      "number": 18,
+      "page_number": 1,
+      "value": "01/01/2022",
+      "width": 213,
+      "x": 1316,
+      "y": 1079
+    },
+    {
+      "height": 35,
+      "number": 19,
+      "page_number": 1,
+      "value": "01/01/2022",
+      "width": 213,
+      "x": 1797,
+      "y": 1079
+    },
+    {
+      "height": 32,
+      "number": 20,
+      "page_number": 1,
+      "value": "Bank account no.: HU49117730850055602000000000",
+      "width": 891,
+      "x": 197,
+      "y": 1130
+    },
+    {
+      "height": 28,
+      "number": 21,
+      "page_number": 1,
+      "value": "Due Date:",
+      "width": 150,
+      "x": 1317,
+      "y": 1165
+    },
+    {
+      "height": 36,
+      "number": 22,
+      "page_number": 1,
+      "value": "Payment Method:",
+      "width": 275,
+      "x": 1797,
+      "y": 1164
+    },
+    {
+      "height": 31,
+      "number": 23,
+      "page_number": 1,
+      "value": "IBAN: HU49117730850055602000000000",
+      "width": 713,
+      "x": 195,
+      "y": 1187
+    },
+    {
+      "height": 34,
+      "number": 24,
+      "page_number": 1,
+      "value": "09/01/2022",
+      "width": 212,
+      "x": 1317,
+      "y": 1211
+    },
+    {
+      "height": 32,
+      "number": 25,
+      "page_number": 1,
+      "value": "Wire Transfer",
+      "width": 245,
+      "x": 1795,
+      "y": 1211
+    },
+    {
+      "height": 31,
+      "number": 26,
+      "page_number": 1,
+      "value": "Bank: OTP Bank",
+      "width": 263,
+      "x": 197,
+      "y": 1246
+    },
+    {
+      "height": 35,
+      "number": 27,
+      "page_number": 1,
+      "value": "Description",
+      "width": 177,
+      "x": 197,
+      "y": 1389
+    },
+    {
+      "height": 35,
+      "number": 28,
+      "page_number": 1,
+      "value": "Quantity",
+      "width": 131,
+      "x": 767,
+      "y": 1390
+    },
+    {
+      "height": 29,
+      "number": 29,
+      "page_number": 1,
+      "value": "Net Unit Price",
+      "width": 215,
+      "x": 1087,
+      "y": 1389
+    },
+    {
+      "height": 29,
+      "number": 30,
+      "page_number": 1,
+      "value": "Net Line Total",
+      "width": 219,
+      "x": 1489,
+      "y": 1389
+    },
+    {
+      "height": 29,
+      "number": 31,
+      "page_number": 1,
+      "value": "Vat",
+      "width": 56,
+      "x": 1747,
+      "y": 1389
+    },
+    {
+      "height": 29,
+      "number": 32,
+      "page_number": 1,
+      "value": "Gross Line Total",
+      "width": 255,
+      "x": 2026,
+      "y": 1389
+    },
+    {
+      "height": 37,
+      "number": 33,
+      "page_number": 1,
+      "value": "Hosting service",
+      "width": 244,
+      "x": 197,
+      "y": 1505
+    },
+    {
+      "height": 29,
+      "number": 34,
+      "page_number": 1,
+      "value": "1 db",
+      "width": 67,
+      "x": 833,
+      "y": 1505
+    },
+    {
+      "height": 33,
+      "number": 35,
+      "page_number": 1,
+      "value": "HUF 25,000",
+      "width": 181,
+      "x": 1117,
+      "y": 1505
+    },
+    {
+      "height": 33,
+      "number": 36,
+      "page_number": 1,
+      "value": "HUF 25,000",
+      "width": 182,
+      "x": 1522,
+      "y": 1505
+    },
+    {
+      "height": 29,
+      "number": 37,
+      "page_number": 1,
+      "value": "EU",
+      "width": 42,
+      "x": 1759,
+      "y": 1505
+    },
+    {
+      "height": 35,
+      "number": 38,
+      "page_number": 1,
+      "value": "HUF 25,000",
+      "width": 183,
+      "x": 2095,
+      "y": 1503
+    },
+    {
+      "height": 33,
+      "number": 39,
+      "page_number": 1,
+      "value": "NET TOTAL: HUF 25,000",
+      "width": 385,
+      "x": 1898,
+      "y": 1702
+    },
+    {
+      "height": 29,
+      "number": 40,
+      "page_number": 1,
+      "value": "EU VAT: HUF 0",
+      "width": 231,
+      "x": 2049,
+      "y": 1807
+    },
+    {
+      "height": 26,
+      "number": 41,
+      "page_number": 1,
+      "value": "TOTAL DUE:",
+      "width": 165,
+      "x": 1740,
+      "y": 1945
+    },
+    {
+      "height": 61,
+      "number": 42,
+      "page_number": 1,
+      "value": "HUF 25,000",
+      "width": 348,
+      "x": 1926,
+      "y": 1919
+    },
+    {
+      "height": 27,
+      "number": 43,
+      "page_number": 1,
+      "value": "Comment",
+      "width": 154,
+      "x": 197,
+      "y": 2093
+    },
+    {
+      "height": 25,
+      "number": 44,
+      "page_number": 1,
+      "value": "2022.12.01. 2022.12.31.",
+      "width": 347,
+      "x": 195,
+      "y": 2146
+    },
+    {
+      "height": 32,
+      "number": 45,
+      "page_number": 1,
+      "value": "Cash accounting",
+      "width": 224,
+      "x": 197,
+      "y": 2188
+    },
+    {
+      "height": 313,
+      "number": 46,
+      "page_number": 1,
+      "value": "un",
+      "width": 399,
+      "x": 150,
+      "y": 2619
+    },
+    {
+      "height": 36,
+      "number": 47,
+      "page_number": 1,
+      "value": "1/1 Page",
+      "width": 142,
+      "x": 197,
+      "y": 3320
+    },
+    {
+      "height": 28,
+      "number": 48,
+      "page_number": 1,
+      "value": "This invoice was created with \"Billingo\" billing program. Fast and",
+      "width": 724,
+      "x": 1183,
+      "y": 3337
+    },
+    {
+      "height": 27,
+      "number": 49,
+      "page_number": 1,
+      "value": "The content of the invoice fulfils all the requirements of the Hungarian Law.",
+      "width": 843,
+      "x": 196,
+      "y": 3369
+    },
+    {
+      "height": 27,
+      "number": 50,
+      "page_number": 1,
+      "value": "amusing billing anytime, anywhere: Billingo.hu",
+      "width": 517,
+      "x": 1389,
+      "y": 3369
+    },
+    {
+      "height": 39,
+      "number": 51,
+      "page_number": 1,
+      "value": "B",
+      "width": 37,
+      "x": 1975,
+      "y": 3348
+    },
+    {
+      "height": 72,
+      "number": 52,
+      "page_number": 1,
+      "value": "Billingo",
+      "width": 224,
+      "x": 2049,
+      "y": 3344
+    }
+  ],
+  "vat_rates": []
+}
