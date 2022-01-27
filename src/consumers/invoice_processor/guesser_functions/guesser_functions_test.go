@@ -20,7 +20,7 @@ var _ = Describe("Guesser functions", func() {
 
 		It("guesses vendor name succesfully", func() {
 			vendorName := guesser_functions.GuessVendorName(&extractedData.TextBlocks)
-			Expect(vendorName).To(Equal("Teszt Elek"))
+			Expect(vendorName).To(Equal("Teszt Elek (Kisadózó)"))
 		})
 		It("guesses invoice number succesfully", func() {
 			originalFilename := "2021-000022.pdf"
@@ -36,6 +36,23 @@ var _ = Describe("Guesser functions", func() {
 		It("guesses hungarian bank account number succesfully", func() {
 			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal("12345678-10589326-49010011"))
+		})
+
+		It("guesses vat rate succesfully", func() {
+			commonVatRates := []string{"27%", "AAM", "EU", "ÁFA"}
+			vatRate := guesser_functions.FindInArray(commonVatRates, &extractedData.TextBlocks)
+			Expect(vatRate).To(Equal("ÁFA"))
+		})
+
+		It("guesses currency type succesfully", func() {
+			commonCurrencyTypes := []string{"Ft", "$", "€", "HUF", "EUR", "USD"}
+			currency := guesser_functions.FindInArray(commonCurrencyTypes, &extractedData.TextBlocks)
+			Expect(currency).To(Equal("Ft"))
+		})
+
+		It("guesses due date succesfully", func() {
+			dueDate := guesser_functions.GuessDueDate(&extractedData.TextBlocks)
+			Expect(dueDate).To(Equal("2020-12-23"))
 		})
 
 	})
