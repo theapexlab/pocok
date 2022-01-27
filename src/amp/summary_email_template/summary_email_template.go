@@ -124,6 +124,22 @@ func body() string {
 									<div>Currency: {{currency}}</div>
 									<div>Vat Amount: {{vatAmount}}</div>
 									<div>Vat Rate: {{vatRate}}</div>
+									<div>
+										<div><p>Services:</p></div>
+										{{#services}}
+										<div>
+										<div>Name: {{name}}</div>
+										<div>Amount: {{amount}}</div>
+										<div>Unit: {{unit}}</div>
+										<div>Unit Net Price: {{unitNetprice}}</div>
+										<div>Net price: {{netPrice}}</div>
+										<div>Gross Price: {{grossPrice}}</div>
+										<div>Currency: {{currency}}</div>
+										<div>Vat Amount: {{vatAmount}}</div>
+										<div>Vat Rate:{{vatRate}}</div>
+										</div>
+										{{/services}}
+									</div>
 								</div>
 							</div>
 						</div>
