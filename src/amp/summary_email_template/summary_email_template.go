@@ -72,6 +72,7 @@ func body() string {
 		<div>
 			<amp-list
 				src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+				id="invoiceList"
 				binding="no"
 				layout="fixed-height"
 				height="10"
@@ -91,6 +92,7 @@ func body() string {
 									<form
 										method="post"
 										action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+										on="submit-success:invoiceList.refresh"
 									>
 										<input type="hidden" name="invoiceId" value="{{invoiceId}}" />
 										<input type="hidden" name="status" value="[[.Accepted]]" />
@@ -101,6 +103,7 @@ func body() string {
 									<form
 										method="post"
 										action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+										on="submit-success:invoiceList.refresh"
 									>
 										<input type="hidden" name="invoiceId" value="{{invoiceId}}" />
 										<input type="hidden" name="status" value="[[.Rejected]]" />
