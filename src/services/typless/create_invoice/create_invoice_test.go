@@ -3,8 +3,8 @@ package create_invoice_test
 import (
 	"encoding/json"
 	"io/ioutil"
-	"pocok/src/consumers/invoice_processor/create_invoice"
 	"pocok/src/services/typless"
+	"pocok/src/services/typless/create_invoice"
 	"pocok/src/utils/models"
 
 	. "github.com/onsi/ginkgo/v2"

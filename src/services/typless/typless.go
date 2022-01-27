@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFileOutput, error) {
+func ExtractData(config *Config, file []byte, timeout int) (*ExtractDataFromFileOutput, error) {
 	url := "https://developers.typless.com/api/extract-data"
 
 	payload := ExtractDataFromFileInput{
@@ -55,7 +55,7 @@ func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFile
 	if res.StatusCode != 200 {
 		fmt.Printf("Status:  %s  \n", res.Status)
 		fmt.Printf("Body:  %s  \n", string(body))
-		err := errors.New("request to typless api failed")
+		err := errors.New("❌ request to typless failed")
 		return nil, err
 	}
 
@@ -68,4 +68,46 @@ func ExtractData(file []byte, config *Config, timeout int) (*ExtractDataFromFile
 	}
 
 	return &output, nil
+}
+
+func AddDocumentFeedback(config *Config, trainingData TrainingData) error {
+	url := "https://developers.typless.com/api/add-document-feedback"
+
+	payload := AddDocumentFeedbackInput{
+		DocumentTypeName: config.DocType,
+		DocumentObjectId: trainingData.DocumentObjectId,
+		LearningFields:   trainingData.LearningFields,
+		LineItems:        trainingData.LineItems,
+	}
+	payloadStr, _ := json.Marshal(payload)
+	payloadStrReader := strings.NewReader(string(payloadStr))
+
+	req, err := http.NewRequest("POST", url, payloadStrReader)
+	if err != nil {
+		return err
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Authorization", "Token "+config.Token)
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if res.StatusCode >= 300 {
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Status:  %s  \n", res.Status)
+		fmt.Printf("Body:  %s  \n", string(body))
+
+		return errors.New("❌ request to typless failed")
+	}
+
+	defer res.Body.Close()
+
+	return nil
 }

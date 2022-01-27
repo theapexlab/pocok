@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"pocok/src/db"
+	"pocok/src/services/typless"
+	"pocok/src/services/typless/create_training_data"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
@@ -17,14 +19,18 @@ import (
 )
 
 type dependencies struct {
-	dbClient  *dynamodb.Client
-	tableName string
+	dbClient       *dynamodb.Client
+	tableName      string
+	typlessToken   string
+	typlessDocType string
 }
 
 func main() {
 	d := &dependencies{
-		tableName: os.Getenv("tableName"),
-		dbClient:  aws_clients.GetDbClient(),
+		tableName:      os.Getenv("tableName"),
+		dbClient:       aws_clients.GetDbClient(),
+		typlessToken:   os.Getenv("typlessToken"),
+		typlessDocType: os.Getenv("typlessDocType"),
 	}
 	lambda.Start(d.handler)
 }
@@ -54,6 +60,27 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
+
+	if data["status"] == models.ACCEPTED {
+		invoice, err := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, data["invoiceId"])
+		if err != nil {
+			utils.LogError("Error getting invoice from db", err)
+			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+		}
+
+		err = typless.AddDocumentFeedback(
+			&typless.Config{
+				Token:   d.typlessToken,
+				DocType: d.typlessDocType,
+			},
+			*create_training_data.CreateTrainingData(invoice),
+		)
+
+		if err != nil {
+			utils.LogError("Error adding document feedback to typless", err)
+		}
+	}
+
 	return utils.MailApiResponse(http.StatusOK, ""), nil
 }
 

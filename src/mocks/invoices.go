@@ -48,6 +48,8 @@ var MockInvoice = models.Invoice{
 			VatAmount:    "2700",
 		},
 	},
+
+	TyplessObjectId: "0e809bfab6a4253a1e1cfdfa5088d30380565c02",
 }
 
 var MockInvoice2 = models.Invoice{
@@ -75,6 +77,8 @@ var MockInvoice2 = models.Invoice{
 	Currency:      "zł",
 	DueDate:       "2050.01.01.",
 	Services:      []models.Service{},
+
+	TyplessObjectId: "0e809bfab6a4253a1e1cfdfa5088d30380565c01",
 }
 
 var Invoices = []models.Invoice{

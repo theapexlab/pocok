@@ -64,6 +64,8 @@ export class ApiStack extends Stack {
               jwtKey: process.env.JWT_KEY as string,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
+              typlessToken: process.env.TYPLESS_TOKEN || "",
+              typlessDocType: process.env.TYPLESS_DOC_TYPE || "",
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,

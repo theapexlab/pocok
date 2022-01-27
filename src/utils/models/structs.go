@@ -44,6 +44,8 @@ type Invoice struct {
 	VatAmount     string    `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate       string    `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
+
+	TyplessObjectId string `json:"typlessObjectId" dynamodbav:"typlessObjectId,omitempty"`
 }
 
 type InvoiceResponse struct {
