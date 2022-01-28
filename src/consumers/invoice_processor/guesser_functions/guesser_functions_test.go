@@ -28,12 +28,12 @@ var _ = Describe("Guesser functions", func() {
 		})
 
 		It("guesses iban succesfully", func() {
-			iban := guesser_functions.GuessIbanFromTextBlocks(&extractedData.TextBlocks)
+			iban := guesser_functions.GuessIban(&extractedData.TextBlocks)
 			Expect(iban).To(Equal("HU93116000060000000012345676"))
 		})
 
 		It("guesses hungarian bank account number succesfully", func() {
-			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
+			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal("12345678-10589326-49010011"))
 		})
 
@@ -65,12 +65,12 @@ var _ = Describe("Guesser functions", func() {
 		})
 
 		It("guesses iban succesfully", func() {
-			iban := guesser_functions.GuessIbanFromTextBlocks(&extractedData.TextBlocks)
+			iban := guesser_functions.GuessIban(&extractedData.TextBlocks)
 			Expect(iban).To(Equal(""))
 		})
 
 		It("guesses hungarian bank account number succesfully", func() {
-			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
+			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal("11736006-20410614"))
 		})
 
@@ -102,12 +102,12 @@ var _ = Describe("Guesser functions", func() {
 		})
 
 		It("guesses iban succesfully", func() {
-			iban := guesser_functions.GuessIbanFromTextBlocks(&extractedData.TextBlocks)
+			iban := guesser_functions.GuessIban(&extractedData.TextBlocks)
 			Expect(iban).To(Equal(""))
 		})
 
 		It("guesses hungarian bank account number succesfully", func() {
-			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
+			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal(""))
 		})
 
@@ -140,12 +140,12 @@ var _ = Describe("Guesser functions", func() {
 		})
 
 		It("guesses iban succesfully", func() {
-			iban := guesser_functions.GuessIbanFromTextBlocks(&extractedData.TextBlocks)
+			iban := guesser_functions.GuessIban(&extractedData.TextBlocks)
 			Expect(iban).To(Equal(""))
 		})
 
 		It("guesses hungarian bank account number succesfully", func() {
-			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
+			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal("12345678-12345678-12345678"))
 		})
 
@@ -177,12 +177,12 @@ var _ = Describe("Guesser functions", func() {
 		})
 
 		It("guesses iban succesfully", func() {
-			iban := guesser_functions.GuessIbanFromTextBlocks(&extractedData.TextBlocks)
+			iban := guesser_functions.GuessIban(&extractedData.TextBlocks)
 			Expect(iban).To(Equal("HU19120105010040405600200005"))
 		})
 
 		It("guesses hungarian bank account number succesfully", func() {
-			bankAccountNumber := guesser_functions.GuessHunBankAccountNumberFromTextBlocks(&extractedData.TextBlocks)
+			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
 			Expect(bankAccountNumber).To(Equal("12345678-12345678-12345678"))
 		})
 

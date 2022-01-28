@@ -37,7 +37,7 @@ func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextB
 	return ""
 }
 
-func GuessIbanFromTextBlocks(textBlocks *[]typless.TextBlock) string {
+func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
 		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
@@ -50,7 +50,7 @@ func GuessIbanFromTextBlocks(textBlocks *[]typless.TextBlock) string {
 	return ""
 }
 
-func GuessHunBankAccountNumberFromTextBlocks(textBlocks *[]typless.TextBlock) string {
+func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
 		r, _ := regexp.Compile("[0-9]{8}-[0-9]{8}-[0-9]{8}")
@@ -70,7 +70,7 @@ func GuessHunBankAccountNumberFromTextBlocks(textBlocks *[]typless.TextBlock) st
 	return ""
 }
 
-func GuessGrossPriceFromTextBlocks(textBlocks *[]typless.TextBlock) string {
+func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 	//  Gest highest price mentioned in texblocks
 	highestPrice := ""
 	for _, block := range *textBlocks {
