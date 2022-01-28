@@ -6,13 +6,17 @@ import (
 	"path"
 	"pocok/src/consumers/email_sender/create_email"
 	"runtime"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load(".env.local")
 	url := os.Getenv("API_URL")
 	if url == "" {
 		url = "https://test.com"
 	}
+
 	email_content, _ := create_email.GetHtmlSummary(url)
 	writeFileRelative(email_content, "/emails/summary_email.html")
 
