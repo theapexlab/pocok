@@ -34,7 +34,7 @@ func (c *CreateInvoiceService) getFieldFallbackValue(fieldName string, textBlock
 
 func (c *CreateInvoiceService) getExtractedFieldValue(extractedData *typless.ExtractDataFromFileOutput, fieldIndex int) string {
 	firstValueField := extractedData.ExtractedFields[fieldIndex].Values[0]
-	if firstValueField.ConfidenceScore > 0 {
+	if firstValueField.Value != "" && firstValueField.ConfidenceScore > 0 {
 		return strings.TrimSpace(firstValueField.Value)
 	}
 	fieldName := extractedData.ExtractedFields[fieldIndex].Name
