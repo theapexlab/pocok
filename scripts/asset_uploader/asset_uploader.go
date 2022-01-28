@@ -4,23 +4,25 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"io/fs"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"pocok/src/utils/aws_clients"
+	"runtime"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-const (
-	ASSET_FOLDER = "./assets/"
-)
-
 func main() {
 	client := aws_clients.GetS3Client()
+
+	_, filename, _, _ := runtime.Caller(0)
+	assetFolder := path.Dir(filename) + "/../../assets/"
 
 	assetBucketName, err := getAssetBucketName(client)
 	if err != nil {
@@ -29,24 +31,27 @@ func main() {
 
 	emptyAssetBucket(client, assetBucketName)
 
-	files, err := ioutil.ReadDir(ASSET_FOLDER)
+	files, err := ioutil.ReadDir(assetFolder)
 	if err != nil {
 		log.Fatal(err)
 	}
+	uploadFiles(client, assetBucketName, assetFolder, files)
 
+}
+
+func uploadFiles(client *s3.Client, assetBucketName string, assetFolder string, files []fs.FileInfo) {
 	log.Println("Start uploading assets.")
 	for _, file := range files {
 		if !file.IsDir() {
 			fileName := file.Name()
 			log.Println("uploading - " + fileName)
-			err = uploadObject(client, assetBucketName, fileName)
+			err := uploadObject(client, assetBucketName, assetFolder, fileName)
 			if err != nil {
 				log.Fatal(err)
 			}
 		}
 	}
 	log.Println("Uploading assets completed.")
-
 }
 
 func getAssetBucketName(client *s3.Client) (string, error) {
@@ -70,8 +75,8 @@ func getAssetBucketName(client *s3.Client) (string, error) {
 	return assetBucketName, nil
 }
 
-func uploadObject(client *s3.Client, assetBucketName string, fileName string) error {
-	upFile, err := os.Open(ASSET_FOLDER + fileName)
+func uploadObject(client *s3.Client, assetBucketName string, assetFolder string, fileName string) error {
+	upFile, err := os.Open(assetFolder + fileName)
 	if err != nil {
 		return err
 	}
