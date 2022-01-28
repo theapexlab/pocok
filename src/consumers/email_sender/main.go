@@ -7,13 +7,13 @@ import (
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/aws_utils"
 	"pocok/src/utils/mailgun_client"
 	"pocok/src/utils/models"
 	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
@@ -72,20 +72,6 @@ func SendInvoiceSummary(d *dependencies) error {
 	return nil
 }
 
-func getLogoUrl(client s3.Client, assetBucketName string) (string, error) {
-	region, err := client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
-		Bucket: aws.String(assetBucketName),
-	})
-	if err != nil {
-		utils.LogError("Error while loading invoices", err)
-		return "", err
-	}
-
-	pocokUrl := "https://" + assetBucketName + ".s3." + string(region.LocationConstraint) + ".amazonaws.com/pocok-logo.png"
-
-	return pocokUrl, nil
-}
-
 func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, models.APEX_ID)
 	if err != nil {
@@ -93,7 +79,8 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 		return nil, err
 	}
 
-	logoUrl, err := getLogoUrl(*d.s3Client, d.assetBucketName)
+	logoKey := "pocok-logo.png"
+	logoUrl, err := aws_utils.GetAssetUrl(*d.s3Client, d.assetBucketName, logoKey)
 	if err != nil {
 		return nil, err
 	}
