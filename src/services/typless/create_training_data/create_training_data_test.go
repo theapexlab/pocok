@@ -46,7 +46,6 @@ var _ = Describe("CreateTrainingData", func() {
 			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_AMOUNT)).To(Equal("500"))
 			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_NET_PRICE)).To(Equal("5000"))
 			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_GROSS_PRICE)).To(Equal("10000"))
-			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_CURRENCY)).To(Equal("huf"))
 			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_VAT_RATE)).To(Equal("27%"))
 			Expect(getLearningFieldValue(trainingData.LineItems[0], typless.SERVICE_VAT_AMOUNT)).To(Equal("2700"))
 		})

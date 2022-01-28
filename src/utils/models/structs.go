@@ -14,7 +14,6 @@ type Service struct {
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
 	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 }
