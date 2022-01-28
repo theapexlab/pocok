@@ -11,8 +11,8 @@ type CreateInvoiceService struct {
 	OriginalFilename string
 }
 
-func (c *CreateInvoiceService) getFieldFallbackValue(field *typless.ExtractedField, textBlocks *[]typless.TextBlock) string {
-	switch field.Name {
+func (c *CreateInvoiceService) getFieldFallbackValue(fieldName string, textBlocks *[]typless.TextBlock) string {
+	switch fieldName {
 	case typless.INVOICE_NUMBER:
 		return guesser_functions.GuessInvoiceNumberFromFilename(c.OriginalFilename, textBlocks)
 	case typless.VENDOR_NAME:
@@ -37,7 +37,8 @@ func (c *CreateInvoiceService) getExtractedFieldValue(extractedData *typless.Ext
 	if firstValueField.ConfidenceScore > 0 {
 		return strings.TrimSpace(firstValueField.Value)
 	}
-	return c.getFieldFallbackValue(&extractedData.ExtractedFields[fieldIndex], &extractedData.TextBlocks)
+	fieldName := extractedData.ExtractedFields[fieldIndex].Name
+	return c.getFieldFallbackValue(fieldName, &extractedData.TextBlocks)
 }
 
 func (c *CreateInvoiceService) getLineItemFieldValue(field typless.ExtractedField) string {
