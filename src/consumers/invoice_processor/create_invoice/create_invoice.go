@@ -21,8 +21,12 @@ func (c *CreateInvoiceService) getFieldFallbackValue(field *typless.ExtractedFie
 		return guesser_functions.GuessHunBankAccountNumberFromTextBlocks(textBlocks)
 	case typless.IBAN:
 		return guesser_functions.GuessIbanFromTextBlocks(textBlocks)
+	case typless.CURRENCY:
+		return guesser_functions.GuessCurrency(textBlocks)
 	case typless.GROSS_PRICE:
 		return guesser_functions.GuessGrossPriceFromTextBlocks(textBlocks)
+	case typless.DUE_DATE:
+		return guesser_functions.GuessDueDate(textBlocks)
 	default:
 		return ""
 	}
