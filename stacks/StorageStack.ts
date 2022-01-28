@@ -26,7 +26,6 @@ export class StorageStack extends Stack {
       localIndexes: {
         localSecondaryIndex1: { sortKey: "lsi1sk" },
         localSecondaryIndex2: { sortKey: "lsi2sk" },
-        localSecondaryIndex3: { sortKey: "lsi3sk" },
       },
       dynamodbTable: {
         removalPolicy:
