@@ -11,6 +11,11 @@ func CreateTrainingData(invoice *models.Invoice) *typless.TrainingData {
 
 	trainingData.DocumentObjectId = invoice.TyplessObjectId
 
+	trainingData.LearningFields = append(trainingData.LearningFields, typless.LearningField{
+		Name:  typless.SUPPLIER_NAME,
+		Value: invoice.VendorName,
+	})
+
 	for typlessField, invoiceField := range typless.ExtractDataToInvoiceMap {
 		trainingData.LearningFields = append(trainingData.LearningFields, typless.LearningField{
 			Name:  typlessField,

@@ -32,7 +32,8 @@ export class QueueStack extends Stack {
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
-    const lambdaTimeout= process.env.PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC || "60"
+    const lambdaTimeout =
+      process.env.PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC || "60";
     return new Queue(this, "ProcessInvoice", {
       consumer: {
         function: {
@@ -40,18 +41,18 @@ export class QueueStack extends Stack {
           environment: {
             bucketName: additionalStackProps?.storageStack.invoiceBucket
               .bucketName as string,
-            typlessToken: process.env.TYPLESS_TOKEN  || "",
+            typlessToken: process.env.TYPLESS_TOKEN || "",
             typlessDocType: process.env.TYPLESS_DOC_TYPE || "",
             tableName: additionalStackProps?.storageStack.invoiceTable
-            .tableName as string,
-            lambdaTimeout
+              .tableName as string,
+            lambdaTimeout,
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
-            additionalStackProps?.storageStack.invoiceTable as Table
+            additionalStackProps?.storageStack.invoiceTable as Table,
           ],
           // FYI: default 6s is may not enough for typless requests to complete
-          timeout: Duration.seconds(parseInt(lambdaTimeout)),  
+          timeout: Duration.seconds(parseInt(lambdaTimeout)),
         },
         consumerProps: {
           batchSize: 1,
@@ -91,9 +92,9 @@ export class QueueStack extends Stack {
         function: {
           handler: "src/consumers/email_sender/main.go",
           environment: {
-            sender: process.env.MAILGUN_SENDER as string,
-            mailgunDomain: process.env.MAILGUN_DOMAIN as string,
-            mailgunApiKey: process.env.MAILGUN_API_KEY as string,
+            mgSender: process.env.MAILGUN_SENDER as string,
+            mgDomain: process.env.MAILGUN_DOMAIN as string,
+            mgApiKey: process.env.MAILGUN_API_KEY as string,
             emailRecipient: process.env.EMAIL_RECIPIENT as string,
             apiUrl: process.env.API_URL as string,
             jwtKey: process.env.JWT_KEY as string,

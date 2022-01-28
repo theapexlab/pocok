@@ -4,6 +4,7 @@ const (
 	INVOICE_NUMBER string = "invoice_number"
 	GROSS_PRICE    string = "total_amount"
 	NET_PRICE      string = "net_amount"
+	SUPPLIER_NAME  string = "supplier_name"
 	VENDOR_NAME    string = "vendor_name"
 	ACCOUNT_NUMBER string = "account_number"
 	IBAN           string = "iban"
@@ -42,7 +43,6 @@ var LineItemsToServiceMap map[string]string = map[string]string{
 	SERVICE_AMOUNT:      "Amount",
 	SERVICE_NET_PRICE:   "NetPrice",
 	SERVICE_GROSS_PRICE: "GrossPrice",
-	SERVICE_CURRENCY:    "Currency",
 	SERVICE_VAT_RATE:    "VatRate",
 	SERVICE_VAT_AMOUNT:  "VatAmount",
 }
