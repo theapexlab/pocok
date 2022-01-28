@@ -10,7 +10,8 @@ import (
 var _ = Describe("CreateEmail", func() {
 	When("it gets the html summary", func() {
 		testUrl := "test_api_url"
-		emailContent, err := GetHtmlSummary(testUrl, "pocok-bucket-name")
+		testLogoUrl := "https://github.com/theapexlab/pocok/raw/master/assets/pocok-logo.png"
+		emailContent, err := GetHtmlSummary(testUrl, testLogoUrl)
 
 		It("returns nil for error", func() {
 			Expect(err).To(BeNil())

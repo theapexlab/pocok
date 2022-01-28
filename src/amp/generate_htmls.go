@@ -11,7 +11,9 @@ import (
 
 func main() {
 	writeFileRelative(summary_email_template.Get(), "/templates/summary_email.html")
-	email_content, _ := create_email.GetHtmlSummary("https://test.com", "pocok-bucket-name")
+	testUrl := "https://test.com"
+	testLogoUrl := "https://github.com/theapexlab/pocok/raw/master/assets/pocok-logo.png"
+	email_content, _ := create_email.GetHtmlSummary(testUrl, testLogoUrl)
 	writeFileRelative(email_content, "/emails/summary_email.html")
 
 	fmt.Println("⚡️ Succesfully generated HTML files.")
