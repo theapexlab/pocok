@@ -22,7 +22,7 @@ LineItemsLoop:
 			setFieldValue(reflect.ValueOf(&service), typless.LineItemsToServiceMap, field)
 		}
 
-		if service.Name == "" || (service.GrossPrice == "" && service.Currency == "" && service.NetPrice == "") {
+		if service.Name == "" || (service.GrossPrice == "" && service.NetPrice == "") {
 			continue LineItemsLoop
 		}
 
