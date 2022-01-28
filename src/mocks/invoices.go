@@ -8,7 +8,7 @@ var MockInvoice = models.Invoice{
 	Lsi1sk: "LSI1SK",
 	Lsi2sk: "LSI2SK",
 
-	InvoiceId:  "ID",
+	InvoiceId:  "ID1",
 	EntityType: models.INVOICE,
 	Status:     models.PENDING,
 	ReceivedAt: "2022.01.18",
@@ -56,7 +56,7 @@ var MockInvoice2 = models.Invoice{
 	Lsi1sk: "LSI1SK",
 	Lsi2sk: "LSI2SK",
 
-	InvoiceId:  "ID",
+	InvoiceId:  "ID2",
 	EntityType: models.INVOICE,
 	Status:     models.ACCEPTED,
 	ReceivedAt: "2022.01.19",
