@@ -31,8 +31,6 @@ export class StorageStack extends Stack {
     });
 
     this.invoiceBucket = new Bucket(this, "InvoiceBucket");
-    this.assetBucket = new Bucket(this, "AssetBucket", {
-      s3Bucket: { bucketName: process.env.AWS_ASSET_BUCKET_NAME },
-    });
+    this.assetBucket = new Bucket(this, "AssetBucket");
   }
 }

@@ -2,33 +2,32 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"pocok/src/utils/aws_clients"
+	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/joho/godotenv"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 const (
-	ASSET_FOLDER  = "./assets/"
-	AWS_S3_REGION = "eu-central-1"
+	ASSET_FOLDER = "./assets/"
 )
 
 func main() {
+	client := aws_clients.GetS3Client()
 
-	err := godotenv.Load(".env.local")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-
-	session, err := session.NewSession(&aws.Config{Region: aws.String(AWS_S3_REGION)})
+	assetBucketName, err := getAssetBucketName(client)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	emptyAssetBucket(client, assetBucketName)
 
 	files, err := ioutil.ReadDir(ASSET_FOLDER)
 	if err != nil {
@@ -40,18 +39,38 @@ func main() {
 		if !file.IsDir() {
 			fileName := file.Name()
 			log.Println("uploading - " + fileName)
-			err = uploadFile(session, fileName)
+			err = uploadObject(client, assetBucketName, fileName)
 			if err != nil {
 				log.Fatal(err)
 			}
 		}
 	}
-
 	log.Println("Uploading assets completed.")
+
 }
 
-func uploadFile(session *session.Session, fileName string) error {
+func getAssetBucketName(client *s3.Client) (string, error) {
+	buckets, err := client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	assetBucketName := ""
+	for _, bucket := range buckets.Buckets {
+		isAssetBucket := strings.Contains(*bucket.Name, "assetbucket")
+		if isAssetBucket {
+			assetBucketName = *bucket.Name
+		}
+	}
+
+	if assetBucketName == "" {
+		return "", errors.New("can't find asset bucket")
+	}
+
+	return assetBucketName, nil
+}
+
+func uploadObject(client *s3.Client, assetBucketName string, fileName string) error {
 	upFile, err := os.Open(ASSET_FOLDER + fileName)
 	if err != nil {
 		return err
@@ -63,13 +82,73 @@ func uploadFile(session *session.Session, fileName string) error {
 	fileBuffer := make([]byte, fileSize)
 	upFile.Read(fileBuffer)
 
-	_, err = s3.New(session).PutObject(&s3.PutObjectInput{
-		Bucket:        aws.String(os.Getenv("AWS_ASSET_BUCKET_NAME")),
+	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket:        aws.String(assetBucketName),
 		Key:           aws.String(fileName),
-		ACL:           aws.String("public-read"),
+		ACL:           "public-read",
 		Body:          bytes.NewReader(fileBuffer),
-		ContentLength: aws.Int64(fileSize),
+		ContentLength: fileSize,
 		ContentType:   aws.String(http.DetectContentType(fileBuffer)),
 	})
+
 	return err
+}
+
+func deleteObject(client *s3.Client, bucket, key, versionId *string) {
+	log.Println("deleting - " + *key)
+	_, err := client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+		Bucket:    bucket,
+		Key:       key,
+		VersionId: versionId,
+	})
+	if err != nil {
+		log.Fatalf("Failed to delete object: %v", err)
+	}
+}
+
+func emptyAssetBucket(client *s3.Client, assetBucketName string) {
+	log.Println("Start deleting items in asset bucket.")
+	bucket := aws.String(assetBucketName)
+
+	in := &s3.ListObjectsV2Input{Bucket: bucket}
+	for {
+		out, err := client.ListObjectsV2(context.TODO(), in)
+		if err != nil {
+			log.Fatalf("Failed to list objects: %v", err)
+		}
+
+		for _, item := range out.Contents {
+			deleteObject(client, bucket, item.Key, nil)
+		}
+
+		if out.IsTruncated {
+			in.ContinuationToken = out.ContinuationToken
+		} else {
+			break
+		}
+	}
+
+	inVer := &s3.ListObjectVersionsInput{Bucket: bucket}
+	for {
+		out, err := client.ListObjectVersions(context.TODO(), inVer)
+		if err != nil {
+			log.Fatalf("Failed to list version objects: %v", err)
+		}
+
+		for _, item := range out.DeleteMarkers {
+			deleteObject(client, bucket, item.Key, item.VersionId)
+		}
+
+		for _, item := range out.Versions {
+			deleteObject(client, bucket, item.Key, item.VersionId)
+		}
+
+		if out.IsTruncated {
+			inVer.VersionIdMarker = out.NextVersionIdMarker
+			inVer.KeyMarker = out.NextKeyMarker
+		} else {
+			break
+		}
+	}
+	log.Println("Deleting assets in asset bucket completed.")
 }
