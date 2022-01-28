@@ -28,5 +28,5 @@ yarn-debug.log*
 yarn-error.log*
 
 cdk.context.json
-
+/aws-nuke/config.yml
 /src/amp/**/*.html
