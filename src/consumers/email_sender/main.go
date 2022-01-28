@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go/aws"
 )
 
 type dependencies struct {
@@ -71,6 +72,20 @@ func SendInvoiceSummary(d *dependencies) error {
 	return nil
 }
 
+func getLogoUrl(client s3.Client, assetBucketName string) (string, error) {
+	region, err := client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
+		Bucket: aws.String(assetBucketName),
+	})
+	if err != nil {
+		utils.LogError("Error while loading invoices", err)
+		return "", err
+	}
+
+	pocokUrl := "https://" + assetBucketName + ".s3." + string(region.LocationConstraint) + ".amazonaws.com/pocok-logo.png"
+
+	return pocokUrl, nil
+}
+
 func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, models.APEX_ID)
 	if err != nil {
@@ -78,7 +93,12 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 		return nil, err
 	}
 
-	amp, err := GetHtmlSummary(d.apiUrl, d.assetBucketName)
+	logoUrl, err := getLogoUrl(*d.s3Client, d.assetBucketName)
+	if err != nil {
+		return nil, err
+	}
+
+	amp, err := GetHtmlSummary(d.apiUrl, logoUrl)
 	if err != nil {
 		return nil, err
 	}

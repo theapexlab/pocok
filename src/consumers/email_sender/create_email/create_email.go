@@ -40,7 +40,7 @@ type emailTemplateData struct {
 	PocokLogo string
 }
 
-func GetHtmlSummary(apiUrl string, assetBucketName string) (string, error) {
+func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
 	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summary_email_template.Get())
 	if templateErr != nil {
 		utils.LogError("Error while creating template.", templateErr)
@@ -53,15 +53,12 @@ func GetHtmlSummary(apiUrl string, assetBucketName string) (string, error) {
 		return "", tokenErr
 	}
 
-	AWS_S3_REGION := "eu-central-1"
-	pocokUrl := "https://" + assetBucketName + ".s3." + AWS_S3_REGION + ".amazonaws.com/pocok-logo.png"
-
 	templateData := emailTemplateData{
 		ApiUrl:    apiUrl,
 		Token:     token,
 		Accepted:  models.ACCEPTED,
 		Rejected:  models.REJECTED,
-		PocokLogo: pocokUrl,
+		PocokLogo: logoUrl,
 	}
 
 	var templateBuffer bytes.Buffer
