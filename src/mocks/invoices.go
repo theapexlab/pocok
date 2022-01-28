@@ -30,6 +30,7 @@ var MockInvoice = models.Invoice{
 		{
 			Name:         "Kutya",
 			Amount:       "500",
+			Unit:         "db",
 			UnitNetPrice: "10",
 			NetPrice:     "5000",
 			GrossPrice:   "10000",
@@ -79,6 +80,21 @@ var MockInvoice2 = models.Invoice{
 	Services:      []models.Service{},
 
 	TyplessObjectId: "0e809bfab6a4253a1e1cfdfa5088d30380565c01",
+}
+
+var MockInvoiceMissingFields = models.Invoice{
+	Pk:     "PK",
+	Sk:     "SK",
+	Lsi1sk: "LSI1SK",
+	Lsi2sk: "LSI2SK",
+
+	InvoiceId:  "ID",
+	EntityType: models.INVOICE,
+	Status:     models.PENDING,
+	ReceivedAt: "2022.01.18",
+	Filename:   "filename1",
+
+	InvoiceNumber: "2012-12",
 }
 
 var Invoices = []models.Invoice{

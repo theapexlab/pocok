@@ -18,15 +18,17 @@ func CreateTrainingData(invoice *models.Invoice) *typless.TrainingData {
 		})
 	}
 
-	for typlessField, serviceField := range typless.LineItemsToServiceMap {
-		for _, service := range invoice.Services {
-			trainingData.LineItems = append(trainingData.LineItems, []typless.LearningField{
-				{
-					Name:  typlessField,
-					Value: reflect.ValueOf(&service).Elem().FieldByName(serviceField).String(),
-				},
+	for _, service := range invoice.Services {
+		var lineItems []typless.LearningField
+
+		for typlessField, serviceField := range typless.LineItemsToServiceMap {
+			lineItems = append(lineItems, typless.LearningField{
+				Name:  typlessField,
+				Value: reflect.ValueOf(&service).Elem().FieldByName(serviceField).String(),
 			})
 		}
+
+		trainingData.LineItems = append(trainingData.LineItems, lineItems)
 	}
 
 	return &trainingData
