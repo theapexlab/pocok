@@ -23,6 +23,7 @@
       custom-element="amp-bind"
       src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
     ></script>
+
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
@@ -142,29 +143,67 @@
                   <div>Vendor Name: {{vendorName}}</div>
                   <div>Gross Price: {{grossPrice}} {{currency}}</div>
                 </div>
-                <div>{{receivedAt}}</div>
-                <div>{{dueDate}}</div>
-                <div>{{status}}</div>
-                <div>
-                  <form
-                    method="post"
-                    action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-                    on="submit-success:invoiceList.refresh"
-                  >
-                    <input
-                      type="hidden"
-                      name="invoiceId"
-                      value="{{invoiceId}}"
-                    />
-                    <input type="hidden" name="status" value="[[.Accepted]]" />
-                    <input type="submit" value="Accept" />
-                    <div submit-success>Accept successful.</div>
-                    <div submit-error>Accept failed.</div>
-                  </form>
-                  <form
-                    method="post"
-                    action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
-                    on="submit-success:invoiceList.refresh"
+                <div class="item-header-actions">
+                  <div>
+                    <form
+                      method="post"
+                      action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                      on="submit-success:invoiceList.refresh"
+                    >
+                      <input
+                        type="hidden"
+                        name="invoiceId"
+                        value="{{invoiceId}}"
+                      />
+                      <input
+                        type="hidden"
+                        name="status"
+                        value="[[.Accepted]]"
+                      />
+                      <button type="submit">Accept</button>
+                      <div submit-success>Accept successful.</div>
+                      <div submit-error>Accept failed.</div>
+                    </form>
+                    <form
+                      method="post"
+                      action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                      on="submit-success:invoiceList.refresh"
+                    >
+                      <input
+                        type="hidden"
+                        name="invoiceId"
+                        value="{{invoiceId}}"
+                      />
+                      <input
+                        type="hidden"
+                        name="status"
+                        value="[[.Rejected]]"
+                      />
+                      <button
+                        type="button"
+                        on="tap:{{invoiceId}}-reject-modal.show"
+                      >
+                        Reject
+                      </button>
+                      <div class="modal" id="{{invoiceId}}-reject-modal" hidden>
+                        <div>
+                          <div submit-error>Reject failed.</div>
+                          <div submit-success>Reject successful.</div>
+                        </div>
+                        <div>Are you sure about that?</div>
+                        <button type="submit">Yes king</button>
+                        <button
+                          type="button"
+                          on="tap:{{invoiceId}}-reject-modal.hide"
+                        >
+                          No, please I enjoy this invoice so much
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+
+                  <button
+                    on="tap:{{invoiceId}}-item-edit.show,{{invoiceId}}-item-view.hide"
                   >
                     Edit
                   </button>
