@@ -1,0 +1,1148 @@
+{
+  "customer": null,
+  "extracted_fields": [
+    {
+      "data_type": "AUTHOR",
+      "name": "supplier_name",
+      "values": [
+        {
+          "confidence_score": 0.987,
+          "height": -1,
+          "page_number": -1,
+          "value": "Endrődi Zoltán EV",
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "DATE",
+      "name": "pay_due_date",
+      "values": [
+        {
+          "confidence_score": 0.655,
+          "height": 27,
+          "page_number": 0,
+          "value": "2021-11-17",
+          "width": 175,
+          "x": 2206,
+          "y": 936
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "currency",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 30,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 65,
+          "x": 1409,
+          "y": 1244
+        },
+        {
+          "confidence_score": 0.7515,
+          "height": 30,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 65,
+          "x": 1684,
+          "y": 1243
+        },
+        {
+          "confidence_score": 0.7515,
+          "height": 30,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 65,
+          "x": 2062,
+          "y": 1243
+        },
+        {
+          "confidence_score": 0.7515,
+          "height": 30,
+          "page_number": 0,
+          "value": "HUF",
+          "width": 65,
+          "x": 2321,
+          "y": 1244
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "net_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 27,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 116,
+          "x": 2269,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.9423,
+          "height": 26,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 120,
+          "x": 1628,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.9423,
+          "height": 27,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 120,
+          "x": 1353,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.7515,
+          "height": 26,
+          "page_number": 0,
+          "value": "0.0000",
+          "width": 47,
+          "x": 2079,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.5907,
+          "height": 25,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 88,
+          "x": 2327,
+          "y": 1690
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "total_amount",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 27,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 116,
+          "x": 2269,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.9429,
+          "height": 26,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 120,
+          "x": 1628,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.9429,
+          "height": 27,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 120,
+          "x": 1353,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.7543,
+          "height": 26,
+          "page_number": 0,
+          "value": "0.0000",
+          "width": 47,
+          "x": 2079,
+          "y": 1298
+        },
+        {
+          "confidence_score": 0.5838,
+          "height": 25,
+          "page_number": 0,
+          "value": "928320.0000",
+          "width": 88,
+          "x": 2327,
+          "y": 1690
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vat_rate",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 23,
+          "page_number": 0,
+          "value": "0",
+          "width": 14,
+          "x": 2141,
+          "y": 1691
+        },
+        {
+          "confidence_score": 0.8038,
+          "height": 24,
+          "page_number": 0,
+          "value": "O",
+          "width": 18,
+          "x": 1608,
+          "y": 1691
+        },
+        {
+          "confidence_score": 0.8038,
+          "height": 25,
+          "page_number": 0,
+          "value": "928 320",
+          "width": 88,
+          "x": 2327,
+          "y": 1690
+        },
+        {
+          "confidence_score": 0.724,
+          "height": 25,
+          "page_number": 0,
+          "value": "928 320",
+          "width": 88,
+          "x": 1817,
+          "y": 1690
+        },
+        {
+          "confidence_score": 0.6926,
+          "height": 26,
+          "page_number": 0,
+          "value": "928 320,00",
+          "width": 120,
+          "x": 1628,
+          "y": 1298
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vendor_name",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 43,
+          "page_number": 0,
+          "value": "Endrödi Zoltán EV",
+          "width": 387,
+          "x": 1993,
+          "y": 296
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "account_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 27,
+          "page_number": 0,
+          "value": "11736006-20410614",
+          "width": 246,
+          "x": 2132,
+          "y": 715
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "invoice_number",
+      "values": [
+        {
+          "confidence_score": 0.99,
+          "height": 26,
+          "page_number": 0,
+          "value": "E0041",
+          "width": 76,
+          "x": 2305,
+          "y": 774
+        },
+        {
+          "confidence_score": 0.4243,
+          "height": 27,
+          "page_number": 0,
+          "value": "Számlaszám",
+          "width": 153,
+          "x": 1343,
+          "y": 779
+        },
+        {
+          "confidence_score": 0.3536,
+          "height": 28,
+          "page_number": 0,
+          "value": "Vevö",
+          "width": 63,
+          "x": 91,
+          "y": 778
+        },
+        {
+          "confidence_score": 0.3411,
+          "height": 34,
+          "page_number": 0,
+          "value": "Kiállitó",
+          "width": 111,
+          "x": 2262,
+          "y": 241
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "iban",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    },
+    {
+      "data_type": "NUMBER",
+      "name": "vat_amount",
+      "values": [
+        {
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
+        }
+      ]
+    }
+  ],
+  "file_name": "test.pdf",
+  "line_items": [
+    [
+      {
+        "data_type": "STRING",
+        "name": "product_description",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "Szoftverfejlesztés",
+            "width": 187,
+            "x": 90,
+            "y": 1303
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "unit",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 24,
+            "page_number": 0,
+            "value": "Darab",
+            "width": 65,
+            "x": 1151,
+            "y": 1298
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 27,
+            "page_number": 0,
+            "value": "320.0000",
+            "width": 120,
+            "x": 1353,
+            "y": 1298
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 23,
+            "page_number": 0,
+            "value": "0",
+            "width": 14,
+            "x": 2141,
+            "y": 1691
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "price",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 25,
+            "page_number": 0,
+            "value": "928320.0000",
+            "width": 88,
+            "x": 1817,
+            "y": 1690
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 23,
+            "page_number": 0,
+            "value": "1.0000",
+            "width": 9,
+            "x": 937,
+            "y": 1298
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ]
+  ],
+  "object_id": "0e801aede2ee13e50c8c6b9f3eb29adb02b9ad31",
+  "text_blocks": [
+    {
+      "height": 65,
+      "number": 0,
+      "page_number": 1,
+      "value": "e-Számla",
+      "width": 287,
+      "x": 102,
+      "y": 196
+    },
+    {
+      "height": 34,
+      "number": 1,
+      "page_number": 1,
+      "value": "Kiállitó",
+      "width": 111,
+      "x": 2262,
+      "y": 241
+    },
+    {
+      "height": 43,
+      "number": 2,
+      "page_number": 1,
+      "value": "Endrödi Zoltán EV",
+      "width": 387,
+      "x": 1993,
+      "y": 296
+    },
+    {
+      "height": 31,
+      "number": 3,
+      "page_number": 1,
+      "value": "Magyarország Fejér, 8000 Székesfehérvár,",
+      "width": 457,
+      "x": 1921,
+      "y": 409
+    },
+    {
+      "height": 24,
+      "number": 4,
+      "page_number": 1,
+      "value": "Csokonai u. 17",
+      "width": 160,
+      "x": 2220,
+      "y": 459
+    },
+    {
+      "height": 27,
+      "number": 5,
+      "page_number": 1,
+      "value": "67169540-2-27",
+      "width": 183,
+      "x": 2196,
+      "y": 510
+    },
+    {
+      "height": 27,
+      "number": 6,
+      "page_number": 1,
+      "value": "HU67169540",
+      "width": 161,
+      "x": 2221,
+      "y": 560
+    },
+    {
+      "height": 28,
+      "number": 7,
+      "page_number": 1,
+      "value": "Fizetési információk",
+      "width": 258,
+      "x": 2124,
+      "y": 614
+    },
+    {
+      "height": 38,
+      "number": 8,
+      "page_number": 1,
+      "value": "ÁTUTALÁS OTP Bank Nyrt.",
+      "width": 352,
+      "x": 2026,
+      "y": 656
+    },
+    {
+      "height": 27,
+      "number": 9,
+      "page_number": 1,
+      "value": "11736006-20410614",
+      "width": 246,
+      "x": 2132,
+      "y": 715
+    },
+    {
+      "height": 28,
+      "number": 10,
+      "page_number": 1,
+      "value": "Vevö",
+      "width": 63,
+      "x": 91,
+      "y": 778
+    },
+    {
+      "height": 27,
+      "number": 11,
+      "page_number": 1,
+      "value": "Számlaszám",
+      "width": 153,
+      "x": 1343,
+      "y": 779
+    },
+    {
+      "height": 26,
+      "number": 12,
+      "page_number": 1,
+      "value": "E0041",
+      "width": 76,
+      "x": 2305,
+      "y": 774
+    },
+    {
+      "height": 41,
+      "number": 13,
+      "page_number": 1,
+      "value": "Apex Lab OÜ",
+      "width": 189,
+      "x": 92,
+      "y": 826
+    },
+    {
+      "height": 27,
+      "number": 14,
+      "page_number": 1,
+      "value": "Számla kelte",
+      "width": 154,
+      "x": 1343,
+      "y": 833
+    },
+    {
+      "height": 27,
+      "number": 15,
+      "page_number": 1,
+      "value": "2021. nov. 17.",
+      "width": 175,
+      "x": 2207,
+      "y": 828
+    },
+    {
+      "height": 36,
+      "number": 16,
+      "page_number": 1,
+      "value": "Észtország, Harju maakond",
+      "width": 332,
+      "x": 92,
+      "y": 897
+    },
+    {
+      "height": 33,
+      "number": 17,
+      "page_number": 1,
+      "value": "Teljesités idöpontja",
+      "width": 232,
+      "x": 1343,
+      "y": 887
+    },
+    {
+      "height": 27,
+      "number": 18,
+      "page_number": 1,
+      "value": "2021. nov. 30.",
+      "width": 175,
+      "x": 2207,
+      "y": 882
+    },
+    {
+      "height": 27,
+      "number": 18,
+      "page_number": 1,
+      "value": "2021. 11. 30.",
+      "width": 175,
+      "x": 2207,
+      "y": 882
+    },
+    {
+      "height": 31,
+      "number": 19,
+      "page_number": 1,
+      "value": "15551, Tallinn",
+      "width": 168,
+      "x": 94,
+      "y": 953
+    },
+    {
+      "height": 27,
+      "number": 20,
+      "page_number": 1,
+      "value": "Fizetési határidö",
+      "width": 197,
+      "x": 1343,
+      "y": 941
+    },
+    {
+      "height": 27,
+      "number": 21,
+      "page_number": 1,
+      "value": "2021. nov. 17.",
+      "width": 175,
+      "x": 2206,
+      "y": 936
+    },
+    {
+      "height": 34,
+      "number": 22,
+      "page_number": 1,
+      "value": "Egyéb",
+      "width": 75,
+      "x": 1343,
+      "y": 995
+    },
+    {
+      "height": 27,
+      "number": 23,
+      "page_number": 1,
+      "value": "Kisadózó",
+      "width": 120,
+      "x": 2263,
+      "y": 989
+    },
+    {
+      "height": 33,
+      "number": 24,
+      "page_number": 1,
+      "value": "Sepapaja tn 6",
+      "width": 167,
+      "x": 92,
+      "y": 1008
+    },
+    {
+      "height": 27,
+      "number": 25,
+      "page_number": 1,
+      "value": "Lasnamäe linnaosa",
+      "width": 235,
+      "x": 92,
+      "y": 1062
+    },
+    {
+      "height": 34,
+      "number": 26,
+      "page_number": 1,
+      "value": "Közösségi adószám",
+      "width": 242,
+      "x": 92,
+      "y": 1116
+    },
+    {
+      "height": 27,
+      "number": 27,
+      "page_number": 1,
+      "value": "EE102235883",
+      "width": 171,
+      "x": 1127,
+      "y": 1110
+    },
+    {
+      "height": 30,
+      "number": 28,
+      "page_number": 1,
+      "value": "Megnevezés",
+      "width": 141,
+      "x": 90,
+      "y": 1196
+    },
+    {
+      "height": 29,
+      "number": 29,
+      "page_number": 1,
+      "value": "Mennyiség",
+      "width": 124,
+      "x": 825,
+      "y": 1197
+    },
+    {
+      "height": 30,
+      "number": 30,
+      "page_number": 1,
+      "value": "Menny. egység",
+      "width": 171,
+      "x": 1045,
+      "y": 1197
+    },
+    {
+      "height": 30,
+      "number": 31,
+      "page_number": 1,
+      "value": "Nettó egységár",
+      "width": 175,
+      "x": 1301,
+      "y": 1197
+    },
+    {
+      "height": 24,
+      "number": 32,
+      "page_number": 1,
+      "value": "Nettó érték",
+      "width": 127,
+      "x": 1624,
+      "y": 1197
+    },
+    {
+      "height": 26,
+      "number": 33,
+      "page_number": 1,
+      "value": "ÁFA",
+      "width": 50,
+      "x": 1847,
+      "y": 1195
+    },
+    {
+      "height": 27,
+      "number": 34,
+      "page_number": 1,
+      "value": "ÁFA érték",
+      "width": 114,
+      "x": 2013,
+      "y": 1194
+    },
+    {
+      "height": 25,
+      "number": 35,
+      "page_number": 1,
+      "value": "Bruttó érték",
+      "width": 136,
+      "x": 2251,
+      "y": 1197
+    },
+    {
+      "height": 30,
+      "number": 36,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 1409,
+      "y": 1244
+    },
+    {
+      "height": 30,
+      "number": 37,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 1684,
+      "y": 1243
+    },
+    {
+      "height": 30,
+      "number": 38,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 2062,
+      "y": 1243
+    },
+    {
+      "height": 30,
+      "number": 39,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 2321,
+      "y": 1244
+    },
+    {
+      "height": 31,
+      "number": 40,
+      "page_number": 1,
+      "value": "Szoftverfejlesztés",
+      "width": 187,
+      "x": 90,
+      "y": 1303
+    },
+    {
+      "height": 23,
+      "number": 41,
+      "page_number": 1,
+      "value": "1",
+      "width": 9,
+      "x": 937,
+      "y": 1298
+    },
+    {
+      "height": 24,
+      "number": 42,
+      "page_number": 1,
+      "value": "Darab",
+      "width": 65,
+      "x": 1151,
+      "y": 1298
+    },
+    {
+      "height": 27,
+      "number": 43,
+      "page_number": 1,
+      "value": "928 320,00",
+      "width": 120,
+      "x": 1353,
+      "y": 1298
+    },
+    {
+      "height": 26,
+      "number": 44,
+      "page_number": 1,
+      "value": "928 320,00",
+      "width": 120,
+      "x": 1628,
+      "y": 1298
+    },
+    {
+      "height": 23,
+      "number": 45,
+      "page_number": 1,
+      "value": "O",
+      "width": 18,
+      "x": 1879,
+      "y": 1298
+    },
+    {
+      "height": 26,
+      "number": 46,
+      "page_number": 1,
+      "value": "0,00",
+      "width": 47,
+      "x": 2079,
+      "y": 1298
+    },
+    {
+      "height": 27,
+      "number": 47,
+      "page_number": 1,
+      "value": "928 320,00",
+      "width": 116,
+      "x": 2269,
+      "y": 1298
+    },
+    {
+      "height": 37,
+      "number": 48,
+      "page_number": 1,
+      "value": "O Áfa törvény hatályán kivüli ügyletek",
+      "width": 469,
+      "x": 88,
+      "y": 1395
+    },
+    {
+      "height": 37,
+      "number": 49,
+      "page_number": 1,
+      "value": "ÁFA törvény 37. paragrafus 1. bekezdés szerinti, másik tagállamban forditottan adózó ügylet",
+      "width": 1107,
+      "x": 87,
+      "y": 1495
+    },
+    {
+      "height": 28,
+      "number": 50,
+      "page_number": 1,
+      "value": "ÁFA kulcs",
+      "width": 117,
+      "x": 1515,
+      "y": 1570
+    },
+    {
+      "height": 28,
+      "number": 51,
+      "page_number": 1,
+      "value": "Adóalap",
+      "width": 96,
+      "x": 1807,
+      "y": 1575
+    },
+    {
+      "height": 27,
+      "number": 52,
+      "page_number": 1,
+      "value": "ÁFA érték",
+      "width": 114,
+      "x": 2041,
+      "y": 1571
+    },
+    {
+      "height": 25,
+      "number": 53,
+      "page_number": 1,
+      "value": "Számla érték",
+      "width": 147,
+      "x": 2269,
+      "y": 1574
+    },
+    {
+      "height": 29,
+      "number": 54,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 1838,
+      "y": 1622
+    },
+    {
+      "height": 30,
+      "number": 55,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 2090,
+      "y": 1621
+    },
+    {
+      "height": 29,
+      "number": 56,
+      "page_number": 1,
+      "value": "(HUF)",
+      "width": 65,
+      "x": 2351,
+      "y": 1622
+    },
+    {
+      "height": 24,
+      "number": 57,
+      "page_number": 1,
+      "value": "O",
+      "width": 18,
+      "x": 1608,
+      "y": 1691
+    },
+    {
+      "height": 25,
+      "number": 58,
+      "page_number": 1,
+      "value": "928 320",
+      "width": 88,
+      "x": 1817,
+      "y": 1690
+    },
+    {
+      "height": 23,
+      "number": 59,
+      "page_number": 1,
+      "value": "0",
+      "width": 14,
+      "x": 2141,
+      "y": 1691
+    },
+    {
+      "height": 25,
+      "number": 60,
+      "page_number": 1,
+      "value": "928 320",
+      "width": 88,
+      "x": 2327,
+      "y": 1690
+    },
+    {
+      "height": 26,
+      "number": 61,
+      "page_number": 1,
+      "value": "Összesen",
+      "width": 113,
+      "x": 1513,
+      "y": 1768
+    },
+    {
+      "height": 25,
+      "number": 62,
+      "page_number": 1,
+      "value": "928 320",
+      "width": 90,
+      "x": 1816,
+      "y": 1763
+    },
+    {
+      "height": 23,
+      "number": 63,
+      "page_number": 1,
+      "value": "0",
+      "width": 14,
+      "x": 2141,
+      "y": 1764
+    },
+    {
+      "height": 24,
+      "number": 64,
+      "page_number": 1,
+      "value": "928 320",
+      "width": 86,
+      "x": 2328,
+      "y": 1764
+    },
+    {
+      "height": 33,
+      "number": 65,
+      "page_number": 1,
+      "value": "Fizetendö végösszeg",
+      "width": 273,
+      "x": 1446,
+      "y": 1832
+    },
+    {
+      "height": 34,
+      "number": 66,
+      "page_number": 1,
+      "value": "928 320 HUF",
+      "width": 223,
+      "x": 2184,
+      "y": 1823
+    },
+    {
+      "height": 24,
+      "number": 67,
+      "page_number": 1,
+      "value": "EZ A SZÁMLA A BILLZONE. EU",
+      "width": 359,
+      "x": 1890,
+      "y": 2814
+    },
+    {
+      "height": 25,
+      "number": 68,
+      "page_number": 1,
+      "value": "ONLINE SZÁMLÁZÓVAL KÉSZÜLT",
+      "width": 401,
+      "x": 1869,
+      "y": 2844
+    },
+    {
+      "height": 85,
+      "number": 69,
+      "page_number": 1,
+      "value": "billzone.eu",
+      "width": 372,
+      "x": 1893,
+      "y": 2999
+    },
+    {
+      "height": 30,
+      "number": 70,
+      "page_number": 1,
+      "value": "Szolgáltató Billzone.eu",
+      "width": 241,
+      "x": 77,
+      "y": 3221
+    },
+    {
+      "height": 22,
+      "number": 71,
+      "page_number": 1,
+      "value": "Endrödi Zoltán EV",
+      "width": 168,
+      "x": 1159,
+      "y": 3218
+    },
+    {
+      "height": 27,
+      "number": 72,
+      "page_number": 1,
+      "value": "Magyarország Fejér, 8000 Székesfehérvár, Csokonai u. 17",
+      "width": 541,
+      "x": 971,
+      "y": 3258
+    },
+    {
+      "height": 23,
+      "number": 73,
+      "page_number": 1,
+      "value": "Kiállitó",
+      "width": 71,
+      "x": 78,
+      "y": 3308
+    },
+    {
+      "height": 26,
+      "number": 74,
+      "page_number": 1,
+      "value": "OTP Bank Nyrt.; 11736006-20410614;",
+      "width": 354,
+      "x": 1065,
+      "y": 3299
+    },
+    {
+      "height": 23,
+      "number": 75,
+      "page_number": 1,
+      "value": "kt44mkfwsa",
+      "width": 126,
+      "x": 77,
+      "y": 3352
+    },
+    {
+      "height": 21,
+      "number": 76,
+      "page_number": 1,
+      "value": "176.63.11.134",
+      "width": 112,
+      "x": 78,
+      "y": 3394
+    }
+  ],
+  "vat_rates": []
+}

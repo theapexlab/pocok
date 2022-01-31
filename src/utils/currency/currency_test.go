@@ -37,22 +37,22 @@ var _ = Describe("TrimCurrencyFromPrice", func() {
 var _ = Describe("GetCurrencyFromPrice", func() {
 	When("recieves string with currency", func() {
 		It("returns currency type", func() {
-			Expect(currency.GetCurrencyFromPrice("$150")).To(Equal("USD"))
-			Expect(currency.GetCurrencyFromPrice("400$")).To(Equal("USD"))
-			Expect(currency.GetCurrencyFromPrice("600 $")).To(Equal("USD"))
-			Expect(currency.GetCurrencyFromPrice("630 EUR")).To(Equal("EUR"))
-			Expect(currency.GetCurrencyFromPrice("110€")).To(Equal("EUR"))
-			Expect(currency.GetCurrencyFromPrice("€150")).To(Equal("EUR"))
-			Expect(currency.GetCurrencyFromPrice("28000 HUF")).To(Equal("HUF"))
-			Expect(currency.GetCurrencyFromPrice("15000 FT")).To(Equal("HUF"))
+			Expect(currency.GetCurrencyFromString("$150")).To(Equal("USD"))
+			Expect(currency.GetCurrencyFromString("400$")).To(Equal("USD"))
+			Expect(currency.GetCurrencyFromString("600 $")).To(Equal("USD"))
+			Expect(currency.GetCurrencyFromString("630 EUR")).To(Equal("EUR"))
+			Expect(currency.GetCurrencyFromString("110€")).To(Equal("EUR"))
+			Expect(currency.GetCurrencyFromString("€150")).To(Equal("EUR"))
+			Expect(currency.GetCurrencyFromString("28000 HUF")).To(Equal("HUF"))
+			Expect(currency.GetCurrencyFromString("15000 FT")).To(Equal("HUF"))
 		})
 
 	})
 
 	When("recieves string with no currency symbol", func() {
 		It("returns empty string", func() {
-			Expect(currency.GetCurrencyFromPrice("150")).To(Equal(""))
-			Expect(currency.GetCurrencyFromPrice("300 &")).To(Equal(""))
+			Expect(currency.GetCurrencyFromString("150")).To(Equal(""))
+			Expect(currency.GetCurrencyFromString("300 &")).To(Equal(""))
 		})
 	})
 })

@@ -46,7 +46,14 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		filename := record.Body
 
 		// get the invoice from s3
-		invoicePdf, err := d.getInvoicePdf(filename)
+		s3Invoice, err := d.getS3Invoice(filename)
+		if err != nil {
+			return err
+		}
+
+		originalFilename := s3Invoice.Metadata["OriginalFilename"]
+
+		invoicePdf, err := ioutil.ReadAll(s3Invoice.Body)
 		if err != nil {
 			return err
 		}
@@ -72,7 +79,11 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return err
 		}
 
-		invoice := create_invoice.CreateInvoice(extractedData)
+		createInvoiceService := create_invoice.CreateInvoiceService{
+			OriginalFilename: originalFilename,
+			ExtractedData:    extractedData,
+		}
+		invoice := createInvoiceService.CreateInvoice()
 		invoice.Filename = filename
 
 		_, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)
@@ -87,19 +98,15 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 	return nil
 }
 
-func (d *dependencies) getInvoicePdf(filename string) ([]byte, error) {
+func (d *dependencies) getS3Invoice(filename string) (*s3.GetObjectOutput, error) {
 	invoice, err := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: &d.bucketName,
 		Key:    &filename,
 	})
+
 	if err != nil {
 		return nil, err
 	}
 
-	bytes, err := ioutil.ReadAll(invoice.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return bytes, nil
+	return invoice, err
 }

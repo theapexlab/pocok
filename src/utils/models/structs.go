@@ -3,8 +3,9 @@ package models
 import "github.com/golang-jwt/jwt"
 
 type UploadInvoiceMessage struct {
-	Type string `json:"type"` // "url","base64"
-	Body string `json:"body"`
+	Type     string `json:"type"` // "url","base64"
+	Body     string `json:"body"`
+	Filename string `json:"filename"`
 }
 
 type Service struct {
@@ -55,6 +56,7 @@ type InvoiceResponse struct {
 type EmailAttachment struct {
 	ContentType string `json:"contentType"`
 	Content_b64 string `json:"content_b64"`
+	Filename    string `json:"fileName"`
 }
 
 type EmailFrom struct {

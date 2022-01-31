@@ -70,6 +70,7 @@ func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
 
 	var templateBuffer bytes.Buffer
 	executionErr := t.Execute(&templateBuffer, templateData)
+
 	if executionErr != nil {
 		utils.LogError("Error while executing template insetion.", executionErr)
 		return "", executionErr

@@ -19,8 +19,9 @@ func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
 
 	if hasPdfAttachment(jsonBody.Attachments) {
 		return &models.UploadInvoiceMessage{
-			Type: "base64",
-			Body: jsonBody.Attachments[0].Content_b64,
+			Type:     "base64",
+			Body:     jsonBody.Attachments[0].Content_b64,
+			Filename: jsonBody.Attachments[0].Filename,
 		}, nil
 	}
 

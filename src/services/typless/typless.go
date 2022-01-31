@@ -13,7 +13,7 @@ import (
 )
 
 func ExtractData(config *Config, file []byte, timeout int) (*ExtractDataFromFileOutput, error) {
-	url := "https://developers.typless.com/api/extract-data"
+	url := "https://developers.typless.com/api/extract-data?training=true"
 
 	payload := ExtractDataFromFileInput{
 		DocumentTypeName: config.DocType,

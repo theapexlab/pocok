@@ -1,4 +1,4 @@
-package create_invoice_test
+package guesser_functions_test
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestCreateInvoice(t *testing.T) {
+func TestGuesserFunctions(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "CreateInvoice Suite")
+	RunSpecs(t, "GuesserFunctions Suite")
 }
