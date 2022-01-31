@@ -12,7 +12,7 @@
     "go-watch-test": "nodemon --watch src -e go,json --exec 'yarn go-test'",
     "go-amp": "go run ./src/amp/generate_htmls.go",
     "amp-validate": "yarn go-amp && amphtml-validator ./src/amp/emails/*.html --html_format=AMP4EMAIL",
-    "go-watch-amp": "nodemon --watch src/amp -e go --exec 'yarn amp-validate'",
+    "go-watch-amp": "nodemon --watch src/amp/templates -e html --exec 'yarn amp-validate'",
     "go-tidy": "go mod tidy",
     "nuke-aws": "./aws-nuke/setup.sh && docker run --rm -it -v $PWD/aws-nuke/config.yml:/home/aws-nuke/config.yml -v ~/.aws:/home/aws-nuke/.aws rebuy/aws-nuke:latest --profile default --config /home/aws-nuke/config.yml --no-dry-run"
   },
