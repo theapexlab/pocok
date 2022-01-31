@@ -10,6 +10,7 @@ import {
 export class StorageStack extends Stack {
   invoiceTable: Table;
   invoiceBucket: Bucket;
+  assetBucket: Bucket;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -35,6 +36,8 @@ export class StorageStack extends Stack {
       },
     });
 
+    this.assetBucket = new Bucket(this, "AssetBucket");
+    
     this.invoiceBucket = new Bucket(this, "InvoiceBucket", {
       s3Bucket: {
         removalPolicy:

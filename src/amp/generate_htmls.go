@@ -12,12 +12,13 @@ import (
 
 func main() {
 	godotenv.Load(".env.local")
-	url := os.Getenv("API_URL")
-	if url == "" {
-		url = "https://test.com"
+	testUrl := os.Getenv("API_URL")
+	testLogoUrl := "https://github.com/theapexlab/pocok/raw/master/assets/pocok-logo.png"
+	if testUrl == "" {
+		testUrl = "https://test.com"
 	}
 
-	email_content, _ := create_email.GetHtmlSummary(url)
+	email_content, _ := create_email.GetHtmlSummary(testUrl, testLogoUrl)
 	writeFileRelative(email_content, "/emails/summary_email.html")
 
 	fmt.Println("⚡️ Succesfully generated HTML files.")
