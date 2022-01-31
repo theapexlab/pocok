@@ -5,6 +5,7 @@ import {
   Api,
   Queue,
   Table,
+  Bucket,
 } from "@serverless-stack/resources";
 import { QueueStack } from "./QueueStack";
 import { StorageStack } from "./StorageStack";
@@ -69,11 +70,14 @@ export class ApiStack extends Stack {
               ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
+              bucketName: additionalStackProps?.storageStack.invoiceBucket
+                .bucketName as string,
               typlessToken: process.env.TYPLESS_TOKEN as string,
               typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
+              additionalStackProps?.storageStack.invoiceBucket as Bucket,
             ],
           },
         },
