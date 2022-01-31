@@ -1,7 +1,7 @@
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="logo.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/theapexlab/pocok">
+    <img src="assets/pocok-logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">POCOK</h3>

@@ -9,7 +9,7 @@ import (
 
 func Get() (string, error) {
 	filePath := "src/amp/templates/summary_email.html"
-	if os.Getenv("environment") != "production" {
+	if os.Getenv("stage") != "production" {
 		_, filename, _, _ := runtime.Caller(0)
 		currentPath := path.Dir(filename)
 		filePath = currentPath + "/../../../" + filePath

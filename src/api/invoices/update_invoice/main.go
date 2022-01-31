@@ -1,14 +1,12 @@
 package main
 
 import (
-	"errors"
 	"net/http"
 	"os"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
-	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -43,28 +41,16 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), err
 	}
 
-	validateError := validateUpdateRequest(data)
-	if validateError != nil {
-		utils.LogError("Invalid update payload", validateError)
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, validateError.Error()), nil
+	update, validationErr := db.CreateStatusUpdate(data)
+	if validationErr != nil {
+		utils.LogError("Invalid update payload", validationErr)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationErr.Error()), nil
 	}
 
-	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, data["invoiceId"], data["status"])
+	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
 	if updateErr != nil {
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
 	return utils.MailApiResponse(http.StatusOK, ""), nil
-}
-
-func validateUpdateRequest(data map[string]string) error {
-	invoiceId := data["invoiceId"]
-	status := data["status"]
-	if invoiceId == "" {
-		return errors.New("invalid invoiceId")
-	}
-	if status != models.ACCEPTED && status != models.REJECTED {
-		return errors.New("invalid status")
-	}
-	return nil
 }
