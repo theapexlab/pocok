@@ -1,0 +1,8 @@
+regions:
+  - eu-central-1
+
+account-blocklist:
+  - "999999999999"
+
+accounts:
+  "ACCOUNT_ID": {}
