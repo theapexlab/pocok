@@ -4,14 +4,20 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"pocok/src/amp/summary_email_template"
 	"pocok/src/consumers/email_sender/create_email"
 	"runtime"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	writeFileRelative(summary_email_template.Get(), "/templates/summary_email.html")
-	email_content, _ := create_email.GetHtmlSummary("https://test.com")
+	godotenv.Load(".env.local")
+	url := os.Getenv("API_URL")
+	if url == "" {
+		url = "https://test.com"
+	}
+
+	email_content, _ := create_email.GetHtmlSummary(url)
 	writeFileRelative(email_content, "/emails/summary_email.html")
 
 	fmt.Println("⚡️ Succesfully generated HTML files.")
