@@ -70,7 +70,23 @@ export class ApiStack extends Stack {
             ],
           },
         },
+        "POST /api/invoices/accept_all": {
+          function: {
+            handler: "src/api/invoices/accept_all_invoices/main.go",
+            environment: {
+              jwtKey: process.env.JWT_KEY as string,
+              tableName: additionalStackProps?.storageStack.invoiceTable
+                .tableName as string,
+            },
+            permissions: [
+              additionalStackProps?.storageStack.invoiceTable as Table,
+            ],
+          }
+        }
       },
+      cors: process.env.NODE_ENV === "development" ? {
+        allowOrigins: ["https://playground.amp.dev"],
+      } : undefined
     });
 
     this.addOutputs({

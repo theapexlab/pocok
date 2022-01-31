@@ -36,7 +36,6 @@
       .item {
         display: flex;
         flex-direction: column;
-        align-items: space-between;
         padding: 8px;
         border-radius: 16px;
         border: 1px solid black;
@@ -154,6 +153,13 @@
           >
           </amp-img>
           {{/items}}
+
+          <form method="POST" action-xhr="[[.ApiUrl]]/api/invoices/accept_all?token=[[.Token]]">
+            {{#items}}
+              <input type="hidden" name={{invoiceId}} value="accept" hidden />
+            {{/items}}
+            <input type="submit" value="Accept all" />
+          </form>
         </template>
       </amp-list>
     </div>
