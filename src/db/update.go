@@ -21,6 +21,11 @@ type GenericUpdate struct {
 
 const TRANSACTION_LIMIT = 25 // 25 is the max number of items that can be updated in a single transaction
 
+type VendorUpdate struct {
+	VendorName  string
+	VendorEmail string
+}
+
 func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
 	var patch StatusUpdate
 	err := utils.MapToStruct(data, &patch)
@@ -102,4 +107,26 @@ func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId stri
 	}
 
 	return nil
+}
+
+func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, update VendorUpdate) error {
+	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+		TableName: &tableName,
+		Key: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			"sk": &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
+		},
+		UpdateExpression: aws.String("set #pk = :pk, #sk = :sk, #vendorEmail = :vendorEmail"),
+		ExpressionAttributeNames: map[string]string{
+			"#pk":          "pk",
+			"#sk":          "sk",
+			"#vendorEmail": "vendorEmail",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":pk":          &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			":sk":          &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
+			":vendorEmail": &types.AttributeValueMemberS{Value: update.VendorEmail},
+		},
+	})
+	return err
 }

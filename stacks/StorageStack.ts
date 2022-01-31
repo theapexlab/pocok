@@ -21,12 +21,10 @@ export class StorageStack extends Stack {
         pk: TableFieldType.STRING,
         sk: TableFieldType.STRING,
         lsi1sk: TableFieldType.STRING,
-        lsi2sk: TableFieldType.STRING,
       },
       primaryIndex: { partitionKey: "pk", sortKey: "sk" },
       localIndexes: {
         localSecondaryIndex1: { sortKey: "lsi1sk" },
-        localSecondaryIndex2: { sortKey: "lsi2sk" },
       },
       dynamodbTable: {
         removalPolicy:

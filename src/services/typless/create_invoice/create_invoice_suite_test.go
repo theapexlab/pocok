@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestExtract(t *testing.T) {
+func TestCreateInvoice(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "CreateInvoice Suite")
 }

@@ -3,6 +3,8 @@ module pocok
 go 1.17
 
 require (
+	github.com/almerlucke/go-iban v0.0.0-20170112082528-316a6e2335b3
+	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/aws/aws-cdk-go/awscdk v1.138.0-devpreview
 	github.com/aws/aws-cdk-go/awscdk/v2 v2.4.0
 	github.com/aws/aws-lambda-go v1.25.0
@@ -18,8 +20,8 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/mailgun/mailgun-go/v4 v4.6.0
-	github.com/onsi/ginkgo/v2 v2.0.0
-	github.com/onsi/gomega v1.17.0
+	github.com/onsi/ginkgo/v2 v2.1.0
+	github.com/onsi/gomega v1.18.0
 	github.com/segmentio/ksuid v1.0.4
 )
 
@@ -54,7 +56,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sso v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0 // indirect
 	github.com/joho/godotenv v1.4.0
-	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
-	golang.org/x/text v0.3.6 // indirect
+	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
