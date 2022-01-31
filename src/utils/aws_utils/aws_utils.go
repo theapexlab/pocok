@@ -17,7 +17,7 @@ func GetAssetUrl(client s3.Client, assetBucketName string, key string) (string, 
 		Bucket: aws.String(assetBucketName),
 	})
 	if err != nil {
-		utils.LogError("Error while loading invoices", err)
+		utils.LogError("Can't find bucket region", err)
 		return "", err
 	}
 
