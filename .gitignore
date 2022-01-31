@@ -31,3 +31,4 @@ cdk.context.json
 
 /tmp
 /src/amp/emails/*.html
+/aws-nuke/config.yml

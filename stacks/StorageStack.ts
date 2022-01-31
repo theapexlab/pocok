@@ -1,4 +1,4 @@
-import { Construct } from "@aws-cdk/core";
+import { Construct, RemovalPolicy } from "@aws-cdk/core";
 import {
   Stack,
   Table,
@@ -27,8 +27,21 @@ export class StorageStack extends Stack {
         localSecondaryIndex1: { sortKey: "lsi1sk" },
         localSecondaryIndex2: { sortKey: "lsi2sk" },
       },
+      dynamodbTable: {
+        removalPolicy:
+          process.env.NODE_ENV === "development"
+            ? RemovalPolicy.DESTROY
+            : RemovalPolicy.RETAIN,
+      },
     });
 
-    this.invoiceBucket = new Bucket(this, "InvoiceBucket");
+    this.invoiceBucket = new Bucket(this, "InvoiceBucket", {
+      s3Bucket: {
+        removalPolicy:
+          process.env.NODE_ENV === "development"
+            ? RemovalPolicy.DESTROY
+            : RemovalPolicy.RETAIN,
+      },
+    });
   }
 }
