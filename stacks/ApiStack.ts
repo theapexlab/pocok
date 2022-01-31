@@ -23,6 +23,11 @@ export class ApiStack extends Stack {
   ) {
     super(scope, id, props);
 
+    const ampSharedEnvs = {
+      jwtKey: process.env.JWT_KEY as string,
+      mailgunSender: process.env.MAILGUN_SENDER as string,
+    };
+
     const api = new Api(this, "Api", {
       customDomain:
         process.env.NODE_ENV === "development"
@@ -48,7 +53,7 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/invoices/get_invoices/main.go",
             environment: {
-              jwtKey: process.env.JWT_KEY as string,
+              ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
             },
@@ -61,9 +66,11 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/invoices/update_invoice/main.go",
             environment: {
-              jwtKey: process.env.JWT_KEY as string,
+              ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
+              typlessToken: process.env.TYPLESS_TOKEN as string,
+              typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,

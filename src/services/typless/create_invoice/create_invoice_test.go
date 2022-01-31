@@ -1,9 +1,9 @@
 package create_invoice_test
 
 import (
-	"pocok/src/consumers/invoice_processor/create_invoice"
 	"pocok/src/mocks/typless/parse_mock_json"
 	"pocok/src/services/typless"
+	"pocok/src/services/typless/create_invoice"
 	"pocok/src/utils/models"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -21,8 +21,9 @@ var _ = Describe("CreateInvoice", func() {
 			extractedData = parse_mock_json.Parse("billingo.json")
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "A-1984-145.pdf",
+				ExtractedData:    extractedData,
 			}
-			invoice = createInvoiceService.CreateInvoice(extractedData)
+			invoice = createInvoiceService.CreateInvoice()
 		})
 
 		It("not errors", func() {
@@ -59,8 +60,9 @@ var _ = Describe("CreateInvoice", func() {
 			extractedData = parse_mock_json.Parse("oszp.json")
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "TEST-2021-42.pdf",
+				ExtractedData:    extractedData,
 			}
-			invoice = createInvoiceService.CreateInvoice(extractedData)
+			invoice = createInvoiceService.CreateInvoice()
 		})
 
 		It("not errors", func() {
@@ -109,8 +111,9 @@ var _ = Describe("CreateInvoice", func() {
 			extractedData.LineItems[0][3].Values[0].Value = ""
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "TEST-2021-42.pdf",
+				ExtractedData:    extractedData,
 			}
-			invoice = createInvoiceService.CreateInvoice(extractedData)
+			invoice = createInvoiceService.CreateInvoice()
 		})
 
 		It("not errors", func() {
@@ -130,8 +133,9 @@ var _ = Describe("CreateInvoice", func() {
 			extractedData.LineItems[0][2].Values[0].Value = ""
 			createInvoiceService = &create_invoice.CreateInvoiceService{
 				OriginalFilename: "TEST-2021-42.pdf",
+				ExtractedData:    extractedData,
 			}
-			invoice = createInvoiceService.CreateInvoice(extractedData)
+			invoice = createInvoiceService.CreateInvoice()
 		})
 
 		It("not errors", func() {

@@ -41,3 +41,26 @@ func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string)
 	}
 	return invoices, nil
 }
+
+func GetInvoice(client *dynamodb.Client, tableName string, orgId string, invoiceId string) (*models.Invoice, error) {
+	resp, err := client.GetItem(context.TODO(), &dynamodb.GetItemInput{
+		TableName: &tableName,
+		Key: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + invoiceId},
+		},
+	})
+	if err != nil {
+		utils.LogError("Error while getting invoice from db", err)
+		return nil, err
+	}
+
+	invoice := models.Invoice{}
+	err = attributevalue.UnmarshalMap(resp.Item, &invoice)
+	if err != nil {
+		utils.LogError("Error while loading invoice", err)
+		return nil, err
+	}
+
+	return &invoice, nil
+}

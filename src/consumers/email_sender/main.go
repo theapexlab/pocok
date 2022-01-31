@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"os"
-	. "pocok/src/consumers/email_sender/create_email"
+	"pocok/src/consumers/email_sender/create_email"
 	"pocok/src/db"
+	"pocok/src/services/mailgun"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/aws_utils"
-	"pocok/src/utils/mailgun_client"
 	"pocok/src/utils/models"
 	"time"
 
@@ -19,24 +19,28 @@ import (
 )
 
 type dependencies struct {
-	sender          string
+	mailgunSender   string
+	mailgunDomain   string
+	mailgunApiKey   string
 	emailRecipient  string
 	apiUrl          string
 	bucketName      string
-	s3Client        *s3.Client
 	tableName       string
+	s3Client        *s3.Client
 	dbClient        *dynamodb.Client
 	assetBucketName string
 }
 
 func main() {
 	d := &dependencies{
-		sender:          os.Getenv("sender"),
+		mailgunSender:   os.Getenv("mailgunSender"),
+		mailgunDomain:   os.Getenv("mailgunDomain"),
+		mailgunApiKey:   os.Getenv("mailgunApiKey"),
 		emailRecipient:  os.Getenv("emailRecipient"),
 		apiUrl:          os.Getenv("apiUrl"),
 		bucketName:      os.Getenv("bucketName"),
-		s3Client:        aws_clients.GetS3Client(),
 		tableName:       os.Getenv("tableName"),
+		s3Client:        aws_clients.GetS3Client(),
 		dbClient:        aws_clients.GetDbClient(),
 		assetBucketName: os.Getenv("assetBucketName"),
 	}
@@ -85,12 +89,11 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 		return nil, err
 	}
 
-	amp, err := GetHtmlSummary(d.apiUrl, logoUrl)
+	amp, err := create_email.GetHtmlSummary(d.apiUrl, logoUrl)
 	if err != nil {
 		return nil, err
 	}
-
-	attachments, err := GetAttachments(d.s3Client, d.bucketName, invoices)
+	attachments, err := create_email.GetAttachments(d.s3Client, d.bucketName, invoices)
 	if err != nil {
 		return nil, err
 	}
@@ -104,10 +107,10 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 
 func SendEmail(d *dependencies, subject string, data *models.EmailResponseData) error {
 	// Create an instance of the Mailgun Client
-	client := mailgun_client.GetMailgunClient()
+	client := mailgun.GetClient(d.mailgunDomain, d.mailgunApiKey)
 
 	// The message object allows you to add attachments and Bcc recipients
-	message := client.NewMessage(d.sender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
+	message := client.NewMessage(d.mailgunSender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
 	for filename, attachment := range data.Attachments {
 		message.AddBufferAttachment(filename, attachment)
 	}
