@@ -92,9 +92,9 @@ export class QueueStack extends Stack {
         function: {
           handler: "src/consumers/email_sender/main.go",
           environment: {
-            mgSender: process.env.MAILGUN_SENDER as string,
-            mgDomain: process.env.MAILGUN_DOMAIN as string,
-            mgApiKey: process.env.MAILGUN_API_KEY as string,
+            mailgunSender: process.env.MAILGUN_SENDER as string,
+            mailgunDomain: process.env.MAILGUN_DOMAIN as string,
+            mailgunApiKey: process.env.MAILGUN_API_KEY as string,
             emailRecipient: process.env.EMAIL_RECIPIENT as string,
             apiUrl: process.env.API_URL as string,
             jwtKey: process.env.JWT_KEY as string,

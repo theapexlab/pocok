@@ -19,9 +19,9 @@ import (
 )
 
 type dependencies struct {
-	mgSender        string
-	mgDomain        string
-	mgApiKey        string
+	mailgunSender   string
+	mailgunDomain   string
+	mailgunApiKey   string
 	emailRecipient  string
 	apiUrl          string
 	bucketName      string
@@ -33,9 +33,9 @@ type dependencies struct {
 
 func main() {
 	d := &dependencies{
-		mgSender:        os.Getenv("mgSender"),
-		mgDomain:        os.Getenv("mgDomain"),
-		mgApiKey:        os.Getenv("mgApiKey"),
+		mailgunSender:   os.Getenv("mailgunSender"),
+		mailgunDomain:   os.Getenv("mailgunDomain"),
+		mailgunApiKey:   os.Getenv("mailgunApiKey"),
 		emailRecipient:  os.Getenv("emailRecipient"),
 		apiUrl:          os.Getenv("apiUrl"),
 		bucketName:      os.Getenv("bucketName"),
@@ -107,10 +107,10 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 
 func SendEmail(d *dependencies, subject string, data *models.EmailResponseData) error {
 	// Create an instance of the Mailgun Client
-	client := mailgun.GetClient(d.mgDomain, d.mgApiKey)
+	client := mailgun.GetClient(d.mailgunDomain, d.mailgunApiKey)
 
 	// The message object allows you to add attachments and Bcc recipients
-	message := client.NewMessage(d.mgSender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
+	message := client.NewMessage(d.mailgunSender, subject, models.EMAIL_NO_AMP_BODY, d.emailRecipient)
 	for filename, attachment := range data.Attachments {
 		message.AddBufferAttachment(filename, attachment)
 	}

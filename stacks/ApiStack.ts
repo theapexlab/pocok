@@ -25,7 +25,7 @@ export class ApiStack extends Stack {
 
     const ampSharedEnvs = {
       jwtKey: process.env.JWT_KEY as string,
-      mgSender: process.env.MAILGUN_SENDER as string,
+      mailgunSender: process.env.MAILGUN_SENDER as string,
     };
 
     const api = new Api(this, "Api", {
