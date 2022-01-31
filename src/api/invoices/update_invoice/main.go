@@ -103,4 +103,5 @@ func updateFeedback(d *dependencies, orgId string, invoiceId string) error {
 	if typlessErr != nil {
 		utils.LogError("Error adding document feedback to typless", typlessErr)
 	}
+	return nil
 }
