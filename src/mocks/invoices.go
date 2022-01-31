@@ -6,7 +6,6 @@ var MockInvoice = models.Invoice{
 	Pk:     "PK",
 	Sk:     "SK",
 	Lsi1sk: "LSI1SK",
-	Lsi2sk: "LSI2SK",
 
 	InvoiceId:  "ID1",
 	EntityType: models.INVOICE,
@@ -30,10 +29,10 @@ var MockInvoice = models.Invoice{
 		{
 			Name:         "Kutya",
 			Amount:       "500",
+			Unit:         "db",
 			UnitNetPrice: "10",
 			NetPrice:     "5000",
 			GrossPrice:   "10000",
-			Currency:     "huf",
 			VatRate:      "27%",
 			VatAmount:    "2700",
 		},
@@ -43,18 +42,18 @@ var MockInvoice = models.Invoice{
 			UnitNetPrice: "5",
 			NetPrice:     "5000",
 			GrossPrice:   "10000",
-			Currency:     "huf",
 			VatRate:      "27%",
 			VatAmount:    "2700",
 		},
 	},
+
+	TyplessObjectId: "0e809bfab6a4253a1e1cfdfa5088d30380565c02",
 }
 
 var MockInvoice2 = models.Invoice{
 	Pk:     "PK",
 	Sk:     "SK",
 	Lsi1sk: "LSI1SK",
-	Lsi2sk: "LSI2SK",
 
 	InvoiceId:  "ID2",
 	EntityType: models.INVOICE,
@@ -75,6 +74,22 @@ var MockInvoice2 = models.Invoice{
 	Currency:      "zł",
 	DueDate:       "2050.01.01.",
 	Services:      []models.Service{},
+
+	TyplessObjectId: "0e809bfab6a4253a1e1cfdfa5088d30380565c01",
+}
+
+var MockInvoiceMissingFields = models.Invoice{
+	Pk:     "PK",
+	Sk:     "SK",
+	Lsi1sk: "LSI1SK",
+
+	InvoiceId:  "ID",
+	EntityType: models.INVOICE,
+	Status:     models.PENDING,
+	ReceivedAt: "2022.01.18",
+	Filename:   "filename1",
+
+	InvoiceNumber: "2012-12",
 }
 
 var Invoices = []models.Invoice{

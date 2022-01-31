@@ -9,7 +9,7 @@
           "confidence_score": 0.975,
           "height": -1,
           "page_number": -1,
-          "value": "TEST BETÉTI TÁRSASÁG",
+          "value": "SZERVEZET- ÉS EGÉSZSÉGFEJLESZTÉSI KÖZPONT BETÉTI TÁRSASÁG",
           "width": -1,
           "x": -1,
           "y": -1
@@ -18,49 +18,52 @@
     },
     {
       "data_type": "STRING",
-      "name": "vendor_name",
-      "values": [
-        {
-          "confidence_score": 0.975,
-          "height": -1,
-          "page_number": -1,
-          "value": "TEST BETÉTI TÁRSASÁG",
-          "width": -1,
-          "x": -1,
-          "y": -1
-        }
-      ]
-    },
-    {
-      "data_type": "DATE",
-      "name": "pay_due_date",
+      "name": "vat_rate",
       "values": [
         {
           "confidence_score": 0.99,
-          "height": 34,
+          "height": 30,
           "page_number": 0,
-          "value": "2021-09-23",
-          "width": 483,
-          "x": 658,
-          "y": 1399
+          "value": "AAM",
+          "width": 80,
+          "x": 1330,
+          "y": 2215
         },
         {
-          "confidence_score": 0.495,
-          "height": 31,
+          "confidence_score": 0.6129,
+          "height": 35,
           "page_number": 0,
-          "value": "2021-09-23",
-          "width": 391,
-          "x": 1211,
-          "y": 1400
+          "value": "23,600.00",
+          "width": 166,
+          "x": 2175,
+          "y": 2215
         },
         {
-          "confidence_score": 0.495,
-          "height": 40,
+          "confidence_score": 0.6129,
+          "height": 35,
           "page_number": 0,
-          "value": "2021-09-23",
-          "width": 524,
-          "x": 1662,
-          "y": 1399
+          "value": "23,600.00",
+          "width": 164,
+          "x": 1846,
+          "y": 2214
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 36,
+          "page_number": 0,
+          "value": "Acupressure",
+          "width": 211,
+          "x": 123,
+          "y": 2216
+        },
+        {
+          "confidence_score": 0.6129,
+          "height": 33,
+          "page_number": 0,
+          "value": "Ora / Hour",
+          "width": 176,
+          "x": 726,
+          "y": 2214
         }
       ]
     },
@@ -85,45 +88,45 @@
       "values": [
         {
           "confidence_score": 0.99,
-          "height": 54,
-          "page_number": 0,
-          "value": "TEST-2021-42",
-          "width": 464,
-          "x": 634,
-          "y": 260
-        },
-        {
-          "confidence_score": 0.7144,
           "height": 56,
           "page_number": 1,
-          "value": "TEST-2021-42",
+          "value": "SZERV-2021-42",
           "width": 987,
           "x": 116,
           "y": 259
-        },
-        {
-          "confidence_score": 0.6129,
-          "height": 38,
-          "page_number": 0,
-          "value": "Sorszám / Invoice number:",
-          "width": 502,
-          "x": 116,
-          "y": 278
         }
       ]
     },
     {
-      "data_type": "STRING",
-      "name": "currency",
+      "data_type": "DATE",
+      "name": "pay_due_date",
       "values": [
         {
           "confidence_score": 0.99,
-          "height": 39,
+          "height": 40,
           "page_number": 0,
-          "value": "HUF",
-          "width": 267,
-          "x": 125,
-          "y": 1522
+          "value": "2021-09-23",
+          "width": 524,
+          "x": 1662,
+          "y": 1399
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 31,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 391,
+          "x": 1211,
+          "y": 1400
+        },
+        {
+          "confidence_score": 0.495,
+          "height": 34,
+          "page_number": 0,
+          "value": "2021-09-23",
+          "width": 483,
+          "x": 658,
+          "y": 1399
         }
       ]
     },
@@ -144,52 +147,31 @@
     },
     {
       "data_type": "STRING",
-      "name": "vat_rate",
+      "name": "currency",
       "values": [
         {
           "confidence_score": 0.99,
-          "height": 30,
+          "height": 39,
           "page_number": 0,
-          "value": "AAM",
-          "width": 80,
-          "x": 1330,
-          "y": 2215
-        },
+          "value": "HUF",
+          "width": 267,
+          "x": 125,
+          "y": 1522
+        }
+      ]
+    },
+    {
+      "data_type": "STRING",
+      "name": "vendor_name",
+      "values": [
         {
-          "confidence_score": 0.6129,
-          "height": 36,
-          "page_number": 0,
-          "value": "standup",
-          "width": 211,
-          "x": 123,
-          "y": 2216
-        },
-        {
-          "confidence_score": 0.6129,
-          "height": 33,
-          "page_number": 0,
-          "value": "Ora / Hour",
-          "width": 176,
-          "x": 726,
-          "y": 2214
-        },
-        {
-          "confidence_score": 0.6129,
-          "height": 35,
-          "page_number": 0,
-          "value": "23,600.00",
-          "width": 166,
-          "x": 2175,
-          "y": 2215
-        },
-        {
-          "confidence_score": 0.6129,
-          "height": 35,
-          "page_number": 0,
-          "value": "23,600.00",
-          "width": 164,
-          "x": 1846,
-          "y": 2214
+          "confidence_score": 0,
+          "height": -1,
+          "page_number": -1,
+          "value": null,
+          "width": -1,
+          "x": -1,
+          "y": -1
         }
       ]
     },
@@ -259,6 +241,21 @@
       },
       {
         "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "2.0000",
+            "width": 72,
+            "x": 498,
+            "y": 2215
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
         "name": "price",
         "values": [
           {
@@ -295,7 +292,7 @@
             "confidence_score": 0.5,
             "height": 36,
             "page_number": 0,
-            "value": "standup",
+            "value": "Acupressure",
             "width": 211,
             "x": 123,
             "y": 2216
@@ -303,17 +300,32 @@
         ]
       },
       {
-        "data_type": "NUMBER",
-        "name": "quantity",
+        "data_type": "STRING",
+        "name": "vat_rate",
         "values": [
           {
             "confidence_score": 0.5,
-            "height": 31,
+            "height": 30,
             "page_number": 0,
-            "value": "2.0000",
-            "width": 72,
-            "x": 498,
+            "value": "AAM",
+            "width": 80,
+            "x": 1330,
             "y": 2215
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
           }
         ]
       }
@@ -330,6 +342,21 @@
             "value": "Darab / Piece",
             "width": 226,
             "x": 701,
+            "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "quantity",
+        "values": [
+          {
+            "confidence_score": 0.5,
+            "height": 31,
+            "page_number": 0,
+            "value": "1.0000",
+            "width": 70,
+            "x": 500,
             "y": 2551
           }
         ]
@@ -372,7 +399,7 @@
             "confidence_score": 0.5,
             "height": 32,
             "page_number": 0,
-            "value": "travel costs",
+            "value": "/travel costs",
             "width": 211,
             "x": 123,
             "y": 2551
@@ -380,23 +407,38 @@
         ]
       },
       {
-        "data_type": "NUMBER",
-        "name": "quantity",
+        "data_type": "STRING",
+        "name": "vat_rate",
         "values": [
           {
             "confidence_score": 0.5,
-            "height": 31,
+            "height": 30,
             "page_number": 0,
-            "value": "1.0000",
-            "width": 70,
-            "x": 500,
+            "value": "AAM",
+            "width": 79,
+            "x": 1330,
             "y": 2551
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
           }
         ]
       }
     ]
   ],
-  "object_id": "0e7c8a1bd63f2b9df43ec1559b421d8ddf2e607b",
+  "object_id": "0e801c84dd43fd63c6f31bd1cc87ac8c1368a353",
   "text_blocks": [
     {
       "height": 70,
@@ -456,7 +498,7 @@
       "height": 54,
       "number": 6,
       "page_number": 1,
-      "value": "TEST-2021-42",
+      "value": "SZERV-2021-42",
       "width": 464,
       "x": 634,
       "y": 260
@@ -483,7 +525,7 @@
       "height": 55,
       "number": 9,
       "page_number": 1,
-      "value": "TEST BETÉTI TÁRSASÁG",
+      "value": "SZERVEZET- ÉS",
       "width": 472,
       "x": 118,
       "y": 575
@@ -492,7 +534,7 @@
       "height": 51,
       "number": 10,
       "page_number": 1,
-      "value": "TEST COMP LTD",
+      "value": "APEX LAB LTD",
       "width": 437,
       "x": 1269,
       "y": 577
@@ -501,7 +543,7 @@
       "height": 58,
       "number": 11,
       "page_number": 1,
-      "value": "KOZPONT",
+      "value": "EGÉSZSÉGFEJLESZTÉSI KOZPONT",
       "width": 1031,
       "x": 125,
       "y": 659
@@ -519,7 +561,7 @@
       "height": 32,
       "number": 13,
       "page_number": 1,
-      "value": "Test Street 71-75",
+      "value": "Shelton Street 71-75",
       "width": 346,
       "x": 1271,
       "y": 725
@@ -537,7 +579,7 @@
       "height": 40,
       "number": 15,
       "page_number": 1,
-      "value": "Magyarország 1026 BUDAPEST",
+      "value": "Magyarország 1126 BUDAPEST",
       "width": 531,
       "x": 118,
       "y": 853
@@ -546,7 +588,7 @@
       "height": 37,
       "number": 16,
       "page_number": 1,
-      "value": "Test UTCA 12 2 em. 8/A",
+      "value": "MÁRVÁNY UTCA 48 2 em. 8/A",
       "width": 506,
       "x": 117,
       "y": 898
@@ -564,7 +606,7 @@
       "height": 38,
       "number": 18,
       "page_number": 1,
-      "value": "Hungarian tax number: 123456-1-43",
+      "value": "Hungarian tax number: 25050727-1-43",
       "width": 686,
       "x": 118,
       "y": 1045
@@ -591,7 +633,7 @@
       "height": 32,
       "number": 21,
       "page_number": 1,
-      "value": "12345678-12345678-12345678",
+      "value": "2010611-01473104-00100003",
       "width": 524,
       "x": 569,
       "y": 1146
@@ -1257,7 +1299,7 @@
       "height": 56,
       "number": 95,
       "page_number": 2,
-      "value": "Sorszám / Invoice number: TEST-2021-42",
+      "value": "Sorszám / Invoice number: SZERV-2021-42",
       "width": 987,
       "x": 116,
       "y": 259

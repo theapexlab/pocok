@@ -3,8 +3,9 @@ package models
 import "github.com/golang-jwt/jwt"
 
 type UploadInvoiceMessage struct {
-	Type string `json:"type"` // "url","base64"
-	Body string `json:"body"`
+	Type     string `json:"type"` // "url","base64"
+	Body     string `json:"body"`
+	Filename string `json:"filename"`
 }
 
 type Service struct {
@@ -14,7 +15,6 @@ type Service struct {
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
-	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
 	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 }
@@ -23,7 +23,6 @@ type Invoice struct {
 	Pk     string `json:"pk" dynamodbav:"pk"`
 	Sk     string `json:"sk" dynamodbav:"sk"`
 	Lsi1sk string `json:"lsi1sk" dynamodbav:"lsi1sk"`
-	Lsi2sk string `json:"lsi2sk" dynamodbav:"lsi2sk"`
 
 	InvoiceId  string `json:"invoiceId" dynamodbav:"invoiceId"`
 	EntityType string `json:"entityType" dynamodbav:"entityType"`
@@ -44,6 +43,14 @@ type Invoice struct {
 	VatAmount     string    `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate       string    `json:"vatRate" dynamodbav:"vatRate,omitempty"`
 	Services      []Service `json:"services" dynamodbav:"services,omitempty,omitemptyelem"`
+
+	TyplessObjectId string `json:"typlessObjectId" dynamodbav:"typlessObjectId,omitempty"`
+}
+
+type Vendor struct {
+	Pk          string `json:"pk" dynamodbav:"pk"`
+	Sk          string `json:"sk" dynamodbav:"sk"`
+	VendorEmail string `json:"vendorEmail" dynamodbav:"vendorEmail,omitempty"`
 }
 
 type InvoiceResponse struct {
@@ -54,6 +61,7 @@ type InvoiceResponse struct {
 type EmailAttachment struct {
 	ContentType string `json:"contentType"`
 	Content_b64 string `json:"content_b64"`
+	Filename    string `json:"fileName"`
 }
 
 type EmailFrom struct {

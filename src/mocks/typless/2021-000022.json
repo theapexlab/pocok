@@ -1,0 +1,726 @@
+{
+    "customer": null,
+    "extracted_fields": [
+      {
+        "data_type": "AUTHOR",
+        "name": "supplier_name",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vat_rate",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "net_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "invoice_number",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "DATE",
+        "name": "pay_due_date",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          },
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "total_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "currency",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "vendor_name",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "account_number",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "STRING",
+        "name": "iban",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      },
+      {
+        "data_type": "NUMBER",
+        "name": "vat_amount",
+        "values": [
+          {
+            "confidence_score": 0,
+            "height": -1,
+            "page_number": -1,
+            "value": null,
+            "width": -1,
+            "x": -1,
+            "y": -1
+          }
+        ]
+      }
+    ],
+    "file_name": "test.pdf",
+    "line_items": [],
+    "object_id": "0e7f04ea6123472e0042b38220fff7ce0dfc49b1",
+    "text_blocks": [
+      {
+        "height": 64,
+        "number": 0,
+        "page_number": 1,
+        "value": "Elektronikus számla",
+        "width": 797,
+        "x": 153,
+        "y": 195
+      },
+      {
+        "height": 74,
+        "number": 1,
+        "page_number": 1,
+        "value": "2021-000022",
+        "width": 522,
+        "x": 152,
+        "y": 308
+      },
+      {
+        "height": 74,
+        "number": 1,
+        "page_number": 1,
+        "value": "2010-12-10",
+        "width": 522,
+        "x": 152,
+        "y": 308
+      },
+      {
+        "height": 74,
+        "number": 1,
+        "page_number": 1,
+        "value": "2020-12-23",
+        "width": 522,
+        "x": 152,
+        "y": 308
+      },
+      {
+        "height": 29,
+        "number": 2,
+        "page_number": 1,
+        "value": "ELADÓ",
+        "width": 87,
+        "x": 160,
+        "y": 511
+      },
+      {
+        "height": 29,
+        "number": 3,
+        "page_number": 1,
+        "value": "VEVÖ",
+        "width": 71,
+        "x": 1270,
+        "y": 510
+      },
+      {
+        "height": 62,
+        "number": 4,
+        "page_number": 1,
+        "value": "Teszt Elek (Kisadózó)",
+        "width": 623,
+        "x": 160,
+        "y": 620
+      },
+      {
+        "height": 46,
+        "number": 5,
+        "page_number": 1,
+        "value": "Test Labs Kft.",
+        "width": 378,
+        "x": 1269,
+        "y": 626
+      },
+      {
+        "height": 41,
+        "number": 6,
+        "page_number": 1,
+        "value": "Budapest",
+        "width": 169,
+        "x": 160,
+        "y": 717
+      },
+      {
+        "height": 42,
+        "number": 7,
+        "page_number": 1,
+        "value": "Budapest",
+        "width": 170,
+        "x": 1272,
+        "y": 716
+      },
+      {
+        "height": 34,
+        "number": 8,
+        "page_number": 1,
+        "value": "test utca 38",
+        "width": 292,
+        "x": 158,
+        "y": 766
+      },
+      {
+        "height": 44,
+        "number": 9,
+        "page_number": 1,
+        "value": "Nagy Artúr utca 15. g. ép. fszt. 10.",
+        "width": 599,
+        "x": 1271,
+        "y": 765
+      },
+      {
+        "height": 31,
+        "number": 10,
+        "page_number": 1,
+        "value": "1102",
+        "width": 82,
+        "x": 160,
+        "y": 818
+      },
+      {
+        "height": 32,
+        "number": 11,
+        "page_number": 1,
+        "value": "1021",
+        "width": 82,
+        "x": 1273,
+        "y": 818
+      },
+      {
+        "height": 42,
+        "number": 12,
+        "page_number": 1,
+        "value": "Magyarország",
+        "width": 249,
+        "x": 157,
+        "y": 866
+      },
+      {
+        "height": 44,
+        "number": 13,
+        "page_number": 1,
+        "value": "Magyarország",
+        "width": 246,
+        "x": 1271,
+        "y": 866
+      },
+      {
+        "height": 32,
+        "number": 14,
+        "page_number": 1,
+        "value": "12316658-2-41",
+        "width": 255,
+        "x": 1271,
+        "y": 918
+      },
+      {
+        "height": 32,
+        "number": 14,
+        "page_number": 1,
+        "value": "HU19-12345678910",
+        "width": 255,
+        "x": 1271,
+        "y": 918
+      },
+      {
+        "height": 32,
+        "number": 14,
+        "page_number": 1,
+        "value": "HU93116000060000000012345676",
+        "width": 255,
+        "x": 1271,
+        "y": 918
+      },
+      {
+        "height": 33,
+        "number": 15,
+        "page_number": 1,
+        "value": "ADÓSZÁM: 1234567-1-43",
+        "width": 404,
+        "x": 158,
+        "y": 953
+      },
+      {
+        "height": 34,
+        "number": 16,
+        "page_number": 1,
+        "value": "KÖZÖSSÉGI ADÓSZÁM:HU12347402",
+        "width": 522,
+        "x": 159,
+        "y": 1008
+      },
+      {
+        "height": 33,
+        "number": 17,
+        "page_number": 1,
+        "value": "BANKSZÁMLASZÁM: 12345678-10589326-49010011",
+        "width": 805,
+        "x": 159,
+        "y": 1063
+      },
+      {
+        "height": 33,
+        "number": 17,
+        "page_number": 1,
+        "value": "12345678-10589326-49010011",
+        "width": 805,
+        "x": 159,
+        "y": 1063
+      },
+      {
+        "height": 32,
+        "number": 18,
+        "page_number": 1,
+        "value": "SZÁMLA KELTE : 2021. 10. 25.",
+        "width": 431,
+        "x": 159,
+        "y": 1196
+      },
+      {
+        "height": 33,
+        "number": 19,
+        "page_number": 1,
+        "value": "FIZETÉSI HATÁRIDÖ: 2021. 11. 09.",
+        "width": 507,
+        "x": 1272,
+        "y": 1195
+      },
+      {
+        "height": 31,
+        "number": 20,
+        "page_number": 1,
+        "value": "TELJESÍTÉS KELTE: 2021. 10. 25.",
+        "width": 478,
+        "x": 158,
+        "y": 1251
+      },
+      {
+        "height": 36,
+        "number": 21,
+        "page_number": 1,
+        "value": "FIZETÉSI MÓD: Átutalás",
+        "width": 354,
+        "x": 1272,
+        "y": 1246
+      },
+      {
+        "height": 30,
+        "number": 22,
+        "page_number": 1,
+        "value": "FIZETENDÖ BRUTTÓ VÉGÖSSZEG:",
+        "width": 438,
+        "x": 1358,
+        "y": 1434
+      },
+      {
+        "height": 84,
+        "number": 23,
+        "page_number": 1,
+        "value": "442 750 Ft",
+        "width": 502,
+        "x": 1822,
+        "y": 1382
+      },
+      {
+        "height": 29,
+        "number": 24,
+        "page_number": 1,
+        "value": "MEGNEVEZÉS",
+        "width": 179,
+        "x": 255,
+        "y": 1545
+      },
+      {
+        "height": 29,
+        "number": 25,
+        "page_number": 1,
+        "value": "MENNYISÉG",
+        "width": 157,
+        "x": 990,
+        "y": 1546
+      },
+      {
+        "height": 29,
+        "number": 26,
+        "page_number": 1,
+        "value": "NETTÓ EGYSÉGÁR",
+        "width": 236,
+        "x": 1291,
+        "y": 1545
+      },
+      {
+        "height": 29,
+        "number": 27,
+        "page_number": 1,
+        "value": "NETTÓ ÁR",
+        "width": 133,
+        "x": 1698,
+        "y": 1545
+      },
+      {
+        "height": 30,
+        "number": 28,
+        "page_number": 1,
+        "value": "ÁFA",
+        "width": 54,
+        "x": 1944,
+        "y": 1545
+      },
+      {
+        "height": 30,
+        "number": 29,
+        "page_number": 1,
+        "value": "BRUTTÓ ÁR",
+        "width": 152,
+        "x": 2154,
+        "y": 1545
+      },
+      {
+        "height": 30,
+        "number": 30,
+        "page_number": 1,
+        "value": "1",
+        "width": 18,
+        "x": 173,
+        "y": 1657
+      },
+      {
+        "height": 41,
+        "number": 31,
+        "page_number": 1,
+        "value": "Software Development",
+        "width": 409,
+        "x": 257,
+        "y": 1654
+      },
+      {
+        "height": 34,
+        "number": 32,
+        "page_number": 1,
+        "value": "63.25 hour",
+        "width": 190,
+        "x": 958,
+        "y": 1653
+      },
+      {
+        "height": 31,
+        "number": 33,
+        "page_number": 1,
+        "value": "7 000 Ft",
+        "width": 136,
+        "x": 1392,
+        "y": 1656
+      },
+      {
+        "height": 33,
+        "number": 34,
+        "page_number": 1,
+        "value": "442 750 Ft",
+        "width": 180,
+        "x": 1651,
+        "y": 1656
+      },
+      {
+        "height": 32,
+        "number": 35,
+        "page_number": 1,
+        "value": "AAM",
+        "width": 76,
+        "x": 1917,
+        "y": 1655
+      },
+      {
+        "height": 32,
+        "number": 36,
+        "page_number": 1,
+        "value": "442 750 Ft",
+        "width": 180,
+        "x": 2126,
+        "y": 1656
+      },
+      {
+        "height": 28,
+        "number": 37,
+        "page_number": 1,
+        "value": "NETTÓ ÖSSZEG:",
+        "width": 208,
+        "x": 1510,
+        "y": 1840
+      },
+      {
+        "height": 36,
+        "number": 38,
+        "page_number": 1,
+        "value": "442 750 Ft",
+        "width": 200,
+        "x": 2125,
+        "y": 1842
+      },
+      {
+        "height": 28,
+        "number": 39,
+        "page_number": 1,
+        "value": "AAM ÁFA:",
+        "width": 122,
+        "x": 1595,
+        "y": 1918
+      },
+      {
+        "height": 34,
+        "number": 40,
+        "page_number": 1,
+        "value": "0 Ft",
+        "width": 72,
+        "x": 2252,
+        "y": 1919
+      },
+      {
+        "height": 29,
+        "number": 41,
+        "page_number": 1,
+        "value": "FIZETENDÖ BRUTTÓ VÉGÖSSZEG:",
+        "width": 437,
+        "x": 1282,
+        "y": 1994
+      },
+      {
+        "height": 35,
+        "number": 42,
+        "page_number": 1,
+        "value": "442 750 Ft",
+        "width": 199,
+        "x": 2125,
+        "y": 1997
+      },
+      {
+        "height": 29,
+        "number": 43,
+        "page_number": 1,
+        "value": "1/1 Oldal",
+        "width": 117,
+        "x": 159,
+        "y": 3212
+      },
+      {
+        "height": 31,
+        "number": 44,
+        "page_number": 1,
+        "value": "Ez a számla Billingo online számlázó programmal készült.",
+        "width": 703,
+        "x": 1249,
+        "y": 3221
+      },
+      {
+        "height": 30,
+        "number": 45,
+        "page_number": 1,
+        "value": "A számla tartalma mindenben megfelel a hatályos",
+        "width": 616,
+        "x": 157,
+        "y": 3248
+      },
+      {
+        "height": 31,
+        "number": 46,
+        "page_number": 1,
+        "value": "Gyors és élvezetes számlázás bármikor, bárhonnan: Billingo.hu",
+        "width": 764,
+        "x": 1187,
+        "y": 3257
+      },
+      {
+        "height": 38,
+        "number": 47,
+        "page_number": 1,
+        "value": "B",
+        "width": 36,
+        "x": 2013,
+        "y": 3238
+      },
+      {
+        "height": 70,
+        "number": 48,
+        "page_number": 1,
+        "value": "Billingo",
+        "width": 230,
+        "x": 2087,
+        "y": 3233
+      },
+      {
+        "height": 31,
+        "number": 49,
+        "page_number": 1,
+        "value": "törvényekben foglaltaknak",
+        "width": 330,
+        "x": 159,
+        "y": 3282
+      }
+    ],
+    "vat_rates": []
+  }
+  
