@@ -14,10 +14,9 @@ func Parse(mockFilename string) *typless.ExtractDataFromFileOutput {
 	currentPath := path.Dir(filename)
 	filePath := currentPath + "/../" + mockFilename
 	mock, readFileErr := os.ReadFile(filePath)
+
 	var extractedData *typless.ExtractDataFromFileOutput
-	// currentPath := path.Dir(filePath)
-	// fmt.Println(currentPath)
-	// mock, readFileErr := ioutil.ReadFile(filePath)
+
 	if readFileErr != nil {
 		utils.LogError("", readFileErr)
 		panic("Failed to read mock file")

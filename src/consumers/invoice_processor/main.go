@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"pocok/src/consumers/invoice_processor/create_invoice"
@@ -53,8 +52,6 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		}
 
 		originalFilename := s3Invoice.Metadata["OriginalFilename"]
-
-		fmt.Println("originalFilename", originalFilename)
 
 		invoicePdf, err := ioutil.ReadAll(s3Invoice.Body)
 		if err != nil {
