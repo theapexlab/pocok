@@ -95,6 +95,9 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		Key:         &filename,
 		Body:        bytes.NewReader(data),
 		ContentType: aws.String("application/pdf"),
+		Metadata: map[string]string{
+			"OriginalFilename": uploadInvoiceMessage.Filename,
+		},
 	})
 
 	if s3Err != nil {

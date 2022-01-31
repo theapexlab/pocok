@@ -1,12 +1,47 @@
 package create_invoice
 
 import (
+	"pocok/src/consumers/invoice_processor/guesser_functions"
 	"pocok/src/services/typless"
 	"pocok/src/utils/models"
 	"strings"
 )
 
-func getFieldValue(field typless.ExtractedField) string {
+type CreateInvoiceService struct {
+	OriginalFilename string
+}
+
+func (c *CreateInvoiceService) getFieldFallbackValue(fieldName string, textBlocks *[]typless.TextBlock) string {
+	switch fieldName {
+	case typless.INVOICE_NUMBER:
+		return guesser_functions.GuessInvoiceNumberFromFilename(c.OriginalFilename, textBlocks)
+	case typless.VENDOR_NAME:
+		return guesser_functions.GuessVendorName(textBlocks)
+	case typless.ACCOUNT_NUMBER:
+		return guesser_functions.GuessHunBankAccountNumber(textBlocks)
+	case typless.IBAN:
+		return guesser_functions.GuessIban(textBlocks)
+	case typless.CURRENCY:
+		return guesser_functions.GuessCurrency(textBlocks)
+	case typless.GROSS_PRICE:
+		return guesser_functions.GuessGrossPrice(textBlocks)
+	case typless.DUE_DATE:
+		return guesser_functions.GuessDueDate(textBlocks)
+	default:
+		return ""
+	}
+}
+
+func (c *CreateInvoiceService) getExtractedFieldValue(extractedData *typless.ExtractDataFromFileOutput, fieldIndex int) string {
+	firstValueField := extractedData.ExtractedFields[fieldIndex].Values[0]
+	if firstValueField.Value != "" && firstValueField.ConfidenceScore > 0 {
+		return strings.TrimSpace(firstValueField.Value)
+	}
+	fieldName := extractedData.ExtractedFields[fieldIndex].Name
+	return c.getFieldFallbackValue(fieldName, &extractedData.TextBlocks)
+}
+
+func (c *CreateInvoiceService) getLineItemFieldValue(field typless.ExtractedField) string {
 	firstValueField := field.Values[0]
 	if firstValueField.ConfidenceScore > 0 {
 		return strings.TrimSpace(firstValueField.Value)
@@ -14,30 +49,30 @@ func getFieldValue(field typless.ExtractedField) string {
 	return ""
 }
 
-func CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Invoice {
+func (c *CreateInvoiceService) CreateInvoice(extractedData *typless.ExtractDataFromFileOutput) *models.Invoice {
 	invoice := models.Invoice{}
-	for _, field := range extractedData.ExtractedFields {
+	for i, field := range extractedData.ExtractedFields {
 		switch field.Name {
 		case typless.INVOICE_NUMBER:
-			invoice.InvoiceNumber = getFieldValue(field)
+			invoice.InvoiceNumber = c.getExtractedFieldValue(extractedData, i)
 		case typless.VENDOR_NAME:
-			invoice.VendorName = getFieldValue(field)
+			invoice.VendorName = c.getExtractedFieldValue(extractedData, i)
 		case typless.ACCOUNT_NUMBER:
-			invoice.AccountNumber = getFieldValue(field)
+			invoice.AccountNumber = c.getExtractedFieldValue(extractedData, i)
 		case typless.IBAN:
-			invoice.Iban = getFieldValue(field)
+			invoice.Iban = c.getExtractedFieldValue(extractedData, i)
 		case typless.NET_PRICE:
-			invoice.NetPrice = getFieldValue(field)
+			invoice.NetPrice = c.getExtractedFieldValue(extractedData, i)
 		case typless.GROSS_PRICE:
-			invoice.GrossPrice = getFieldValue(field)
+			invoice.GrossPrice = c.getExtractedFieldValue(extractedData, i)
 		case typless.CURRENCY:
-			invoice.Currency = getFieldValue(field)
+			invoice.Currency = c.getExtractedFieldValue(extractedData, i)
 		case typless.DUE_DATE:
-			invoice.DueDate = getFieldValue(field)
+			invoice.DueDate = c.getExtractedFieldValue(extractedData, i)
 		case typless.VAT_RATE:
-			invoice.VatRate = getFieldValue(field)
+			invoice.VatRate = c.getExtractedFieldValue(extractedData, i)
 		case typless.VAT_AMOUNT:
-			invoice.VatAmount = getFieldValue(field)
+			invoice.VatAmount = c.getExtractedFieldValue(extractedData, i)
 		}
 	}
 LineItemsLoop:
@@ -46,21 +81,21 @@ LineItemsLoop:
 		for _, field := range lineItemFields {
 			switch field.Name {
 			case typless.SERVICE_NAME:
-				service.Name = getFieldValue(field)
+				service.Name = c.getLineItemFieldValue(field)
 			case typless.SERVICE_AMOUNT:
-				service.Amount = getFieldValue(field)
+				service.Amount = c.getLineItemFieldValue(field)
 			case typless.SERVICE_UNIT:
-				service.Unit = getFieldValue(field)
+				service.Unit = c.getLineItemFieldValue(field)
 			case typless.SERVICE_NET_PRICE:
-				service.NetPrice = getFieldValue(field)
+				service.NetPrice = c.getLineItemFieldValue(field)
 			case typless.SERVICE_GROSS_PRICE:
-				service.GrossPrice = getFieldValue(field)
+				service.GrossPrice = c.getLineItemFieldValue(field)
 			case typless.SERVICE_CURRENCY:
-				service.Currency = getFieldValue(field)
+				service.Currency = c.getLineItemFieldValue(field)
 			case typless.SERVICE_VAT_RATE:
-				service.VatRate = getFieldValue(field)
+				service.VatRate = c.getLineItemFieldValue(field)
 			case typless.SERVICE_VAT_AMOUNT:
-				service.VatAmount = getFieldValue(field)
+				service.VatAmount = c.getLineItemFieldValue(field)
 			}
 		}
 

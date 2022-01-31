@@ -9,16 +9,16 @@ import (
 )
 
 var _ = Describe("ParseEmail", func() {
-	var invoice *models.UploadInvoiceMessage
+	var invoiceMessage *models.UploadInvoiceMessage
 	var err error
 
 	When("body is malformed", func() {
 		BeforeEach(func() {
-			invoice, err = ParseEmail("")
+			invoiceMessage, err = ParseEmail("")
 		})
 
 		It("returns nil", func() {
-			Expect(invoice).To(BeNil())
+			Expect(invoiceMessage).To(BeNil())
 		})
 
 		It("errors", func() {
@@ -28,20 +28,21 @@ var _ = Describe("ParseEmail", func() {
 
 	When("body doesn't contain pdf attachment", func() {
 		BeforeEach(func() {
-			invoice, err = ParseEmail(`{
+			invoiceMessage, err = ParseEmail(`{
 				"attachments": [
 					{
 						"contentType": "image/gif",
 						"content_b64": "lkjasdlfkjasdlfkjasldfkjasldkfjasdfkl",
 						"length": "37",
-						"transferEncoding": "base64"
+						"transferEncoding": "base64",
+						"fileName": "SZERV-2021-87.pdf"
 					}
 				]
 			}`)
 		})
 
 		It("returns nil", func() {
-			Expect(invoice).To(BeNil())
+			Expect(invoiceMessage).To(BeNil())
 		})
 
 		It("errors", func() {
@@ -51,13 +52,14 @@ var _ = Describe("ParseEmail", func() {
 
 	When("body does contain a pdf attachment", func() {
 		BeforeEach(func() {
-			invoice, err = ParseEmail(`{
+			invoiceMessage, err = ParseEmail(`{
 				"attachments": [
 					{
 						"contentType": "application/pdf",
 						"content_b64": "lkjasdlfkjasdlfkjasldfkjasldkfjasdfkl",
 						"length": "37",
-						"transferEncoding": "base64"
+						"transferEncoding": "base64",
+						"fileName": "SZERV-2021-87.pdf"
 					}
 				]
 			}`)
@@ -68,8 +70,9 @@ var _ = Describe("ParseEmail", func() {
 		})
 
 		It("returns invoice", func() {
-			Expect(invoice.Type).To(Equal("base64"))
-			Expect(invoice.Body).To(Equal("lkjasdlfkjasdlfkjasldfkjasldkfjasdfkl"))
+			Expect(invoiceMessage.Type).To(Equal("base64"))
+			Expect(invoiceMessage.Body).To(Equal("lkjasdlfkjasdlfkjasldfkjasldkfjasdfkl"))
+			Expect(invoiceMessage.Filename).To(Equal("SZERV-2021-87.pdf"))
 		})
 	})
 })

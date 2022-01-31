@@ -15,7 +15,7 @@ func GetValueFromPrice(price string) string {
 	return ""
 }
 
-func GetCurrencyFromPrice(price string) string {
+func GetCurrencyFromString(price string) string {
 	currencyMap := map[string][]string{
 		"EUR": {"€", "EUR"},
 		"USD": {"$", "USD"},

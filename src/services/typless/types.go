@@ -38,6 +38,11 @@ type ExtractDataFromFileOutput struct {
 	Customer        string             `json:"customer"`
 	ExtractedFields []ExtractedField   `json:"extracted_fields"`
 	LineItems       [][]ExtractedField `json:"line_items"`
+	TextBlocks      []TextBlock        `json:"text_blocks"`
+}
+
+type TextBlock struct {
+	Value string `json:"value"`
 }
 
 type ExtractedField struct {
