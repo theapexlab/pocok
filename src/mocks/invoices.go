@@ -6,7 +6,6 @@ var MockInvoice = models.Invoice{
 	Pk:     "PK",
 	Sk:     "SK",
 	Lsi1sk: "LSI1SK",
-	Lsi2sk: "LSI2SK",
 
 	InvoiceId:  "ID",
 	EntityType: models.INVOICE,
@@ -55,7 +54,6 @@ var MockInvoice2 = models.Invoice{
 	Pk:     "PK",
 	Sk:     "SK",
 	Lsi1sk: "LSI1SK",
-	Lsi2sk: "LSI2SK",
 
 	InvoiceId:  "ID",
 	EntityType: models.INVOICE,
@@ -84,7 +82,6 @@ var MockInvoiceMissingFields = models.Invoice{
 	Pk:     "PK",
 	Sk:     "SK",
 	Lsi1sk: "LSI1SK",
-	Lsi2sk: "LSI2SK",
 
 	InvoiceId:  "ID",
 	EntityType: models.INVOICE,
