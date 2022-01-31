@@ -40,7 +40,6 @@
 ## Invoice
 - CRUD
 - Find invoices by status
-- Find latest invoice by vendorName
 
 ### Keys
 - PK: ORG#{orgId}
