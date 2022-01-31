@@ -5,7 +5,6 @@
   "scripts": {
     "test": "sst test",
     "start": "cross-env NODE_ENV=development sst start",
-    "prestart": "yarn upload-assets",
     "build": "sst build",
     "deploy": "sst deploy",
     "predeploy": "yarn upload-assets",

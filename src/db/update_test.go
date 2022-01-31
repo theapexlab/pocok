@@ -15,7 +15,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("the input is valid", func() {
 		BeforeEach(func() {
-			update, err = db.CreateStatusUpdate(map[string]string{
+			update, err = db.CreateValidStatusUpdate(map[string]string{
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
@@ -34,7 +34,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("the invoiceId is missing", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, err = db.CreateValidStatusUpdate(map[string]string{
 				"status": models.ACCEPTED,
 			})
 		})
@@ -46,7 +46,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("the status is missing", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, err = db.CreateValidStatusUpdate(map[string]string{
 				"invoiceId": "asd",
 			})
 		})
@@ -58,7 +58,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("the the status is invalid", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, err = db.CreateValidStatusUpdate(map[string]string{
 				"status":    models.PENDING,
 				"invoiceId": "ID1",
 			})

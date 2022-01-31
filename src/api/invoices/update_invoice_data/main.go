@@ -1,9 +1,9 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"os"
-	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
@@ -28,6 +28,7 @@ func main() {
 }
 
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
+
 	token := r.QueryStringParameters["token"]
 	claims, err := auth.ParseToken(token)
 	if err != nil {
@@ -41,16 +42,23 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), err
 	}
 
-	update, validationErr := db.CreateStatusUpdate(data)
-	if validationErr != nil {
-		utils.LogError("Invalid update payload", validationErr)
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationErr.Error()), nil
+	validateError := validateUpdateDataRequest(data)
+	if validateError != nil {
+		utils.LogError("Invalid update payload", validateError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, validateError.Error()), nil
 	}
 
-	updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
-	if updateErr != nil {
-		utils.LogError("Error updating dynamo db", updateErr)
-		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+}
+
+func validateUpdateDataRequest(data map[string]string) error {
+	invoiceId := data["invoiceId"]
+	if invoiceId == "" {
+		return errors.New("invalid invoiceId")
 	}
-	return utils.MailApiResponse(http.StatusOK, ""), nil
+
+	// status := data["status"]
+	// if status != models.ACCEPTED && status != models.REJECTED {
+	// 	return errors.New("invalid status")
+	// }
+	return nil
 }

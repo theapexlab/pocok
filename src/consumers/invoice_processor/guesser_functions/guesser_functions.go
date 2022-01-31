@@ -3,6 +3,7 @@ package guesser_functions
 import (
 	"pocok/src/services/typless"
 	"pocok/src/utils/currency"
+	"pocok/src/utils/models"
 	"regexp"
 	"sort"
 	"strconv"
@@ -53,14 +54,15 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
+		//  TODO: split at spaces
 		v := strings.TrimSpace(block.Value)
-		r, _ := regexp.Compile("[0-9]{8}-[0-9]{8}-[0-9]{8}")
+		r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
 		match := r.FindString(v)
 
 		if match != "" {
 			return match
 		}
-		r, _ = regexp.Compile("^[0-9]{8}-[0-9]{8}$")
+		r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
 		match = r.FindString(v)
 
 		if match != "" {

@@ -108,7 +108,7 @@ var _ = Describe("Guesser functions", func() {
 
 		It("guesses hungarian bank account number succesfully", func() {
 			bankAccountNumber := guesser_functions.GuessHunBankAccountNumber(&extractedData.TextBlocks)
-			Expect(bankAccountNumber).To(Equal(""))
+			Expect(bankAccountNumber).To(Equal("20106111-01473104-00100003"))
 		})
 
 		It("guesses currency type succesfully", func() {

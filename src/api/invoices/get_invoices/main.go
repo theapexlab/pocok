@@ -4,9 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"os"
-	"pocok/src/db"
+	"pocok/src/mocks"
 	"pocok/src/utils"
-	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
 
@@ -21,6 +20,7 @@ type dependencies struct {
 }
 
 func main() {
+
 	d := &dependencies{
 		tableName: os.Getenv("tableName"),
 		dbClient:  aws_clients.GetDbClient(),
@@ -30,20 +30,22 @@ func main() {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	token := request.QueryStringParameters["token"]
-	claims, err := auth.ParseToken(token)
-	if err != nil {
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
-	}
+	// token := request.QueryStringParameters["token"]
+	// claims, err := auth.ParseToken(token)
+	// if err != nil {
+	// 	return utils.MailApiResponse(http.StatusUnauthorized, ""), err
+	// }
 
-	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, claims.OrgId)
-	if err != nil {
-		utils.LogError("Error while getting pending invoices from db", err)
-		return nil, err
-	}
-	// invoices := mocks.Invoices
+	// invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, claims.OrgId)
+	// if err != nil {
+	// 	utils.LogError("Error while getting pending invoices from db", err)
+	// 	return nil, err
+	// }
+	invoices := mocks.Invoices
+	indexedInvoices := utils.MapInvoiceToInvoiceServiceIndexes(invoices)
+
 	response := models.InvoiceResponse{
-		Items: invoices,
+		Items: indexedInvoices,
 		Total: len(invoices),
 	}
 

@@ -48,8 +48,8 @@ type Invoice struct {
 }
 
 type InvoiceResponse struct {
-	Items []Invoice `json:"items"`
-	Total int       `json:"total"`
+	Items []InvoiceWithServiceIndex `json:"items"`
+	Total int                       `json:"total"`
 }
 
 type EmailAttachment struct {
@@ -80,4 +80,14 @@ type JWTCustomClaims struct {
 type JWTClaims struct {
 	jwt.StandardClaims
 	JWTCustomClaims
+}
+
+type ServiceWithIndex struct {
+	Service
+	Index int
+}
+
+type InvoiceWithServiceIndex struct {
+	Invoice
+	Services []ServiceWithIndex
 }

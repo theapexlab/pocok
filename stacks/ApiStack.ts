@@ -57,9 +57,22 @@ export class ApiStack extends Stack {
             ],
           },
         },
-        "POST /api/invoices": {
+        "POST /api/invoices/status": {
           function: {
-            handler: "src/api/invoices/update_invoice/main.go",
+            handler: "src/api/invoices/update_invoice_status/main.go",
+            environment: {
+              jwtKey: process.env.JWT_KEY as string,
+              tableName: additionalStackProps?.storageStack.invoiceTable
+                .tableName as string,
+            },
+            permissions: [
+              additionalStackProps?.storageStack.invoiceTable as Table,
+            ],
+          },
+        },
+        "POST /api/invoices/data": {
+          function: {
+            handler: "src/api/invoices/update_invoice_data/main.go",
             environment: {
               jwtKey: process.env.JWT_KEY as string,
               tableName: additionalStackProps?.storageStack.invoiceTable

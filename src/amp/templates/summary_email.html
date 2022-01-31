@@ -147,7 +147,7 @@
                   <div>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input
@@ -166,7 +166,7 @@
                     </form>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input
@@ -265,7 +265,7 @@
               <div class="item-content">
                 <form
                   method="post"
-                  action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                  action-xhr="[[.ApiUrl]]/api/invoices/data?token=[[.Token]]"
                   on="submit-success:invoiceList.refresh"
                 >
                   <input type="text" value="{{id}}" hidden />
@@ -365,62 +365,62 @@
                           >Name:
                           <input
                             type="text"
-                            name="service_{{name}}_name"
+                            name="service_name_{{index}}"
                             value="{{name}}"
                         /></label>
                         <label
                           >Amount:
                           <input
                             type="text"
-                            name="service_{{name}}_amount"
+                            name="service_amount_{{index}}"
                             value="{{amount}}"
                         /></label>
                         <label
                           >Unit:
                           <input
                             type="text"
-                            name="service_{{name}}_unit"
+                            name="service_unit_{{index}}"
                             value="{{unit}}"
                         /></label>
                         <label
                           >Unit Net Price:
                           <input
                             type="text"
-                            name="service_{{name}}_unitNetprice"
+                            name="service_unitNetprice_{{index}}"
                             value="{{unitNetprice}}"
                         /></label>
                         <label
                           >Net price:
                           <input
                             type="text"
-                            name="service_{{name}}_netPrice"
+                            name="service_netPrice_{{index}}"
                             value="{{netPrice}}"
                         /></label>
                         <label
                           >Gross Price:
                           <input
                             type="text"
-                            name="service_{{name}}_grossPrice"
+                            name="service_grossPrice_{{index}}"
                             value="{{grossPrice}}"
                         /></label>
                         <label
                           >Currency:
                           <input
                             type="text"
-                            name="service_{{name}}_currency"
+                            name="service_currency_{{index}}"
                             value="{{currency}}"
                         /></label>
                         <label
                           >Vat Amount:
                           <input
                             type="text"
-                            name="service_{{name}}_vatAmount"
+                            name="service_vatAmount_{{index}}"
                             value="{{vatAmount}}"
                         /></label>
                         <label
                           >Vat Rate:<input
                             type="text"
-                            name="service_{{name}}_vatRate"
+                            name="service_vatRate_{{index}}"
                             value="{{vatRate}}"
                         /></label>
                       </div>
