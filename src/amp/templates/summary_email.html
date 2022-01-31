@@ -18,6 +18,11 @@
       custom-element="amp-form"
       src="https://cdn.ampproject.org/v0/amp-form-0.1.js"
     ></script>
+    <script
+      async
+      custom-element="amp-bind"
+      src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
+    ></script>
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
@@ -27,12 +32,15 @@
       h1 {
         margin: 1rem;
       }
+
       .list {
         position: relative;
       }
+
       .item-wrapper {
         padding: 8px;
       }
+
       .item {
         display: flex;
         flex-direction: column;
@@ -41,13 +49,66 @@
         border-radius: 16px;
         border: 1px solid black;
       }
+
       .item div {
         padding-right: 10px;
       }
-      .item-head {
+
+      .item-header {
         display: flex;
+        min-height: 7rem;
         justify-content: space-between;
         flex-wrap: wrap;
+        padding: 8px;
+        border: 1px solid black;
+        border-radius: 4px;
+      }
+      .item-header-actions {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .item-header-actions button {
+        margin: 4px;
+        width: 60px;
+      }
+
+      .edit-actions {
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 8px;
+      }
+      .edit-actions button {
+        margin: 8px;
+      }
+
+      .service-edit-actions {
+        display: flex;
+        flex-direction: row-reverse;
+        padding: 8px;
+      }
+      .service-edit-actions button {
+        margin: 8px;
+      }
+
+      label {
+        display: flex;
+        justify-content: space-between;
+      }
+      input {
+        min-width: 8ch;
+        width: 28ch;
+      }
+
+      .modal {
+        position: absolute;
+        width: 128px;
+        left: 20%;
+
+        background-color: white;
+        padding: 32px;
+        border: 1px solid black;
+        border-radius: 16px;
       }
     </style>
   </head>
@@ -57,6 +118,7 @@
       <h3>Szia Lajos!</h3>
       <p>Számláidat sétáltatod? Hát bazmeg!</p>
     </div>
+
     <div>
       <amp-list
         src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
@@ -70,11 +132,15 @@
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div class="item">
-              <div class="item-head">
+            <div class="item item-view" id="{{invoiceId}}-item-view">
+              <div class="item-header">
                 <div>
-                  <div>{{accountNumber}}</div>
-                  <div>{{vendorName}}</div>
+                  <div>{{invoiceId}} {{status}}</div>
+                  <div>Received at: {{receivedAt}}</div>
+                  <div>Due: {{dueDate}}</div>
+                  <div>Iban: {{iban}}</div>
+                  <div>Vendor Name: {{vendorName}}</div>
+                  <div>Gross Price: {{grossPrice}} {{currency}}</div>
                 </div>
                 <div>{{receivedAt}}</div>
                 <div>{{dueDate}}</div>
@@ -100,32 +166,26 @@
                     action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
                     on="submit-success:invoiceList.refresh"
                   >
-                    <input
-                      type="hidden"
-                      name="invoiceId"
-                      value="{{invoiceId}}"
-                    />
-                    <input type="hidden" name="status" value="[[.Rejected]]" />
-                    <input type="submit" value="Reject" />
-                    <div submit-success>Reject successful.</div>
-                    <div submit-error>Reject failed.</div>
-                  </form>
+                    Edit
+                  </button>
                 </div>
               </div>
+
               <div class="item-content">
                 <div>
                   <div>ID: {{invoiceId}}</div>
                   <div>Iban: {{iban}}</div>
-                  <div>InvoiceNumber: {{invoiceNumber}}</div>
+                  <div>Invoice Number: {{invoiceNumber}}</div>
                   <div>Vendor Email: {{vendorEmail}}</div>
                   <div>Net Price: {{netPrice}}</div>
                   <div>Gross Price: {{grossPrice}}</div>
                   <div>Currency: {{currency}}</div>
                   <div>Vat Amount: {{vatAmount}}</div>
                   <div>Vat Rate: {{vatRate}}</div>
-                  <div>Vat Rate: {{vatRate}}</div>
                   <div>
-                    <div><p>Services:</p></div>
+                    <div>
+                      <p>Services:</p>
+                    </div>
                     {{#services}}
                     <div>
                       <div>Name: {{name}}</div>
@@ -141,6 +201,204 @@
                     {{/services}}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="item item-edit" id="{{invoiceId}}-item-edit" hidden>
+              <div class="item-header">
+                <div>
+                  <div>{{invoiceId}} {{status}}</div>
+                  <div>Received at: {{receivedAt}}</div>
+                </div>
+                <div class="item-header-actions">
+                  <div>
+                    <form>
+                      <button disabled>Accept</button>
+                    </form>
+                    <form>
+                      <button disabled>Reject</button>
+                    </form>
+                  </div>
+                  <button disabled>Edit</button>
+                </div>
+              </div>
+
+              <div class="item-content">
+                <form
+                  method="post"
+                  action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
+                  on="submit-success:invoiceList.refresh"
+                >
+                  <input type="text" value="{{id}}" hidden />
+                  <fieldset>
+                    <legend>Invoice details</legend>
+
+                    <label>
+                      Invoice Number:
+                      <input
+                        type="text"
+                        name="invoiceNumber"
+                        value="{{invoiceNumber}}"
+                      />
+                    </label>
+                    <label>
+                      Due Date:
+                      <input type="text" name="dueDate" value="{{dueDate}}" />
+                    </label>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>Vendor details</legend>
+
+                    <label>
+                      Vendor Name:
+                      <input
+                        type="text"
+                        name="vendorName"
+                        value="{{vendorName}}"
+                      />
+                    </label>
+                    <label>
+                      Vendor Email:
+                      <input
+                        type="text"
+                        name="vendorEmail"
+                        value="{{vendorEmail}}"
+                        pattern="[a-z0-9]*@[a-z0-9]*[\.].[a-z0-9]*"
+                      />
+                    </label>
+
+                    <label>
+                      Iban:
+                      <input type="text" name="iban" value="{{iban}}" />
+                    </label>
+
+                    <label>
+                      Account Number:
+                      <input
+                        type="text"
+                        name="accountNumber"
+                        value="{{accountNumber}}"
+                      />
+                    </label>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>Prices</legend>
+                    <label>
+                      Net Price:
+                      <input type="text" name="netPrice" value="{{netPrice}}" />
+                    </label>
+                    <label>
+                      Gross Price:
+                      <input
+                        type="text"
+                        name="grossPrice"
+                        value="{{grossPrice}}"
+                      />
+                    </label>
+                    <label>
+                      Currency:
+                      <input type="text" name="currency" value="{{currency}}" />
+                    </label>
+                    <label>
+                      Vat Amount:
+                      <input
+                        type="text"
+                        name="vatAmount"
+                        value="{{vatAmount}}"
+                      />
+                    </label>
+                    <label>
+                      Vat Rate:
+                      <input type="text" name="vatRate" value="{{vatRate}}" />
+                    </label>
+                  </fieldset>
+
+                  <fieldset>
+                    <legend>Services</legend>
+                    {{#services}}
+                    <fieldset>
+                      <legend>{{name}}</legend>
+
+                      <div style="margin-bottom: 16px">
+                        <label
+                          >Name:
+                          <input
+                            type="text"
+                            name="service_{{name}}_name"
+                            value="{{name}}"
+                        /></label>
+                        <label
+                          >Amount:
+                          <input
+                            type="text"
+                            name="service_{{name}}_amount"
+                            value="{{amount}}"
+                        /></label>
+                        <label
+                          >Unit:
+                          <input
+                            type="text"
+                            name="service_{{name}}_unit"
+                            value="{{unit}}"
+                        /></label>
+                        <label
+                          >Unit Net Price:
+                          <input
+                            type="text"
+                            name="service_{{name}}_unitNetprice"
+                            value="{{unitNetprice}}"
+                        /></label>
+                        <label
+                          >Net price:
+                          <input
+                            type="text"
+                            name="service_{{name}}_netPrice"
+                            value="{{netPrice}}"
+                        /></label>
+                        <label
+                          >Gross Price:
+                          <input
+                            type="text"
+                            name="service_{{name}}_grossPrice"
+                            value="{{grossPrice}}"
+                        /></label>
+                        <label
+                          >Currency:
+                          <input
+                            type="text"
+                            name="service_{{name}}_currency"
+                            value="{{currency}}"
+                        /></label>
+                        <label
+                          >Vat Amount:
+                          <input
+                            type="text"
+                            name="service_{{name}}_vatAmount"
+                            value="{{vatAmount}}"
+                        /></label>
+                        <label
+                          >Vat Rate:<input
+                            type="text"
+                            name="service_{{name}}_vatRate"
+                            value="{{vatRate}}"
+                        /></label>
+                      </div>
+                    </fieldset>
+                    {{/services}}
+                  </fieldset>
+
+                  <div class="edit-actions">
+                    <button type="submit">Save</button>
+                    <button
+                      type="button"
+                      on="tap:{{invoiceId}}-item-edit.hide,{{invoiceId}}-item-view.show"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
