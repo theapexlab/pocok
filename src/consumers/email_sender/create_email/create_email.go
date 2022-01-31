@@ -33,14 +33,22 @@ func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invo
 }
 
 type emailTemplateData struct {
-	ApiUrl   string
-	Token    string
-	Accepted string
-	Rejected string
+	ApiUrl    string
+	Token     string
+	Accepted  string
+	Rejected  string
+	PocokLogo string
 }
 
-func GetHtmlSummary(apiUrl string) (string, error) {
-	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summary_email_template.Get())
+func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
+	summaryTemplate, summaryErr := summary_email_template.Get()
+
+	if summaryErr != nil {
+		utils.LogError("Error while reading in summary file", summaryErr)
+		return "", summaryErr
+	}
+
+	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summaryTemplate)
 	if templateErr != nil {
 		utils.LogError("Error while creating template.", templateErr)
 		return "", templateErr
@@ -51,11 +59,13 @@ func GetHtmlSummary(apiUrl string) (string, error) {
 		utils.LogError("Error while creating token.", tokenErr)
 		return "", tokenErr
 	}
+
 	templateData := emailTemplateData{
-		ApiUrl:   apiUrl,
-		Token:    token,
-		Accepted: models.ACCEPTED,
-		Rejected: models.REJECTED,
+		ApiUrl:    apiUrl,
+		Token:     token,
+		Accepted:  models.ACCEPTED,
+		Rejected:  models.REJECTED,
+		PocokLogo: logoUrl,
 	}
 
 	var templateBuffer bytes.Buffer

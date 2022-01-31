@@ -102,11 +102,21 @@ export class QueueStack extends Stack {
               .bucketName as string,
             tableName: additionalStackProps?.storageStack.invoiceTable
               .tableName as string,
+            assetBucketName: additionalStackProps?.storageStack.assetBucket
+              .bucketName as string,
+            stage:
+              process.env.NODE_ENV === "development"
+                ? "development"
+                : "production",
           },
           permissions: [
+            additionalStackProps?.storageStack.assetBucket as Bucket,
             additionalStackProps?.storageStack.invoiceBucket as Bucket,
             additionalStackProps?.storageStack.invoiceTable as Table,
           ],
+          bundle: {
+            copyFiles: [{ from: "src/amp/templates", to: "src/amp/templates" }],
+          },
         },
         consumerProps: {
           batchSize: 1,

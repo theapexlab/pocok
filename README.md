@@ -1,7 +1,7 @@
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="logo.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/theapexlab/pocok">
+    <img src="assets/pocok-logo.png" alt="Logo" width="150" height="150">
   </a>
 
   <h3 align="center">POCOK</h3>
@@ -47,13 +47,19 @@ Generates a `.build/` directory with the compiled files and a `.build/cdk.out/` 
 
 Deploy all your stacks to AWS. Or optionally deploy a specific stack.
 
-### `yarn remove [stack]`
+### `yarn destroy [stack]`
 
 Remove all your stacks and all of their resources from AWS. Or optionally remove a specific stack.
 
 ### `yarn test`
 
 Runs your tests using Jest. Takes all the [Jest CLI options](https://jestjs.io/docs/en/cli).
+
+### `yarn nuke-aws`
+
+Removes every resource in AWS.
+
+Useful for cleaning up after a failed deployment.
 
 ## Acknowledgments
 

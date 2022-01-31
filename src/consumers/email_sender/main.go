@@ -8,6 +8,7 @@ import (
 	"pocok/src/services/mailgun"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/aws_utils"
 	"pocok/src/utils/models"
 	"time"
 
@@ -18,28 +19,30 @@ import (
 )
 
 type dependencies struct {
-	mgSender       string
-	mgDomain       string
-	mgApiKey       string
-	emailRecipient string
-	apiUrl         string
-	bucketName     string
-	tableName      string
-	s3Client       *s3.Client
-	dbClient       *dynamodb.Client
+	mgSender        string
+	mgDomain        string
+	mgApiKey        string
+	emailRecipient  string
+	apiUrl          string
+	bucketName      string
+	tableName       string
+	s3Client        *s3.Client
+	dbClient        *dynamodb.Client
+	assetBucketName string
 }
 
 func main() {
 	d := &dependencies{
-		mgSender:       os.Getenv("mgSender"),
-		mgDomain:       os.Getenv("mgDomain"),
-		mgApiKey:       os.Getenv("mgApiKey"),
-		emailRecipient: os.Getenv("emailRecipient"),
-		apiUrl:         os.Getenv("apiUrl"),
-		bucketName:     os.Getenv("bucketName"),
-		tableName:      os.Getenv("tableName"),
-		s3Client:       aws_clients.GetS3Client(),
-		dbClient:       aws_clients.GetDbClient(),
+		mgSender:        os.Getenv("mgSender"),
+		mgDomain:        os.Getenv("mgDomain"),
+		mgApiKey:        os.Getenv("mgApiKey"),
+		emailRecipient:  os.Getenv("emailRecipient"),
+		apiUrl:          os.Getenv("apiUrl"),
+		bucketName:      os.Getenv("bucketName"),
+		tableName:       os.Getenv("tableName"),
+		s3Client:        aws_clients.GetS3Client(),
+		dbClient:        aws_clients.GetDbClient(),
+		assetBucketName: os.Getenv("assetBucketName"),
 	}
 
 	lambda.Start(d.handler)
@@ -80,7 +83,13 @@ func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
 		return nil, err
 	}
 
-	amp, err := create_email.GetHtmlSummary(d.apiUrl)
+	logoKey := "pocok-logo.png"
+	logoUrl, err := aws_utils.GetAssetUrl(*d.s3Client, d.assetBucketName, logoKey)
+	if err != nil {
+		return nil, err
+	}
+
+	amp, err := create_email.GetHtmlSummary(d.apiUrl, logoUrl)
 	if err != nil {
 		return nil, err
 	}
