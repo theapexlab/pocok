@@ -30,6 +30,13 @@
 - PK: ORG#{orgId}
 - SK: #ANY#{orgId}
 
+## Vendor
+- CRUD by vendor name
+
+### Keys
+- PK: ORG#{orgId}
+- SK: VENDOR#{vendorName}
+
 ## Invoice
 - CRUD
 - Find invoices by status
@@ -40,6 +47,3 @@
 - SK: INVOICE#{invId}
 - LSI1SK: STATUS#{status}
     - all attributes projected
-- LSI2SK: VENDOR#{vendorName}#DATE#{createdAt}
-    - vendorEmail projected
-
