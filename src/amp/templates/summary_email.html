@@ -48,6 +48,9 @@
         justify-content: space-between;
         flex-wrap: wrap;
       }
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
 
@@ -143,7 +146,14 @@
               </div>
             </div>
           </div>
-          {{/items}} {{^items}}
+          {{/items}}
+          <form class="{{^items}}hidden{{/items}}" method="POST" action-xhr="[[.ApiUrl]]/api/invoices/accept_all?token=[[.Token]]" on="submit-success:invoiceList.refresh">
+            {{#items}}
+              <input type="hidden" name={{invoiceId}} value="accept" hidden />
+            {{/items}}
+            <input type="submit" value="Accept all" />
+          </form>
+          {{^items}}
           <div>Nincs több pàlinka. Elfogyott.</div>
           <amp-img
             alt="Pocok logo"
@@ -153,13 +163,6 @@
           >
           </amp-img>
           {{/items}}
-
-          <form method="POST" action-xhr="[[.ApiUrl]]/api/invoices/accept_all?token=[[.Token]]">
-            {{#items}}
-              <input type="hidden" name={{invoiceId}} value="accept" hidden />
-            {{/items}}
-            <input type="submit" value="Accept all" />
-          </form>
         </template>
       </amp-list>
     </div>

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"os"
+	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -29,7 +30,7 @@ func main() {
 
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
-	_, err := auth.ParseToken(token)
+	claims, err := auth.ParseToken(token)
 	if err != nil {
 		utils.LogError("Token validation failed", err)
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
@@ -40,12 +41,16 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Form body parse failed", err)
 		return utils.MailApiResponse(http.StatusBadRequest, ""), err
 	}
-	fmt.Println(data)
 
-	/*updateErr := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, data["invoiceId"], data["status"])
+	var invoiceIds []string
+	for invoiceId, _ := range data {
+		invoiceIds = append(invoiceIds, invoiceId)
+	}
+
+	updateErr := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, invoiceIds, models.ACCEPTED)
 	if updateErr != nil {
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-	}*/
-	return utils.MailApiResponse(http.StatusOK, ""), nil
+	}
+	return utils.MailApiResponse(http.StatusOK, "{}"), nil
 }
