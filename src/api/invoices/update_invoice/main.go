@@ -9,6 +9,7 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
