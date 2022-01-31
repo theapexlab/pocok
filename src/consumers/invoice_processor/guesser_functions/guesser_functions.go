@@ -28,8 +28,10 @@ func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextB
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
 	for _, block := range *textBlocks {
 		v := block.Value
-		isMatching, _ := regexp.MatchString(`^[_\w\d-]{3,17}$`, v)
+		isMatching, _ := regexp.MatchString(`^[_\d\w-]{3,17}$`, v)
+		containsNumber, _ := regexp.MatchString(`[\d+]`, v)
 		if strings.Contains(filename, v) &&
+			containsNumber &&
 			isMatching {
 			return v
 		}
