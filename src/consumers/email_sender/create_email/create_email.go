@@ -41,7 +41,14 @@ type emailTemplateData struct {
 }
 
 func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
-	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summary_email_template.Get())
+	summaryTemplate, summaryErr := summary_email_template.Get()
+
+	if summaryErr != nil {
+		utils.LogError("Error while reading in summary file", summaryErr)
+		return "", summaryErr
+	}
+
+	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summaryTemplate)
 	if templateErr != nil {
 		utils.LogError("Error while creating template.", templateErr)
 		return "", templateErr

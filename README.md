@@ -47,13 +47,19 @@ Generates a `.build/` directory with the compiled files and a `.build/cdk.out/` 
 
 Deploy all your stacks to AWS. Or optionally deploy a specific stack.
 
-### `yarn remove [stack]`
+### `yarn destroy [stack]`
 
 Remove all your stacks and all of their resources from AWS. Or optionally remove a specific stack.
 
 ### `yarn test`
 
 Runs your tests using Jest. Takes all the [Jest CLI options](https://jestjs.io/docs/en/cli).
+
+### `yarn nuke-aws`
+
+Removes every resource in AWS.
+
+Useful for cleaning up after a failed deployment.
 
 ## Acknowledgments
 

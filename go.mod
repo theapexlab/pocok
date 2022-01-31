@@ -53,6 +53,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.24.0
 	github.com/aws/aws-sdk-go-v2/service/sso v1.9.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.14.0 // indirect
+	github.com/joho/godotenv v1.4.0
 	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
 	golang.org/x/text v0.3.6 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
