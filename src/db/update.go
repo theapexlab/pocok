@@ -19,6 +19,8 @@ type GenericUpdate struct {
 	InvoiceId string
 }
 
+const TRANSACTION_LIMIT = 25 // 25 is the max number of items that can be updated in a single transaction
+
 type VendorUpdate struct {
 	VendorName  string
 	VendorEmail string
@@ -60,6 +62,50 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 }
 
 func UpdateInvoice(client *dynamodb.Client, tableName string, update GenericUpdate) error {
+	return nil
+}
+
+func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId string, invoiceIds []string, status string) error {
+	transactInput := dynamodb.TransactWriteItemsInput{
+		TransactItems: []types.TransactWriteItem{},
+	}
+
+	for _, invoiceId := range invoiceIds {
+		transactInput.TransactItems = append(transactInput.TransactItems, types.TransactWriteItem{
+			Update: &types.Update{
+				TableName: &tableName,
+				Key: map[string]types.AttributeValue{
+					"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+					"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + invoiceId},
+				},
+				UpdateExpression: aws.String("set #k1 = :v1, #k2 = :v2"),
+				ExpressionAttributeNames: map[string]string{
+					"#k1": "status",
+					"#k2": "lsi1sk",
+				},
+				ExpressionAttributeValues: map[string]types.AttributeValue{
+					":v1": &types.AttributeValueMemberS{Value: status},
+					":v2": &types.AttributeValueMemberS{Value: models.STATUS + "#" + status},
+				},
+			},
+		})
+
+		if len(transactInput.TransactItems) == TRANSACTION_LIMIT {
+			_, err := client.TransactWriteItems(context.TODO(), &transactInput)
+			if err != nil {
+				utils.LogError("error while writing batches to db", err)
+				return err
+			}
+			transactInput.TransactItems = []types.TransactWriteItem{}
+		}
+	}
+
+	_, err := client.TransactWriteItems(context.TODO(), &transactInput)
+	if err != nil {
+		utils.LogError("error while writing batches to db", err)
+		return err
+	}
+
 	return nil
 }
 
