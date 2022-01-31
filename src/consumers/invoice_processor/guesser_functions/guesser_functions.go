@@ -46,7 +46,6 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 		iban, _ := iban.NewIBAN(formattedBlock)
 		if iban != nil {
 			return iban.Code
-
 		}
 	}
 	return ""
@@ -67,7 +66,6 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 		if match != "" {
 			return match
 		}
-
 	}
 	return ""
 }
@@ -158,6 +156,5 @@ func GuessDueDate(textBlocks *[]typless.TextBlock) string {
 		sort.Sort(foundDates)
 		return foundDates[len(foundDates)-1].Format("2006-01-02")
 	}
-
 	return ""
 }
