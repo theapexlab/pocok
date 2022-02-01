@@ -54,19 +54,20 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
-		//  TODO: split at spaces
-		v := strings.TrimSpace(block.Value)
-		r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
-		match := r.FindString(v)
+		valueParts := strings.Split(block.Value, " ")
+		for _, v := range valueParts {
+			r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
+			match := r.FindString(v)
 
-		if match != "" {
-			return match
-		}
-		r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
-		match = r.FindString(v)
+			if match != "" {
+				return match
+			}
+			r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
+			match = r.FindString(v)
 
-		if match != "" {
-			return match
+			if match != "" {
+				return match
+			}
 		}
 	}
 	return ""
