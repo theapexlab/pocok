@@ -2,7 +2,6 @@ package guesser_functions
 
 import (
 	"pocok/src/services/typless"
-	"pocok/src/utils"
 	"pocok/src/utils/currency"
 	"regexp"
 	"sort"
@@ -84,10 +83,12 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, convertError := strconv.Atoi(highestPrice)
-		priceInt, convertError := strconv.Atoi(price)
-		if convertError != nil {
-			utils.LogError("Can't convert price to string", convertError)
+		highestPriceInt, convertHighestPriceError := strconv.Atoi(highestPrice)
+		if convertHighestPriceError != nil {
+			continue
+		}
+		priceInt, convertPriceError := strconv.Atoi(price)
+		if convertPriceError != nil {
 			continue
 		}
 
@@ -147,7 +148,6 @@ func GuessDueDate(textBlocks *[]typless.TextBlock) string {
 
 		date, parseError := dateparse.ParseAny(v)
 		if parseError != nil {
-			utils.LogError("Can't guess date", parseError)
 			continue
 		}
 
