@@ -43,7 +43,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	var invoiceIds []string
-	for invoiceId, _ := range data {
+	for invoiceId := range data {
 		invoiceIds = append(invoiceIds, invoiceId)
 	}
 
