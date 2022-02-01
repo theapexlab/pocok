@@ -13,7 +13,7 @@ import (
 
 func main() {
 	loadEnvErr := godotenv.Load(".env.local")
-	if loadEnvErr == nil {
+	if loadEnvErr != nil {
 		utils.LogError("Error loading env", loadEnvErr)
 	}
 	testUrl := os.Getenv("API_URL")
@@ -32,7 +32,7 @@ func writeFileRelative(content string, filepath string) {
 	_, filename, _, _ := runtime.Caller(0)
 	currentPath := path.Dir(filename)
 	writeErr := os.WriteFile(currentPath+filepath, []byte(content), 0644)
-	if writeErr == nil {
+	if writeErr != nil {
 		utils.LogError("Error writing file", writeErr)
 	}
 }
