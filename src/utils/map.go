@@ -31,6 +31,7 @@ func MapInvoiceToInvoiceServiceIndexes(invoices []models.Invoice) []models.Invoi
 				Index:   i,
 			})
 		}
+		indexedInvoices = append(indexedInvoices, newInvoice)
 	}
 
 	return indexedInvoices

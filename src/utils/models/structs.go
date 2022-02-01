@@ -11,7 +11,7 @@ type UploadInvoiceMessage struct {
 type Service struct {
 	Name         string `json:"name" dynamodbav:"name,omitempty"`
 	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
-	Unit         string `json:"" dynamodbav:"unit,omitempty"`
+	Unit         string `json:"unit" dynamodbav:"unit,omitempty"`
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
@@ -90,11 +90,11 @@ type JWTClaims struct {
 }
 
 type ServiceWithIndex struct {
-	Service `json:"service"`
-	Index   int `json:"index"`
+	Service
+	Index int `json:"index"`
 }
 
 type InvoiceWithServiceIndex struct {
-	Invoice  `json:"invoice"`
+	Invoice
 	Services []ServiceWithIndex `json:"services"`
 }
