@@ -140,9 +140,7 @@ func GuessDueDate(textBlocks *[]typless.TextBlock) string {
 		v := cutPrefix(block.Value)
 		v = strings.ReplaceAll(v, " ", "")
 		for i, month := range months {
-			if strings.Contains(v, month) {
-				v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
-			}
+			v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
 		}
 		v = strings.TrimRight(v, ".") // trailing "." makes dateparsing fail
 
