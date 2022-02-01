@@ -27,10 +27,12 @@ func cutPrefix(str string) string {
 
 func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextBlock) string {
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
+	bankAccountRegex, _ := regexp.Compile(`^[_\d\w-]{3,17}$`)
+	containsNumberRegex, _ := regexp.Compile(`^[_\d\w-]{3,17}$`)
 	for _, block := range *textBlocks {
 		v := block.Value
-		isMatching, _ := regexp.MatchString(`^[_\d\w-]{3,17}$`, v)
-		containsNumber, _ := regexp.MatchString(`[\d+]`, v)
+		isMatching := bankAccountRegex.MatchString(v)
+		containsNumber := containsNumberRegex.MatchString(v)
 		if strings.Contains(filename, v) &&
 			containsNumber &&
 			isMatching {
