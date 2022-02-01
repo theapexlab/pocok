@@ -2,12 +2,12 @@ package db
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"pocok/src/utils"
 	"pocok/src/utils/models"
 	"strings"
 
-	"github.com/almerlucke/go-iban/iban"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
@@ -89,23 +89,24 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	}
 
 	if update.AccountNumber == "" && update.Iban == "" {
-		// Todo: is it valid to provide accountNumber AND Iban
+		// todo: is it valid to provide accountNumber AND Iban?
 	}
 
 	if update.Iban != "" {
-		_, err := iban.NewIBAN(update.Iban)
+		_, err := utils.ValidateIban(update.Iban)
 		if err != nil {
 			return update, errors.New("invalid iban")
 		}
 	}
 
 	if update.AccountNumber != "" {
-		_, err := iban.NewIBAN(update.Iban)
+		_, err := utils.ValidateAccountNumber(update.AccountNumber)
 		if err != nil {
-			return update, errors.New("invalid iban")
+			return update, err
 		}
 	}
 
+	//  todo: add additional validation for fields below
 	//  vendorEmail => check if valid & update in db
 	//  invoiceNumber =>  invoiceNumber + vendorName must be unique
 	//  currency => eur, huf , usd
@@ -115,21 +116,45 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	return update, nil
 }
 
-func UpdateInvoiceData(client *dynamodb.Client, tableName string, updateInvoice models.Invoice) error {
+func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
+	servicesJson, marshalErr := json.Marshal(update.Services)
+	if marshalErr != nil {
+		utils.LogError("Cannot marshal invoice services", marshalErr)
+		return marshalErr
+	}
 	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
 			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + update.InvoiceId},
 		},
-		UpdateExpression: aws.String("set #k1 = :v1, #k2 = :v2"),
+		UpdateExpression: aws.String(`set #k1 = :v1, #k2 = :v2, #k3 = :v3, #k4 = :v4, #k5 = :v5,
+		 #k6 = :v6, #k7 = :v7, #k8 = :v8, #k9 = :v9, #k10 = :v10, #k11 = :v11`),
 		ExpressionAttributeNames: map[string]string{
-			"#k1": "status",
-			"#k2": "lsi1sk",
+			"#k1":  "vendorName",
+			"#k2":  "accountNumber",
+			"#k3":  "iban",
+			"#k4":  "netPrice",
+			"#k5":  "grossPrice",
+			"#k6":  "vatAmount",
+			"#k7":  "vatRate",
+			"#k8":  "currency",
+			"#k9":  "dueDate",
+			"#k10": "services",
+			"#k11": "vendorEmail",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":v1": &types.AttributeValueMemberS{Value: update.Status},
-			":v2": &types.AttributeValueMemberS{Value: models.STATUS + "#" + update.Status},
+			":v1":  &types.AttributeValueMemberS{Value: update.VendorName},
+			":v2":  &types.AttributeValueMemberS{Value: update.AccountNumber},
+			":v3":  &types.AttributeValueMemberS{Value: update.Iban},
+			":v4":  &types.AttributeValueMemberS{Value: update.NetPrice},
+			":v5":  &types.AttributeValueMemberS{Value: update.GrossPrice},
+			":v6":  &types.AttributeValueMemberS{Value: update.VatAmount},
+			":v7":  &types.AttributeValueMemberS{Value: update.VatRate},
+			":v8":  &types.AttributeValueMemberS{Value: update.Currency},
+			":v9":  &types.AttributeValueMemberS{Value: update.DueDate},
+			":v10": &types.AttributeValueMemberS{Value: string(servicesJson)},
+			":v11": &types.AttributeValueMemberS{Value: update.VendorEmail},
 		},
 	})
 	return err

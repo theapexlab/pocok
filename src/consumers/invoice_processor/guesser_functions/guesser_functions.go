@@ -2,6 +2,7 @@ package guesser_functions
 
 import (
 	"pocok/src/services/typless"
+	"pocok/src/utils"
 	"pocok/src/utils/currency"
 	"pocok/src/utils/models"
 	"regexp"
@@ -10,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/almerlucke/go-iban/iban"
 	"github.com/araddon/dateparse"
 )
 
@@ -44,9 +44,9 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
 		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
-		iban, _ := iban.NewIBAN(formattedBlock)
-		if iban != nil {
-			return iban.Code
+		iban, _ := utils.ValidateIban(formattedBlock)
+		if iban != "" {
+			return iban
 		}
 	}
 	return ""
