@@ -85,7 +85,7 @@ func uploadObject(client *s3.Client, assetBucketName string, assetFolder string,
 	upFileInfo, _ := upFile.Stat()
 	var fileSize int64 = upFileInfo.Size()
 	fileBuffer := make([]byte, fileSize)
-	readErr := upFile.Read(fileBuffer)
+	_, readErr := upFile.Read(fileBuffer)
 	if readErr != nil {
 		return readErr
 	}
