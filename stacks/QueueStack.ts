@@ -46,6 +46,7 @@ export class QueueStack extends Stack {
             tableName: additionalStackProps?.storageStack.invoiceTable
               .tableName as string,
             lambdaTimeout,
+            mailgunSender: process.env.MAILGUN_SENDER as string,
           },
           permissions: [
             additionalStackProps?.storageStack.invoiceBucket as Bucket,

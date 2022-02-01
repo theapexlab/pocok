@@ -3,18 +3,24 @@ package parse_email
 import (
 	"encoding/json"
 	"errors"
+	"os"
 	"pocok/src/api/process_email/url_parsing_strategies"
 	"pocok/src/utils"
 	"pocok/src/utils/models"
 )
 
 var ErrNoPdfAttachmentFound = errors.New("no pdf attachment found")
+var ErrEmailFromSenderAddress = errors.New("email sent from mailgun sender address")
 
 func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
 	var jsonBody models.EmailWebhookBody
 
 	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
 		return nil, models.ErrInvalidJson
+	}
+
+	if isSentFromRecipientAddress(&jsonBody) {
+		return nil, ErrEmailFromSenderAddress
 	}
 
 	if hasPdfAttachment(jsonBody.Attachments) {
@@ -51,4 +57,8 @@ func hasPdfUrl(jsonBody *models.EmailWebhookBody) (bool, string) {
 		utils.LogError("error while parsing url from email", err)
 	}
 	return err == nil && url != "", url
+}
+
+func isSentFromRecipientAddress(jsonBody *models.EmailWebhookBody) bool {
+	return jsonBody.From[0].Address == os.Getenv("mailgunSender")
 }
