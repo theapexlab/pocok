@@ -92,12 +92,27 @@ export class ApiStack extends Stack {
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
             ],
-          }
-        }
+          },
+        },
+        "POST /api/demo/invoice_summary": {
+          function: {
+            handler: "src/cron/invoice_summary/main.go",
+            environment: {
+              queueUrl: additionalStackProps?.queueStack.emailSenderQueue
+                .sqsQueue.queueUrl as string,
+            },
+            permissions: [
+              additionalStackProps?.queueStack.emailSenderQueue as Queue,
+            ],
+          },
+        },
       },
-      cors: process.env.NODE_ENV === "development" ? {
-        allowOrigins: ["https://playground.amp.dev"],
-      } : undefined
+      cors:
+        process.env.NODE_ENV === "development"
+          ? {
+              allowOrigins: ["https://playground.amp.dev"],
+            }
+          : undefined,
     });
 
     this.addOutputs({
