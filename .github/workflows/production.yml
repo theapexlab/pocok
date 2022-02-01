@@ -34,7 +34,7 @@ jobs:
       env:
         MAILGUN_DOMAIN: mg.pocok.biz
         MAILGUN_SENDER: apex@mg.pocok.biz
-        EMAIL_RECIPIENT: matedonka@apexlab.io
+        EMAIL_RECIPIENT: ${{ secrets.PROD_EMAIL_RECIPIENT }}
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         API_URL: ${{ secrets.PROD_API_URL }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
