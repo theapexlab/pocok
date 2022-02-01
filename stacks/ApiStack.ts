@@ -5,6 +5,7 @@ import {
   Api,
   Queue,
   Table,
+  Bucket,
 } from "@serverless-stack/resources";
 import { QueueStack } from "./QueueStack";
 import { StorageStack } from "./StorageStack";
@@ -22,6 +23,11 @@ export class ApiStack extends Stack {
     additionalStackProps?: AdditionalStackProps
   ) {
     super(scope, id, props);
+
+    const ampSharedEnvs = {
+      jwtKey: process.env.JWT_KEY as string,
+      mailgunSender: process.env.MAILGUN_SENDER as string,
+    };
 
     const api = new Api(this, "Api", {
       customDomain:
@@ -48,7 +54,7 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/invoices/get_invoices/main.go",
             environment: {
-              jwtKey: process.env.JWT_KEY as string,
+              ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
             },
@@ -74,6 +80,24 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/invoices/update_invoice_data/main.go",
             environment: {
+              ...ampSharedEnvs,
+              tableName: additionalStackProps?.storageStack.invoiceTable
+                .tableName as string,
+              bucketName: additionalStackProps?.storageStack.invoiceBucket
+                .bucketName as string,
+              typlessToken: process.env.TYPLESS_TOKEN as string,
+              typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
+            },
+            permissions: [
+              additionalStackProps?.storageStack.invoiceTable as Table,
+              additionalStackProps?.storageStack.invoiceBucket as Bucket,
+            ],
+          },
+        },
+        "POST /api/invoices/accept_all": {
+          function: {
+            handler: "src/api/invoices/accept_all_invoices/main.go",
+            environment: {
               jwtKey: process.env.JWT_KEY as string,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
@@ -81,9 +105,12 @@ export class ApiStack extends Stack {
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
             ],
-          },
-        },
+          }
+        }
       },
+      cors: process.env.NODE_ENV === "development" ? {
+        allowOrigins: ["https://playground.amp.dev"],
+      } : undefined
     });
 
     this.addOutputs({

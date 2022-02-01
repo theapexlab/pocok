@@ -18,7 +18,14 @@ type StatusUpdate struct {
 	Status    string
 }
 
-func CreateValidStatusUpdate(data map[string]string) (StatusUpdate, error) {
+const TRANSACTION_LIMIT = 25 // 25 is the max number of items that can be updated in a single transaction
+
+type VendorUpdate struct {
+	VendorName  string
+	VendorEmail string
+}
+
+func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
 	var update StatusUpdate
 	err := utils.MapToStruct(data, &update)
 	if err != nil {
@@ -84,12 +91,13 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	if err != nil {
 		return update, errors.New("invalid input")
 	}
+
 	if update.InvoiceId == "" {
 		return update, errors.New("invalid invoiceId")
 	}
 
 	if update.AccountNumber == "" && update.Iban == "" {
-		// todo: is it valid to provide accountNumber AND Iban?
+		return update, errors.New("Iban or account number musst be provided")
 	}
 
 	if update.Iban != "" {
@@ -106,12 +114,13 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 		}
 	}
 
-	//  todo: add additional validation for fields below
-	//  vendorEmail => check if valid & update in db
-	//  invoiceNumber =>  invoiceNumber + vendorName must be unique
 	//  currency => eur, huf , usd
 	//  dueDate =>  musst be in future
 	//  grossAmount =>  >0,
+
+	//  todo: add additional validation for fields below
+	//  vendorEmail => check if valid & update in db
+	//  invoiceNumber =>  invoiceNumber + vendorName must be unique
 
 	return update, nil
 }
@@ -155,6 +164,72 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			":v9":  &types.AttributeValueMemberS{Value: update.DueDate},
 			":v10": &types.AttributeValueMemberS{Value: string(servicesJson)},
 			":v11": &types.AttributeValueMemberS{Value: update.VendorEmail},
+		},
+	})
+	return err
+}
+
+func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId string, invoiceIds []string, status string) error {
+	transactInput := dynamodb.TransactWriteItemsInput{
+		TransactItems: []types.TransactWriteItem{},
+	}
+
+	for _, invoiceId := range invoiceIds {
+		transactInput.TransactItems = append(transactInput.TransactItems, types.TransactWriteItem{
+			Update: &types.Update{
+				TableName: &tableName,
+				Key: map[string]types.AttributeValue{
+					"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+					"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + invoiceId},
+				},
+				UpdateExpression: aws.String("set #k1 = :v1, #k2 = :v2"),
+				ExpressionAttributeNames: map[string]string{
+					"#k1": "status",
+					"#k2": "lsi1sk",
+				},
+				ExpressionAttributeValues: map[string]types.AttributeValue{
+					":v1": &types.AttributeValueMemberS{Value: status},
+					":v2": &types.AttributeValueMemberS{Value: models.STATUS + "#" + status},
+				},
+			},
+		})
+
+		if len(transactInput.TransactItems) == TRANSACTION_LIMIT {
+			_, err := client.TransactWriteItems(context.TODO(), &transactInput)
+			if err != nil {
+				utils.LogError("error while writing batches to db", err)
+				return err
+			}
+			transactInput.TransactItems = []types.TransactWriteItem{}
+		}
+	}
+
+	_, err := client.TransactWriteItems(context.TODO(), &transactInput)
+	if err != nil {
+		utils.LogError("error while writing batches to db", err)
+		return err
+	}
+
+	return nil
+}
+
+func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, update VendorUpdate) error {
+	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+		TableName: &tableName,
+		Key: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			"sk": &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
+		},
+		UpdateExpression: aws.String("set #pk = :pk, #sk = :sk, #vendorEmail = :vendorEmail"),
+		ExpressionAttributeNames: map[string]string{
+			"#pk":          "pk",
+			"#sk":          "sk",
+			"#vendorEmail": "vendorEmail",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":pk":          &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			":sk":          &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
+			":vendorEmail": &types.AttributeValueMemberS{Value: update.VendorEmail},
 		},
 	})
 	return err

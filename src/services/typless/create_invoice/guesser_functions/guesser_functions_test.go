@@ -1,9 +1,9 @@
 package guesser_functions_test
 
 import (
-	"pocok/src/consumers/invoice_processor/guesser_functions"
 	"pocok/src/mocks/typless/parse_mock_json"
 	"pocok/src/services/typless"
+	"pocok/src/services/typless/create_invoice/guesser_functions"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

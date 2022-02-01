@@ -7,7 +7,7 @@
     "start": "cross-env NODE_ENV=development sst start",
     "build": "sst build",
     "deploy": "sst deploy",
-    "predeploy": "yarn upload-assets",
+    "postdeploy": "yarn upload-assets",
     "destroy": "cross-env NODE_ENV=development sst remove",
     "go-test": "go test -v ./src/...",
     "go-watch-test": "nodemon --watch src -e go,json --exec 'yarn go-test'",

@@ -4,9 +4,9 @@ import (
 	"context"
 	"io/ioutil"
 	"os"
-	"pocok/src/consumers/invoice_processor/create_invoice"
 	"pocok/src/db"
 	"pocok/src/services/typless"
+	"pocok/src/services/typless/create_invoice"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"strconv"
@@ -72,7 +72,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		safetyTimeout := lambdaTimeout - 5
 
 		// extract the text from the invoice
-		extractedData, err := typless.ExtractData(invoicePdf, typlessConfig, safetyTimeout)
+		extractedData, err := typless.ExtractData(typlessConfig, invoicePdf, safetyTimeout)
 
 		if err != nil {
 			utils.LogError("Failed to extract data", err)
@@ -81,8 +81,9 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 		createInvoiceService := create_invoice.CreateInvoiceService{
 			OriginalFilename: originalFilename,
+			ExtractedData:    extractedData,
 		}
-		invoice := createInvoiceService.CreateInvoice(extractedData)
+		invoice := createInvoiceService.CreateInvoice()
 		invoice.Filename = filename
 
 		_, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)

@@ -55,6 +55,10 @@ Remove all your stacks and all of their resources from AWS. Or optionally remove
 
 Runs your tests using Jest. Takes all the [Jest CLI options](https://jestjs.io/docs/en/cli).
 
+### `yarn upload-assets`
+
+Any time a static asset is changed, this command will upload it to S3.
+
 ### `yarn nuke-aws`
 
 Removes every resource in AWS.
