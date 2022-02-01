@@ -17,6 +17,7 @@ type Service struct {
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
+	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
 }
 
 type Invoice struct {
@@ -89,11 +90,11 @@ type JWTClaims struct {
 }
 
 type ServiceWithIndex struct {
-	Service
-	Index int
+	Service `json:"service"`
+	Index   int `json:"index"`
 }
 
 type InvoiceWithServiceIndex struct {
-	Invoice
-	Services []ServiceWithIndex
+	Invoice  `json:"invoice"`
+	Services []ServiceWithIndex `json:"services"`
 }

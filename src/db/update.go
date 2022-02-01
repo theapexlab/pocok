@@ -6,7 +6,6 @@ import (
 	"errors"
 	"pocok/src/utils"
 	"pocok/src/utils/models"
-	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
@@ -25,7 +24,7 @@ type VendorUpdate struct {
 	VendorEmail string
 }
 
-func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
+func CreateValidStatusUpdate(data map[string]string) (StatusUpdate, error) {
 	var update StatusUpdate
 	err := utils.MapToStruct(data, &update)
 	if err != nil {
@@ -61,32 +60,7 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 }
 
 func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
-	var update models.Invoice
-	err := utils.MapToStruct(data, &update)
-
-	index := 0
-	for {
-		service := models.Service{}
-		serviceMap := map[string]string{}
-		found := false
-		for key, val := range data {
-			parts := strings.Split(key, "_")
-			if strings.HasPrefix(parts[0], "service") && parts[2] == string(index) {
-				found = true
-				fieldName := parts[1]
-				serviceMap[fieldName] = val
-			}
-		}
-		if !found {
-			break
-		}
-		err := utils.MapToStruct(service, &service)
-		if err != nil {
-			utils.LogError("error while parsing service", err)
-		}
-		update.Services = append(update.Services, service)
-		index++
-	}
+	update, err := utils.MapUpdateDataToInvoice(data)
 
 	if err != nil {
 		return update, errors.New("invalid input")
@@ -96,27 +70,42 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 		return update, errors.New("invalid invoiceId")
 	}
 
+	if update.VendorName == "" {
+		return update, errors.New("invalid vendor name")
+	}
+
 	if update.AccountNumber == "" && update.Iban == "" {
-		return update, errors.New("Iban or account number musst be provided")
+		return update, errors.New("Iban or account number must be provided")
 	}
 
 	if update.Iban != "" {
-		_, err := utils.ValidateIban(update.Iban)
-		if err != nil {
-			return update, errors.New("invalid iban")
+		_, ibanErr := utils.GetValidIban(update.Iban)
+		if ibanErr != nil {
+			return update, ibanErr
 		}
 	}
 
 	if update.AccountNumber != "" {
-		_, err := utils.ValidateAccountNumber(update.AccountNumber)
+		_, err := utils.GetValidAccountNumber(update.AccountNumber)
 		if err != nil {
 			return update, err
 		}
 	}
 
-	//  currency => eur, huf , usd
-	//  dueDate =>  musst be in future
-	//  grossAmount =>  >0,
+	_, priceErr := utils.GetValidPrice(update.GrossPrice)
+	if priceErr != nil {
+		return update, errors.New("invalid gross price")
+	}
+
+	_, dateErr := utils.GetValidDueDate(update.DueDate)
+	if dateErr != nil {
+		return update, errors.New("invalid due date")
+	}
+
+	_, currErr := utils.GetValidCurrency(update.Currency)
+	if currErr != nil {
+		return update, currErr
+	}
 
 	//  todo: add additional validation for fields below
 	//  vendorEmail => check if valid & update in db
@@ -126,6 +115,7 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 }
 
 func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
+	// todo: check hwo does it look in db
 	servicesJson, marshalErr := json.Marshal(update.Services)
 	if marshalErr != nil {
 		utils.LogError("Cannot marshal invoice services", marshalErr)

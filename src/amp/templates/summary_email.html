@@ -231,15 +231,15 @@
                     </div>
                     {{#services}}
                     <div>
-                      <div>Name: {{name}}</div>
-                      <div>Amount: {{amount}}</div>
-                      <div>Unit: {{unit}}</div>
-                      <div>Unit Net Price: {{unitNetprice}}</div>
-                      <div>Net price: {{netPrice}}</div>
-                      <div>Gross Price: {{grossPrice}}</div>
-                      <div>Currency: {{currency}}</div>
-                      <div>Vat Amount: {{vatAmount}}</div>
-                      <div>Vat Rate:{{vatRate}}</div>
+                      <div>Name: {{service.name}}</div>
+                      <div>Amount: {{service.amount}}</div>
+                      <div>Unit: {{service.unit}}</div>
+                      <div>Unit Net Price: {{service.unitNetprice}}</div>
+                      <div>Net price: {{service.netPrice}}</div>
+                      <div>Gross Price: {{service.grossPrice}}</div>
+                      <div>Currency: {{service.currency}}</div>
+                      <div>Vat Amount: {{service.vatAmount}}</div>
+                      <div>Vat Rate:{{service.vatRate}}</div>
                     </div>
                     {{/services}}
                   </div>
@@ -370,62 +370,62 @@
                           <input
                             type="text"
                             name="service_name_{{index}}"
-                            value="{{name}}"
+                            value="{{service.name}}"
                         /></label>
                         <label
                           >Amount:
                           <input
                             type="text"
                             name="service_amount_{{index}}"
-                            value="{{amount}}"
+                            value="{{service.amount}}"
                         /></label>
                         <label
                           >Unit:
                           <input
                             type="text"
                             name="service_unit_{{index}}"
-                            value="{{unit}}"
+                            value="{{service.unit}}"
                         /></label>
                         <label
                           >Unit Net Price:
                           <input
                             type="text"
                             name="service_unitNetprice_{{index}}"
-                            value="{{unitNetprice}}"
+                            value="{{service.unitNetprice}}"
                         /></label>
                         <label
                           >Net price:
                           <input
                             type="text"
                             name="service_netPrice_{{index}}"
-                            value="{{netPrice}}"
+                            value="{{service.netPrice}}"
                         /></label>
                         <label
                           >Gross Price:
                           <input
                             type="text"
                             name="service_grossPrice_{{index}}"
-                            value="{{grossPrice}}"
+                            value="{{service.grossPrice}}"
                         /></label>
                         <label
                           >Currency:
                           <input
                             type="text"
                             name="service_currency_{{index}}"
-                            value="{{currency}}"
+                            value="{{service.currency}}"
                         /></label>
                         <label
                           >Vat Amount:
                           <input
                             type="text"
                             name="service_vatAmount_{{index}}"
-                            value="{{vatAmount}}"
+                            value="{{service.vatAmount}}"
                         /></label>
                         <label
                           >Vat Rate:<input
                             type="text"
                             name="service_vatRate_{{index}}"
-                            value="{{vatRate}}"
+                            value="{{service.vatRate}}"
                         /></label>
                       </div>
                     </fieldset>

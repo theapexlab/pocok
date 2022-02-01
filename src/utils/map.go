@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"pocok/src/utils/models"
+	"strings"
 )
 
 func MapToStruct(data interface{}, v interface{}) error {
@@ -33,4 +34,36 @@ func MapInvoiceToInvoiceServiceIndexes(invoices []models.Invoice) []models.Invoi
 	}
 
 	return indexedInvoices
+}
+
+func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
+	var invoice models.Invoice
+	err := MapToStruct(data, &invoice)
+
+	index := 0
+	for {
+		service := models.Service{}
+		serviceMap := map[string]string{}
+		found := false
+		for key, val := range data {
+			parts := strings.Split(key, "_")
+			if strings.HasPrefix(parts[0], "service") && parts[2] == string(index) {
+				found = true
+				fieldName := parts[1]
+				serviceMap[fieldName] = val
+			}
+		}
+		if !found {
+			break
+		}
+		err := MapToStruct(service, &service)
+		if err != nil {
+			LogError("error while parsing service", err)
+		}
+		invoice.Services = append(invoice.Services, service)
+		index++
+	}
+
+	return invoice, err
+
 }
