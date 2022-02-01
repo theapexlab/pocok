@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"pocok/src/utils"
@@ -53,8 +52,8 @@ func ExtractData(config *Config, file []byte, timeout int) (*ExtractDataFromFile
 	}
 
 	if res.StatusCode != 200 {
-		fmt.Printf("Status:  %s  \n", res.Status)
-		fmt.Printf("Body:  %s  \n", string(body))
+		utils.Logf("Status:  %s  \n", res.Status)
+		utils.Logf("Body:  %s  \n", string(body))
 		err := errors.New("❌ request to typless failed")
 		return nil, err
 	}
@@ -101,8 +100,8 @@ func AddDocumentFeedback(config *Config, trainingData TrainingData) error {
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Status:  %s  \n", res.Status)
-		fmt.Printf("Body:  %s  \n", string(body))
+		utils.Logf("Status:  %s  \n", res.Status)
+		utils.Logf("Body:  %s  \n", string(body))
 
 		return errors.New("❌ request to typless failed")
 	}

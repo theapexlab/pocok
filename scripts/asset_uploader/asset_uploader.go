@@ -6,10 +6,10 @@ import (
 	"errors"
 	"io/fs"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path"
+	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"runtime"
 	"strings"
@@ -26,38 +26,38 @@ func main() {
 
 	assetBucketName, err := getAssetBucketName(client)
 	if err != nil {
-		log.Fatal(err)
+		utils.LogFatal(err)
 	}
 
 	emptyAssetBucket(client, assetBucketName)
 
 	files, err := ioutil.ReadDir(assetFolder)
 	if err != nil {
-		log.Fatal(err)
+		utils.LogFatal(err)
 	}
 	uploadFiles(client, assetBucketName, assetFolder, files)
 
 }
 
 func uploadFiles(client *s3.Client, assetBucketName string, assetFolder string, files []fs.FileInfo) {
-	log.Println("Start uploading assets.")
+	utils.Log("Start uploading assets.")
 	for _, file := range files {
 		if !file.IsDir() {
 			fileName := file.Name()
-			log.Println("uploading - " + fileName)
+			utils.Log("Uploading -  %s  \n", fileName)
 			err := uploadObject(client, assetBucketName, assetFolder, fileName)
 			if err != nil {
-				log.Fatal(err)
+				utils.LogFatal(err)
 			}
 		}
 	}
-	log.Println("Uploading assets completed.")
+	utils.Log("Uploading assets completed.")
 }
 
 func getAssetBucketName(client *s3.Client) (string, error) {
 	buckets, err := client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
 	if err != nil {
-		log.Fatal(err)
+		utils.LogFatal(err)
 	}
 
 	assetBucketName := ""
@@ -100,26 +100,26 @@ func uploadObject(client *s3.Client, assetBucketName string, assetFolder string,
 }
 
 func deleteObject(client *s3.Client, bucket, key, versionId *string) {
-	log.Println("deleting - " + *key)
+	utils.Log("Deleting - %s \n", *key)
 	_, err := client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 		Bucket:    bucket,
 		Key:       key,
 		VersionId: versionId,
 	})
 	if err != nil {
-		log.Fatalf("Failed to delete object: %v", err)
+		utils.LogFatalf("Failed to delete object: %v", err)
 	}
 }
 
 func emptyAssetBucket(client *s3.Client, assetBucketName string) {
-	log.Println("Start deleting items in asset bucket.")
+	utils.Log("Start deleting items in asset bucket.")
 	bucket := aws.String(assetBucketName)
 
 	in := &s3.ListObjectsV2Input{Bucket: bucket}
 	for {
 		out, err := client.ListObjectsV2(context.TODO(), in)
 		if err != nil {
-			log.Fatalf("Failed to list objects: %v", err)
+			utils.LogFatalf("Failed to list objects: %v", err)
 		}
 
 		for _, item := range out.Contents {
@@ -137,7 +137,7 @@ func emptyAssetBucket(client *s3.Client, assetBucketName string) {
 	for {
 		out, err := client.ListObjectVersions(context.TODO(), inVer)
 		if err != nil {
-			log.Fatalf("Failed to list version objects: %v", err)
+			utils.LogFatalf("Failed to list version objects: %v", err)
 		}
 
 		for _, item := range out.DeleteMarkers {
@@ -155,5 +155,5 @@ func emptyAssetBucket(client *s3.Client, assetBucketName string) {
 			break
 		}
 	}
-	log.Println("Deleting assets in asset bucket completed.")
+	utils.Log("Deleting assets in asset bucket completed.")
 }
