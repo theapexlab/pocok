@@ -60,5 +60,5 @@ func hasPdfUrl(jsonBody *models.EmailWebhookBody) (bool, string) {
 }
 
 func isSentFromRecipientAddress(jsonBody *models.EmailWebhookBody) bool {
-	return jsonBody.From[0].Address == os.Getenv("mailgunSender")
+	return len(jsonBody.From) > 0 && jsonBody.From[0].Address == os.Getenv("mailgunSender")
 }
