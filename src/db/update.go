@@ -28,8 +28,8 @@ type VendorUpdate struct {
 
 func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
 	var patch StatusUpdate
-	err := utils.MapToStruct(data, &patch)
-	if err != nil {
+	mapError := utils.MapToStruct(data, &patch)
+	if mapError != nil {
 		return patch, errors.New("invalid input")
 	}
 	if patch.InvoiceId == "" {
@@ -42,7 +42,7 @@ func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
 }
 
 func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string, update StatusUpdate) error {
-	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
@@ -58,7 +58,7 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 			":v2": &types.AttributeValueMemberS{Value: models.STATUS + "#" + update.Status},
 		},
 	})
-	return err
+	return updateError
 }
 
 func UpdateInvoice(client *dynamodb.Client, tableName string, update GenericUpdate) error {
@@ -91,26 +91,26 @@ func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId stri
 		})
 
 		if len(transactInput.TransactItems) == TRANSACTION_LIMIT {
-			_, err := client.TransactWriteItems(context.TODO(), &transactInput)
-			if err != nil {
-				utils.LogError("error while writing batches to db", err)
-				return err
+			_, transactionError := client.TransactWriteItems(context.TODO(), &transactInput)
+			if transactionError != nil {
+				utils.LogError("error while writing batches to db", transactionError)
+				return transactionError
 			}
 			transactInput.TransactItems = []types.TransactWriteItem{}
 		}
 	}
 
-	_, err := client.TransactWriteItems(context.TODO(), &transactInput)
-	if err != nil {
-		utils.LogError("error while writing batches to db", err)
-		return err
+	_, transactionError := client.TransactWriteItems(context.TODO(), &transactInput)
+	if transactionError != nil {
+		utils.LogError("error while writing batches to db", transactionError)
+		return transactionError
 	}
 
 	return nil
 }
 
 func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, update VendorUpdate) error {
-	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
@@ -128,5 +128,5 @@ func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, updat
 			":vendorEmail": &types.AttributeValueMemberS{Value: update.VendorEmail},
 		},
 	})
-	return err
+	return updateError
 }

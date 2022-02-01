@@ -13,13 +13,13 @@ const BillingoAddress = "noreply@billingo.hu"
 type Billingo struct{}
 
 func (b *Billingo) Parse(jsonBody *models.EmailWebhookBody) (string, error) {
-	awsTrackUrl, err := parseAwsTrackUrl(jsonBody.Html)
-	if err != nil {
+	awsTrackUrl, parseError := parseAwsTrackUrl(jsonBody.Html)
+	if parseError != nil {
 		return "", errors.New("can't parse aws track url")
 	}
 
-	invoiceSummaryUrl, err := getFinalRedirectUrl(awsTrackUrl)
-	if err != nil {
+	invoiceSummaryUrl, getRedirectUrlError := getFinalRedirectUrl(awsTrackUrl)
+	if getRedirectUrlError != nil {
 		return "", errors.New("can't get billingo url from aws track url")
 	}
 
@@ -29,9 +29,9 @@ func (b *Billingo) Parse(jsonBody *models.EmailWebhookBody) (string, error) {
 }
 
 func parseAwsTrackUrl(html string) (string, error) {
-	r, err := regexp.Compile(`title="SZÁMLA LETÖLTÉSE" href="(.*)" style`)
-	if err != nil {
-		return "", err
+	r, regexpError := regexp.Compile(`title="SZÁMLA LETÖLTÉSE" href="(.*)" style`)
+	if regexpError != nil {
+		return "", regexpError
 	}
 	matches := r.FindStringSubmatch(html)
 
@@ -44,9 +44,9 @@ func parseAwsTrackUrl(html string) (string, error) {
 
 // returns the final url after a serious of redirects
 func getFinalRedirectUrl(url string) (string, error) {
-	resp, err := http.Get(url)
-	if err != nil {
-		return "", err
+	resp, httpGetError := http.Get(url)
+	if httpGetError != nil {
+		return "", httpGetError
 	}
 
 	finalURL := resp.Request.URL.String()

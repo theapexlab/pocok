@@ -14,7 +14,7 @@ var _ = Describe("CreateInvoice", func() {
 	var createInvoiceService *create_invoice.CreateInvoiceService
 	var extractedData *typless.ExtractDataFromFileOutput
 	var invoice *models.Invoice
-	var err error
+	var testError error
 
 	When("recieves billingo invoice with normal fields", func() {
 		BeforeEach(func() {
@@ -27,7 +27,7 @@ var _ = Describe("CreateInvoice", func() {
 		})
 
 		It("not errors", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("return invoice with correct fields", func() {
@@ -66,7 +66,7 @@ var _ = Describe("CreateInvoice", func() {
 		})
 
 		It("not errors", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("return invoice with correct main fields", func() {
@@ -117,7 +117,7 @@ var _ = Describe("CreateInvoice", func() {
 		})
 
 		It("not errors", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("skips line item with no service description", func() {
@@ -139,7 +139,7 @@ var _ = Describe("CreateInvoice", func() {
 		})
 
 		It("not errors", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("skips line item with empty field no grossprice, netprice and currency", func() {
