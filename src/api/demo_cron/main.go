@@ -43,7 +43,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 	return &events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       "Számlák elküldve",
+		Body:       "Done",
 	}, nil
 }
 
