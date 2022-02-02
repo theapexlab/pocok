@@ -79,7 +79,7 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 //  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 	//  Gets highest price mentioned in texblocks
-	highestPrice := ""
+	highestPrice := "0"
 	for _, block := range *textBlocks {
 		v := block.Value
 		if currency.GetCurrencyFromString(v) == "" {
@@ -88,11 +88,9 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, convertHighestPriceError := currency.ConvertPriceToFloat(highestPrice)
-		if convertHighestPriceError != nil {
-			continue
-		}
+		highestPriceInt, _ := currency.ConvertPriceToFloat(highestPrice)
 		priceInt, convertPriceError := currency.ConvertPriceToFloat(price)
+
 		if convertPriceError != nil {
 			continue
 		}
