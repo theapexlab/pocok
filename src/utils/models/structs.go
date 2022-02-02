@@ -55,8 +55,8 @@ type Vendor struct {
 }
 
 type InvoiceResponse struct {
-	Items []InvoiceWithServiceIndex `json:"items"`
-	Total int                       `json:"total"`
+	Items []Invoice `json:"items"`
+	Total int       `json:"total"`
 }
 
 type EmailAttachment struct {
@@ -87,14 +87,4 @@ type JWTCustomClaims struct {
 type JWTClaims struct {
 	jwt.StandardClaims
 	JWTCustomClaims
-}
-
-type ServiceWithIndex struct {
-	Service
-	Index int `json:"index"`
-}
-
-type InvoiceWithServiceIndex struct {
-	Invoice
-	Services []ServiceWithIndex `json:"services"`
 }

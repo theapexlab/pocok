@@ -88,10 +88,10 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, err := currency.ConvertPriceToFloat(highestPrice)
-		priceInt, err := currency.ConvertPriceToFloat(price)
+		highestPriceInt, convertHighestPriceError := currency.ConvertPriceToFloat(highestPrice)
+		priceInt, convertPriceError := currency.ConvertPriceToFloat(price)
 
-		if err != nil {
+		if convertHighestPriceError != nil || convertPriceError != nil {
 			continue
 		}
 
