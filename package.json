@@ -16,7 +16,7 @@
     "go-watch-amp": "nodemon --watch src/amp/templates -e html --exec 'yarn amp-validate'",
     "upload-assets": "go run scripts/asset_uploader/asset_uploader.go",
     "go-tidy": "go mod tidy",
-    "nuke-aws": "./aws-nuke/setup.sh && docker run --rm -it -v $PWD/aws-nuke/config.yml:/home/aws-nuke/config.yml -v ~/.aws:/home/aws-nuke/.aws rebuy/aws-nuke:latest --profile default --config /home/aws-nuke/config.yml --no-dry-run"
+    "nuke-aws": "./aws-nuke/setup.sh && docker run --rm -it -v $PWD/aws-nuke/config.yml:/home/aws-nuke/config.yml -v ~/.aws:/home/aws-nuke/.aws rebuy/aws-nuke:latest --profile default --config /home/aws-nuke/config.yml --no-dry-run --force"
   },
   "eslintConfig": {
     "extends": [

@@ -1,6 +1,7 @@
 script_path="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-aws iam create-account-alias --account-alias local-test
+aws iam delete-account-alias --account-alias pocok-local > /dev/null 2>&1
+aws iam create-account-alias --account-alias pocok-local
 
 account_id=`aws sts get-caller-identity --query "Account" --output text | sed 's/^ *//;s/ *$//'`
 
