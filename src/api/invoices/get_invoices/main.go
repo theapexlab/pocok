@@ -50,7 +50,7 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 
 	response := models.InvoiceResponse{
 		Items: indexedInvoices,
-		Total: len(invoices),
+		Total: len(indexedInvoices),
 	}
 
 	invoiceBytes, err := json.Marshal(response)

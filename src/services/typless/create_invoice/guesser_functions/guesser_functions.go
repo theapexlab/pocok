@@ -54,6 +54,7 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
+		// todo: currently fails to guess if bank account parts are deliminated with " " instead of "-"
 		valueParts := strings.Split(block.Value, " ")
 		for _, v := range valueParts {
 			r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
@@ -73,19 +74,21 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	return ""
 }
 
+//  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
-	//  Gest highest price mentioned in texblocks
+	//  Gets highest price mentioned in texblocks
 	highestPrice := ""
 	for _, block := range *textBlocks {
 		v := block.Value
-		if currency.GetCurrencyFromString(v) != "" {
+		if currency.GetCurrencyFromString(v) == "" {
 			continue
 		}
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, err := strconv.Atoi(highestPrice)
-		priceInt, err := strconv.Atoi(price)
+		highestPriceInt, err := currency.ConvertPriceToFloat(highestPrice)
+		priceInt, err := currency.ConvertPriceToFloat(price)
+
 		if err != nil {
 			continue
 		}
@@ -98,19 +101,32 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 }
 
 func GuessVendorName(textBlocks *[]typless.TextBlock) string {
-	// Gets first "Title Cased" value, which must include atleast one " " in it
+	// Gets first "Title Cased" value, which must include atleast one " " in it and no invoice indicator
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
-		if !strings.Contains(v, " ") {
+		containsSpace := strings.Contains(v, " ")
+		if !containsSpace || containsInvoiceIndicator(v) {
 			continue
 		}
-		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰ-]*)*$")
+		// todo: match for names with known pre- and suffixes eg.: dr. Test Zoltán ev.
+		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰüÜ-]*)*$")
 		match := r.FindString(v)
 		if match != "" {
 			return v
 		}
 	}
 	return ""
+}
+
+func containsInvoiceIndicator(v string) bool {
+	invoiceIndicators := []string{"invoice", "szamla", "számla"}
+	contains := false
+	for _, indicator := range invoiceIndicators {
+		if strings.Contains(strings.ToLower(v), indicator) {
+			contains = true
+		}
+	}
+	return contains
 }
 
 func GuessCurrency(textBlocks *[]typless.TextBlock) string {

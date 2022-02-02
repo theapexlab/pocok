@@ -231,15 +231,15 @@
                     </div>
                     {{#services}}
                     <div>
-                      <div>Name: {{service.name}}</div>
-                      <div>Amount: {{service.amount}}</div>
-                      <div>Unit: {{service.unit}}</div>
-                      <div>Unit Net Price: {{service.unitNetprice}}</div>
-                      <div>Net price: {{service.netPrice}}</div>
-                      <div>Gross Price: {{service.grossPrice}}</div>
-                      <div>Currency: {{service.currency}}</div>
-                      <div>Vat Amount: {{service.vatAmount}}</div>
-                      <div>Vat Rate:{{service.vatRate}}</div>
+                      <div>Name: {{name}}</div>
+                      <div>Amount: {{amount}}</div>
+                      <div>Unit: {{unit}}</div>
+                      <div>Unit Net Price: {{unitNetprice}}</div>
+                      <div>Net price: {{netPrice}}</div>
+                      <div>Gross Price: {{grossPrice}}</div>
+                      <div>Currency: {{currency}}</div>
+                      <div>Vat Amount: {{vatAmount}}</div>
+                      <div>Vat Rate:{{vatRate}}</div>
                     </div>
                     {{/services}}
                   </div>
@@ -272,10 +272,9 @@
                   action-xhr="[[.ApiUrl]]/api/invoices/data?token=[[.Token]]"
                   on="submit-success:invoiceList.refresh"
                 >
-                  <input type="text" value="{{id}}" hidden />
+                  <input type="hidden" name="invoiceId" value="{{invoiceId}}" />
                   <fieldset>
                     <legend>Invoice details</legend>
-
                     <label>
                       Invoice Number:
                       <input
@@ -440,6 +439,9 @@
                     >
                       Cancel
                     </button>
+                    <div submitting>Save in progress.</div>
+                    <div submit-success>Save successful.</div>
+                    <div submit-error template="submit_error_template"></div>
                   </div>
                 </form>
               </div>
@@ -467,6 +469,9 @@
           >
           </amp-img>
           {{/items}}
+        </template>
+        <template type="amp-mustache" id="submit_error_template">
+          Oops! {{body}}.
         </template>
       </amp-list>
     </div>

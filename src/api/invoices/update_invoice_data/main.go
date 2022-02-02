@@ -53,6 +53,16 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
+
+	//  todo: send json response
+	// invoiceBytes, err := json.Marshal(response)
+	// if err != nil {
+	// 	utils.LogError("Error while parsing invoices from db", err)
+	// 	return nil, err
+	// }
+
+	// invoiceStr := string(invoiceBytes)
+
 	return utils.MailApiResponse(http.StatusOK, ""), nil
 
 }

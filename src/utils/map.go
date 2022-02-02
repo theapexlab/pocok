@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"pocok/src/utils/models"
+	"strconv"
 	"strings"
 )
 
@@ -48,7 +49,7 @@ func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
 		found := false
 		for key, val := range data {
 			parts := strings.Split(key, "_")
-			if strings.HasPrefix(parts[0], "service") && parts[2] == string(index) {
+			if strings.HasPrefix(parts[0], "service") && parts[2] == strconv.Itoa(index) {
 				found = true
 				fieldName := parts[1]
 				serviceMap[fieldName] = val
@@ -57,7 +58,7 @@ func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
 		if !found {
 			break
 		}
-		err := MapToStruct(service, &service)
+		err := MapToStruct(serviceMap, &service)
 		if err != nil {
 			LogError("error while parsing service", err)
 		}

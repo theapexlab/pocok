@@ -46,6 +46,11 @@ var _ = Describe("Guesser functions", func() {
 			dueDate := guesser_functions.GuessDueDate(&extractedData.TextBlocks)
 			Expect(dueDate).To(Equal("2021-01-02"))
 		})
+
+		It("guesses gross price succesfully", func() {
+			grossPrice := guesser_functions.GuessGrossPrice(&extractedData.TextBlocks)
+			Expect(grossPrice).To(Equal("442750"))
+		})
 	})
 
 	When("E0041.json is received as an input", func() {
@@ -84,6 +89,11 @@ var _ = Describe("Guesser functions", func() {
 			Expect(dueDate).To(Equal("2021-11-30"))
 		})
 
+		It("guesses gross price succesfully", func() {
+			grossPrice := guesser_functions.GuessGrossPrice(&extractedData.TextBlocks)
+			Expect(grossPrice).To(Equal("928320"))
+		})
+
 	})
 	When("SZERV-2021-42.json is received as an input", func() {
 		BeforeEach(func() {
@@ -119,6 +129,11 @@ var _ = Describe("Guesser functions", func() {
 		It("guesses due date succesfully", func() {
 			dueDate := guesser_functions.GuessDueDate(&extractedData.TextBlocks)
 			Expect(dueDate).To(Equal("2021-09-23"))
+		})
+
+		It("guesses gross price succesfully", func() {
+			grossPrice := guesser_functions.GuessGrossPrice(&extractedData.TextBlocks)
+			Expect(grossPrice).To(Equal("24,800.00"))
 		})
 
 	})
@@ -159,6 +174,11 @@ var _ = Describe("Guesser functions", func() {
 			Expect(dueDate).To(Equal("2021-09-23"))
 		})
 
+		It("guesses gross price succesfully", func() {
+			grossPrice := guesser_functions.GuessGrossPrice(&extractedData.TextBlocks)
+			Expect(grossPrice).To(Equal("24,800.00"))
+		})
+
 	})
 	When("billingo.json is received as an input", func() {
 		BeforeEach(func() {
@@ -167,7 +187,7 @@ var _ = Describe("Guesser functions", func() {
 
 		It("guesses vendor name incorrectly", func() {
 			vendorName := guesser_functions.GuessVendorName(&extractedData.TextBlocks)
-			Expect(vendorName).To(Equal("ELEKTRONIKUS SZAMLA"))
+			Expect(vendorName).To(Equal("TEST OÜ"))
 		})
 
 		It("guesses invoice number succesfully", func() {
@@ -194,6 +214,11 @@ var _ = Describe("Guesser functions", func() {
 		It("guesses due date succesfully", func() {
 			dueDate := guesser_functions.GuessDueDate(&extractedData.TextBlocks)
 			Expect(dueDate).To(Equal("2021-12-07"))
+		})
+
+		It("guesses gross price succesfully", func() {
+			grossPrice := guesser_functions.GuessGrossPrice(&extractedData.TextBlocks)
+			Expect(grossPrice).To(Equal("213989,715"))
 		})
 
 	})

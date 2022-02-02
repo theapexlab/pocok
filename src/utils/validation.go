@@ -5,7 +5,6 @@ import (
 	"pocok/src/utils/currency"
 	"pocok/src/utils/models"
 	"regexp"
-	"strconv"
 	"time"
 
 	"github.com/araddon/dateparse"
@@ -47,11 +46,11 @@ func GetValidCurrency(currencyInput string) (string, error) {
 }
 
 func GetValidPrice(price string) (string, error) {
-	priceInt, err := strconv.Atoi(price)
-	if err == nil && priceInt > 0 {
-		return price, nil
+	_, err := currency.ConvertPriceToFloat(price)
+	if err != nil {
+		return "", err
 	}
-	return "", err
+	return price, nil
 }
 
 func GetValidDueDate(dueDate string) (string, error) {

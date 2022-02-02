@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("TrimCurrencyFromPrice", func() {
+var _ = Describe("GetValueFromPrice", func() {
 	When("receives input with price amount and currency symbol", func() {
 		It("return price as a string value", func() {
 			Expect(currency.GetValueFromPrice("7000 Ft")).To(Equal("7000"))
@@ -21,6 +21,7 @@ var _ = Describe("TrimCurrencyFromPrice", func() {
 			Expect(currency.GetValueFromPrice("300 €")).To(Equal("300"))
 			Expect(currency.GetValueFromPrice("300 EUR")).To(Equal("300"))
 			Expect(currency.GetValueFromPrice("€322,50")).To(Equal("322,50"))
+			Expect(currency.GetValueFromPrice("442 750 Ft")).To(Equal("442750"))
 		})
 	})
 
@@ -54,5 +55,18 @@ var _ = Describe("GetCurrencyFromPrice", func() {
 			Expect(currency.GetCurrencyFromString("150")).To(Equal(""))
 			Expect(currency.GetCurrencyFromString("300 &")).To(Equal(""))
 		})
+	})
+})
+
+var _ = Describe("ConvertPriceToFloat", func() {
+	When("recieves price", func() {
+		It("returns correct float value", func() {
+			Expect(currency.ConvertPriceToFloat("150")).To(Equal(float64(150)))
+			Expect(currency.ConvertPriceToFloat("400")).To(Equal(float64(400)))
+			Expect(currency.ConvertPriceToFloat("15,000")).To(Equal(float64(15000)))
+			Expect(currency.ConvertPriceToFloat("442 750")).To(Equal(float64(442750)))
+			Expect(currency.ConvertPriceToFloat("25,000,000")).To(Equal(float64(25000000)))
+		})
+
 	})
 })

@@ -2,12 +2,12 @@ package db
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"pocok/src/utils"
 	"pocok/src/utils/models"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
@@ -115,12 +115,15 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 }
 
 func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
-	// todo: check hwo does it look in db
-	servicesJson, marshalErr := json.Marshal(update.Services)
+	// todo: check how does it look in db
+	// servicesJson, marshalErr := json.Marshal(update.Services)
+
+	serviceList, marshalErr := attributevalue.MarshalList(update.Services)
 	if marshalErr != nil {
 		utils.LogError("Cannot marshal invoice services", marshalErr)
 		return marshalErr
 	}
+
 	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
@@ -128,7 +131,7 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + update.InvoiceId},
 		},
 		UpdateExpression: aws.String(`set #k1 = :v1, #k2 = :v2, #k3 = :v3, #k4 = :v4, #k5 = :v5,
-		 #k6 = :v6, #k7 = :v7, #k8 = :v8, #k9 = :v9, #k10 = :v10, #k11 = :v11`),
+		 #k6 = :v6, #k7 = :v7, #k8 = :v8, #k9 = :v9, #k10 = :v10, #k11 = :v11, #k12 = :v12`),
 		ExpressionAttributeNames: map[string]string{
 			"#k1":  "vendorName",
 			"#k2":  "accountNumber",
@@ -141,6 +144,7 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			"#k9":  "dueDate",
 			"#k10": "services",
 			"#k11": "vendorEmail",
+			"#k12": "invoiceNumber",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":v1":  &types.AttributeValueMemberS{Value: update.VendorName},
@@ -152,8 +156,9 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			":v7":  &types.AttributeValueMemberS{Value: update.VatRate},
 			":v8":  &types.AttributeValueMemberS{Value: update.Currency},
 			":v9":  &types.AttributeValueMemberS{Value: update.DueDate},
-			":v10": &types.AttributeValueMemberS{Value: string(servicesJson)},
+			":v10": &types.AttributeValueMemberL{Value: serviceList},
 			":v11": &types.AttributeValueMemberS{Value: update.VendorEmail},
+			":v12": &types.AttributeValueMemberS{Value: update.InvoiceNumber},
 		},
 	})
 	return err

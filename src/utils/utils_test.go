@@ -1,6 +1,7 @@
 package utils_test
 
 import (
+	"fmt"
 	"pocok/src/mocks"
 	"pocok/src/utils"
 
@@ -39,6 +40,7 @@ var _ = Describe("Utils", func() {
 			It("returns same invoice values with indexed services", func() {
 				invoices := mocks.Invoices
 				indexedInvoices := utils.MapInvoiceToInvoiceServiceIndexes(invoices)
+				Expect(len(indexedInvoices)).To(Equal(len(invoices)))
 				for _, invoice := range indexedInvoices {
 					for i, service := range invoice.Services {
 						Expect(service.Index).To(Equal(i))
@@ -49,69 +51,139 @@ var _ = Describe("Utils", func() {
 	})
 
 	Describe("MapUpdateDataToInvoice", func() {
-		When("it receives valid data map asinput", func() {
+		When("it receives valid data map as an input", func() {
 			It("returns invoice entity with nested services", func() {
 				data := map[string]string{
-					"invoiceNumber":          "adfadsf",
-					"vendorName":             "adfadsf",
-					"vendorEmail":            "adfadsf",
-					"accountNumber":          "adfadsf",
-					"grossPrice":             "adfadsf",
-					"vatAmount":              "adfadsf",
-					"vatRate":                "adfadsf",
-					"service_name_1":         "Name_1",
-					"service_amount_1":       "Amount_1",
-					"service_unit_1":         "Unit_1",
-					"service_unitNetprice_1": "UnitNetPrice_1",
-					"service_netPrice_1":     "NetPrice_1",
-					"service_grossPrice_1":   "GrossPrice_1",
-					"service_vatRate_1":      "VatAmount_1",
-					"service_vatAmount_1":    "VatRate_1",
-					"service_currency_1":     "",
+					"invoiceNumber":          "TEST-001",
+					"vendorName":             "Vendor Name",
+					"vendorEmail":            "test@email.com",
+					"accountNumber":          "11736006-20410614",
+					"iban":                   "HU19-123456789101112130200005",
+					"grossPrice":             "100",
+					"vatAmount":              "0",
+					"vatRate":                "AAM",
+					"currency":               "EUR",
+					"service_name_0":         "Service name",
+					"service_amount_0":       "db",
+					"service_unit_0":         "1",
+					"service_unitNetprice_0": "100",
+					"service_netPrice_0":     "100",
+					"service_grossPrice_0":   "100",
+					"service_vatRate_0":      "27%",
+					"service_vatAmount_0":    "0",
+					"service_currency_0":     "EUR",
+					"service_name_1":         "Service name",
+					"service_amount_1":       "db",
+					"service_unit_1":         "1",
+					"service_unitNetprice_1": "100",
+					"service_netPrice_1":     "100",
+					"service_grossPrice_1":   "100",
+					"service_vatRate_1":      "27%",
+					"service_vatAmount_1":    "0",
+					"service_currency_1":     "EUR",
 				}
 
-				indexedInvoice, err := utils.MapUpdateDataToInvoice(data)
+				invoice, err := utils.MapUpdateDataToInvoice(data)
 
 				Expect(err).To(BeNil())
 
-				for i, service := range indexedInvoice.Services {
-					Expect(service.Name).To(Equal("Name_" + string(i)))
-					Expect(service.Amount).To(Equal("Amount_" + string(i)))
-					Expect(service.Unit).To(Equal("Unit_" + string(i)))
-					Expect(service.UnitNetPrice).To(Equal("UnitNetPrice_" + string(i)))
-					Expect(service.NetPrice).To(Equal("NetPrice_" + string(i)))
-					Expect(service.GrossPrice).To(Equal("GrossPrice_" + string(i)))
-					Expect(service.VatAmount).To(Equal("VatAmount_" + string(i)))
-					Expect(service.VatRate).To(Equal("VatRate_" + string(i)))
+				for _, service := range invoice.Services {
+					Expect(service.Name).To(Equal("Service name"))
+					Expect(service.Amount).To(Equal("db"))
+					Expect(service.Unit).To(Equal("1"))
+					Expect(service.UnitNetPrice).To(Equal("100"))
+					Expect(service.NetPrice).To(Equal("100"))
+					Expect(service.GrossPrice).To(Equal("100"))
+					Expect(service.VatAmount).To(Equal("0"))
+					Expect(service.VatRate).To(Equal("27%"))
+					Expect(service.Currency).To(Equal("EUR"))
 				}
+
+			})
+			It("returns invoice entity with empty service array", func() {
+				data := map[string]string{
+					"invoiceNumber": "TEST-001",
+					"vendorName":    "Vendor Name",
+					"vendorEmail":   "test@email.com",
+					"accountNumber": "11736006-20410614",
+					"iban":          "HU19-123456789101112130200005",
+					"grossPrice":    "100",
+					"vatAmount":     "0",
+					"vatRate":       "AAM",
+					"currency":      "EUR",
+				}
+
+				invoice, err := utils.MapUpdateDataToInvoice(data)
+
+				Expect(err).To(BeNil())
+				Expect(len(invoice.Services)).To(Equal(0))
 
 			})
 		})
 	})
 
 	Describe("Validation test", func() {
-		When("GetValidAccountNumber receives a valid 16 character long account number", func() {
+		When("GetValidAccountNumber receives a valid 16 or 24 character long account number", func() {
 			It("returns Bank account number and recieves no error", func() {
-				mockBankAccNumber := "12345678-12345678-12345678"
-				result, err := utils.GetValidAccountNumber(mockBankAccNumber)
-				Expect(result).To(Equal("12345678-12345678-12345678"))
-				Expect(err).To(BeNil())
-			})
-		})
-		When("GetValidAccountNumber receives a valid 24 character long account number", func() {
-			It("returns Bank account number  ", func() {
-				mockBankAccNumber := "12345678-12345678"
-				result, err := utils.GetValidAccountNumber(mockBankAccNumber)
-				Expect(result).To(Equal("12345678-12345678"))
-				Expect(err).To(BeNil())
+				mockBankAccNumbers := []string{
+					"12345678-12345678-12345678",
+					"12345678 12345678 12345678",
+					"123456781234567812345678",
+					"12345678-12345678",
+					"12345678 12345678",
+					"1234567812345678",
+				}
+				for i, accNr := range mockBankAccNumbers {
+					result, err := utils.GetValidAccountNumber(accNr)
+					Expect(err).To(BeNil())
+					Expect(result).To(Equal(mockBankAccNumbers[i]))
+				}
 			})
 		})
 
 		When("GetValidAccountNumber recieves an invalid account number", func() {
 			It("returns an error", func() {
-				invalidAcountNumber := "1234-asdf-test"
-				_, err := utils.GetValidAccountNumber(invalidAcountNumber)
-				Expect(err).To(MatchError("invalid account number"))
+				invalidAcountNumbers := []string{
+					"12345678-12345678-1234567a",
+					"12345678 12345678/12345678",
+					"12345678123456781234567",
+					"12345678-1234567a",
+					"12345678/12345678",
+					"123456781234567",
+				}
+				for _, accNr := range invalidAcountNumbers {
+					_, err := utils.GetValidAccountNumber(accNr)
+					Expect(err).To(MatchError("invalid account number"))
+				}
+			})
+		})
+
+		When("GetValidIban recieves valid inputs", func() {
+			It("returns an iban code", func() {
+				validIbans := []string{
+					"HU93116000060000000012345676",
+					"HU69119800810030005009212644",
+				}
+				for i, iban := range validIbans {
+					ibanCode, err := utils.GetValidIban(iban)
+					Expect(err).To(BeNil())
+					Expect(ibanCode).To(Equal(validIbans[i]))
+					// Expect(err).To(MatchError("invalid account number"))
+				}
+			})
+		})
+		When("GetValidIban recieves invalid inputs", func() {
+			It("returns an error", func() {
+				invalid := []string{
+					"PL69119800810030005009212644",
+					"HU19-123456789101112130200005",
+					"12345678-12345678-12345678",
+					"12345678-12345678",
+				}
+				for _, iban := range invalid {
+					_, err := utils.GetValidIban(iban)
+					Expect(err).ToNot(BeNil())
+				}
 			})
 		})
 
@@ -138,18 +210,49 @@ var _ = Describe("Utils", func() {
 			})
 		})
 
-		// When("GetValidDueDate recieves a future date ", func() {
-		// 	It("returns date", func() {
-		//		mockDate := "2032-01-01"
-		//		result, err := utils.GetValidDueDate(mockDate)
-		// 	})
-		//})
-		// When("GetValidDueDate recieves a past date ", func() {
-		// 	It("throws error", func() {
-		//		mockDate := "2000-01-01"
-		//		_, err := utils.GetValidDueDate(mockDate)
-		// 	})
-		// })
+		When("GetValidDueDate recieves a future date ", func() {
+			It("returns date", func() {
+				mockDate := "2032-01-01"
+				result, err := utils.GetValidDueDate(mockDate)
+				Expect(result).To(Equal(mockDate))
+				Expect(err).To(BeNil())
+			})
+		})
+
+		When("GetValidDueDate recieves a past date ", func() {
+			It("throws error", func() {
+				mockDate := "2000-01-01"
+				_, err := utils.GetValidDueDate(mockDate)
+				Expect(err).To(MatchError("invalid date"))
+			})
+		})
+
+		When("GetValidPrice recieves a valid price ", func() {
+			It("return same price without error", func() {
+				testPrices := []string{
+					"500",
+					"549500.0000",
+					"25,000,000",
+					"322,50",
+					"120.55",
+				}
+				for i, price := range testPrices {
+					result, err := utils.GetValidPrice(price)
+					Expect(err).To(BeNil())
+					Expect(result).To(Equal(testPrices[i]))
+
+				}
+			})
+		})
+
+		When("GetValidPrice recieves an invalid price ", func() {
+			It("throws error", func() {
+				mockPrice := "-500"
+				price, err := utils.GetValidPrice(mockPrice)
+				fmt.Println("GetValidPrice: " + price)
+				Expect(err).To(MatchError("invalid price"))
+			})
+		})
 
 	})
 })
