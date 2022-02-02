@@ -15,10 +15,10 @@ func Get() (string, error) {
 		filePath = currentPath + "/../../../" + filePath
 	}
 
-	file, fileErr := os.ReadFile(filePath)
-	if fileErr != nil {
-		utils.LogError("Error while reading in the html file.", fileErr)
-		return "", fileErr
+	file, fileError := os.ReadFile(filePath)
+	if fileError != nil {
+		utils.LogError("Error while reading in the html file.", fileError)
+		return "", fileError
 	}
 	return string(file), nil
 }

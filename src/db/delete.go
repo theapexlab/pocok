@@ -12,27 +12,27 @@ import (
 )
 
 func DeleteInvoice(dbClient *dynamodb.Client, tableName string, s3Client s3.Client, bucketName string, orgId string, invoiceId string) error {
-	_, s3Err := s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+	_, s3Error := s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 		Bucket: &bucketName,
 		Key:    &invoiceId,
 	})
-	if s3Err != nil {
-		utils.LogError("Error while removing object from s3 bucket", s3Err)
+	if s3Error != nil {
+		utils.LogError("Error while removing object from s3 bucket", s3Error)
 	}
 
-	_, dbErr := dbClient.DeleteItem(context.TODO(), &dynamodb.DeleteItemInput{
+	_, dbError := dbClient.DeleteItem(context.TODO(), &dynamodb.DeleteItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
 			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + invoiceId},
 		},
 	})
-	if dbErr != nil {
-		utils.LogError("Error while removing object from dynamoDB", dbErr)
+	if dbError != nil {
+		utils.LogError("Error while removing object from dynamoDB", dbError)
 	}
 
-	if s3Err != nil || dbErr != nil {
-		return errors.New(dbErr.Error() + s3Err.Error())
+	if s3Error != nil || dbError != nil {
+		return errors.New(dbError.Error() + s3Error.Error())
 	}
 	return nil
 }

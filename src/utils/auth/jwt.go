@@ -22,8 +22,8 @@ func CreateToken(orgId string) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(jwtKey)
-	return tokenString, err
+	tokenString, createTokenError := token.SignedString(jwtKey)
+	return tokenString, createTokenError
 }
 
 // Example creating a token using a custom claims type.  The StandardClaim is embedded
@@ -31,11 +31,11 @@ func CreateToken(orgId string) (string, error) {
 func ParseToken(tokenString string) (*models.JWTClaims, error) {
 	jwtKey := []byte(os.Getenv("jwtKey"))
 
-	token, err := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, jwtParseError := jwt.ParseWithClaims(tokenString, &models.JWTClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
 	})
-	if err != nil {
-		return nil, err
+	if jwtParseError != nil {
+		return nil, jwtParseError
 	}
 
 	claims, ok := token.Claims.(*models.JWTClaims)

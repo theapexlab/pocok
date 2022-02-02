@@ -18,13 +18,13 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler() error {
-	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: aws.String(models.EMAIL_SUMMARY),
 		QueueUrl:    &d.queueUrl,
 	})
-	if sqsErr != nil {
-		utils.LogError("Error while sending message to SQS", sqsErr)
-		return sqsErr
+	if sqsError != nil {
+		utils.LogError("Error while sending message to SQS", sqsError)
+		return sqsError
 	}
 	return nil
 }

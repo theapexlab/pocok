@@ -11,36 +11,36 @@ import (
 )
 
 func GetSQSClient() *sqs.Client {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("SQS configuration error, " + err.Error())
+	cfg, getSqsClientError := config.LoadDefaultConfig(context.TODO())
+	if getSqsClientError != nil {
+		panic("SQS configuration error, " + getSqsClientError.Error())
 	}
 
 	return sqs.NewFromConfig(cfg)
 }
 
 func GetS3Client() *s3.Client {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("S3 configuration error, " + err.Error())
+	cfg, getS3ClientError := config.LoadDefaultConfig(context.TODO())
+	if getS3ClientError != nil {
+		panic("S3 configuration error, " + getS3ClientError.Error())
 	}
 
 	return s3.NewFromConfig(cfg)
 }
 
 func GetDbClient() *dynamodb.Client {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("DynamoDB configuration error, " + err.Error())
+	cfg, getDbClientError := config.LoadDefaultConfig(context.TODO())
+	if getDbClientError != nil {
+		panic("DynamoDB configuration error, " + getDbClientError.Error())
 	}
 
 	return dynamodb.NewFromConfig(cfg)
 }
 
 func GetTextractClient() *textract.Client {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
-	if err != nil {
-		panic("Textract configuration error, " + err.Error())
+	cfg, getTextractClientError := config.LoadDefaultConfig(context.TODO())
+	if getTextractClientError != nil {
+		panic("Textract configuration error, " + getTextractClientError.Error())
 	}
 
 	return textract.NewFromConfig(cfg)

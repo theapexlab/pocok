@@ -51,9 +51,9 @@ func main() {
 func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
 		if record.Body == models.EMAIL_SUMMARY {
-			err := SendInvoiceSummary(d)
-			if err != nil {
-				return err
+			sendInvoiceError := SendInvoiceSummary(d)
+			if sendInvoiceError != nil {
+				return sendInvoiceError
 			}
 		}
 	}
@@ -63,39 +63,39 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 func SendInvoiceSummary(d *dependencies) error {
 	subject := models.EMAIL_SUMMARY_SUBJECT
-	emailData, err := CreateEmail(d)
-	if err != nil {
-		utils.LogError("Error while creating email", err)
-		return err
+	emailData, createEmailError := CreateEmail(d)
+	if createEmailError != nil {
+		utils.LogError("Error while creating email", createEmailError)
+		return createEmailError
 	}
-	sendingErr := SendEmail(d, subject, emailData)
-	if sendingErr != nil {
-		utils.LogError("Error while sending email", sendingErr)
-		return err
+	sendEmailError := SendEmail(d, subject, emailData)
+	if sendEmailError != nil {
+		utils.LogError("Error while sending email", sendEmailError)
+		return createEmailError
 	}
 	return nil
 }
 
 func CreateEmail(d *dependencies) (*models.EmailResponseData, error) {
-	invoices, err := db.GetPendingInvoices(d.dbClient, d.tableName, models.APEX_ID)
-	if err != nil {
-		utils.LogError("Error while loading invoices", err)
-		return nil, err
+	invoices, getPendingInvoicesError := db.GetPendingInvoices(d.dbClient, d.tableName, models.APEX_ID)
+	if getPendingInvoicesError != nil {
+		utils.LogError("Error while loading invoices", getPendingInvoicesError)
+		return nil, getPendingInvoicesError
 	}
 
 	logoKey := "pocok-logo.png"
-	logoUrl, err := aws_utils.GetAssetUrl(*d.s3Client, d.assetBucketName, logoKey)
-	if err != nil {
-		return nil, err
+	logoUrl, getAssetUrlError := aws_utils.GetAssetUrl(*d.s3Client, d.assetBucketName, logoKey)
+	if getAssetUrlError != nil {
+		return nil, getAssetUrlError
 	}
 
-	amp, err := create_email.GetHtmlSummary(d.apiUrl, logoUrl)
-	if err != nil {
-		return nil, err
+	amp, getHtmlSummaryError := create_email.GetHtmlSummary(d.apiUrl, logoUrl)
+	if getHtmlSummaryError != nil {
+		return nil, getHtmlSummaryError
 	}
-	attachments, err := create_email.GetAttachments(d.s3Client, d.bucketName, invoices)
-	if err != nil {
-		return nil, err
+	attachments, getAttachmentsError := create_email.GetAttachments(d.s3Client, d.bucketName, invoices)
+	if getAttachmentsError != nil {
+		return nil, getAttachmentsError
 	}
 
 	response := models.EmailResponseData{
@@ -119,11 +119,11 @@ func SendEmail(d *dependencies, subject string, data *models.EmailResponseData) 
 	defer cancel()
 
 	// Send the message with a 10 second timeout
-	_, _, sendErr := client.Send(ctx, message)
+	_, _, sendEmailError := client.Send(ctx, message)
 
-	if sendErr != nil {
-		utils.LogError("Failed to send email", sendErr)
-		return sendErr
+	if sendEmailError != nil {
+		utils.LogError("Failed to send email", sendEmailError)
+		return sendEmailError
 	}
 
 	return nil

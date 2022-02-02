@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"pocok/src/utils"
@@ -23,11 +22,10 @@ func ExtractData(config *Config, file []byte, timeout int) (*ExtractDataFromFile
 	payloadStr, _ := json.Marshal(payload)
 	payloadStrReader := strings.NewReader(string(payloadStr))
 
-	req, err := http.NewRequest("POST", url, payloadStrReader)
-
-	if err != nil {
-		utils.LogError("Failed to http.NewRequest()", err)
-		return nil, err
+	req, requestError := http.NewRequest("POST", url, payloadStrReader)
+	if requestError != nil {
+		utils.LogError("Failed to http.NewRequest()", requestError)
+		return nil, requestError
 	}
 
 	req.Header.Add("Accept", "application/json")
@@ -37,34 +35,31 @@ func ExtractData(config *Config, file []byte, timeout int) (*ExtractDataFromFile
 	client := http.Client{
 		Timeout: time.Duration(timeout) * time.Second,
 	}
-	res, err := client.Do(req)
-
-	if err != nil {
-		utils.LogError("Failed to http.Client.Do() request", err)
-		return nil, err
+	res, doRequestError := client.Do(req)
+	if doRequestError != nil {
+		utils.LogError("Failed to http.Client.Do() request", doRequestError)
+		return nil, doRequestError
 	}
 
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-
-	if err != nil {
-		utils.LogError("Failed to ioutil.ReadAll() request", err)
-		return nil, err
+	body, readAllError := ioutil.ReadAll(res.Body)
+	if readAllError != nil {
+		utils.LogError("Failed to ioutil.ReadAll() request", readAllError)
+		return nil, readAllError
 	}
 
 	if res.StatusCode != 200 {
-		fmt.Printf("Status:  %s  \n", res.Status)
-		fmt.Printf("Body:  %s  \n", string(body))
-		err := errors.New("❌ request to typless failed")
-		return nil, err
+		utils.Logf("Status:  %s  \n", res.Status)
+		utils.Logf("Body:  %s  \n", string(body))
+		return nil, errors.New("❌ request to typless failed")
 	}
 
 	output := ExtractDataFromFileOutput{}
 
-	err = json.Unmarshal(body, &output)
-	if err != nil {
-		utils.LogError("Failed to unmarshal", err)
-		return nil, err
+	unmarshalError := json.Unmarshal(body, &output)
+	if unmarshalError != nil {
+		utils.LogError("Failed to unmarshal", unmarshalError)
+		return nil, unmarshalError
 	}
 
 	return &output, nil
@@ -82,27 +77,27 @@ func AddDocumentFeedback(config *Config, trainingData TrainingData) error {
 	payloadStr, _ := json.Marshal(payload)
 	payloadStrReader := strings.NewReader(string(payloadStr))
 
-	req, err := http.NewRequest("POST", url, payloadStrReader)
-	if err != nil {
-		return err
+	req, requestError := http.NewRequest("POST", url, payloadStrReader)
+	if requestError != nil {
+		return requestError
 	}
 
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Authorization", "Token "+config.Token)
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+	res, doRequestError := http.DefaultClient.Do(req)
+	if doRequestError != nil {
+		return doRequestError
 	}
 
 	if res.StatusCode >= 300 {
-		body, err := ioutil.ReadAll(res.Body)
-		if err != nil {
-			return err
+		body, readAllError := ioutil.ReadAll(res.Body)
+		if readAllError != nil {
+			return readAllError
 		}
-		fmt.Printf("Status:  %s  \n", res.Status)
-		fmt.Printf("Body:  %s  \n", string(body))
+		utils.Logf("Status:  %s  \n", res.Status)
+		utils.Logf("Body:  %s  \n", string(body))
 
 		return errors.New("❌ request to typless failed")
 	}
