@@ -27,7 +27,7 @@ func ParseEmail(body string) ([]models.UploadInvoiceMessage, error) {
 		// Map, so only unique values go throuh
 		messageMap := map[string]models.UploadInvoiceMessage{}
 		for _, attachment := range jsonBody.Attachments {
-			messageMap[attachment.Content_b64] = models.UploadInvoiceMessage{
+			messageMap[attachment.Filename+attachment.Content_b64] = models.UploadInvoiceMessage{
 				Type:     "base64",
 				Body:     attachment.Content_b64,
 				Filename: attachment.Filename,
