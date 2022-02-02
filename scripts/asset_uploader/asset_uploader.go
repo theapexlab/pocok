@@ -44,7 +44,7 @@ func uploadFiles(client *s3.Client, assetBucketName string, assetFolder string, 
 	for _, file := range files {
 		if !file.IsDir() {
 			fileName := file.Name()
-			utils.Log("Uploading -  %s  \n", fileName)
+			utils.Logf("Uploading - %s \n", fileName)
 			uploadError := uploadObject(client, assetBucketName, assetFolder, fileName)
 			if uploadError != nil {
 				utils.LogFatal(uploadError)
@@ -103,7 +103,7 @@ func uploadObject(client *s3.Client, assetBucketName string, assetFolder string,
 }
 
 func deleteObject(client *s3.Client, bucket, key, versionId *string) {
-	utils.Log("Deleting - %s \n", *key)
+	utils.Logf("Deleting - %s \n", *key)
 	_, s3DeleteError := client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 		Bucket:    bucket,
 		Key:       key,
