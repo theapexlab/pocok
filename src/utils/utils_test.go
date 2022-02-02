@@ -152,7 +152,6 @@ var _ = Describe("Utils", func() {
 					ibanCode, err := utils.GetValidIban(iban)
 					Expect(err).To(BeNil())
 					Expect(ibanCode).To(Equal(validIbans[i]))
-					// Expect(err).To(MatchError("invalid account number"))
 				}
 			})
 		})
