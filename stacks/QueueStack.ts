@@ -99,10 +99,6 @@ export class QueueStack extends Stack {
             emailRecipient: process.env.EMAIL_RECIPIENT as string,
             apiUrl: process.env.API_URL as string,
             jwtKey: process.env.JWT_KEY as string,
-            bucketName: additionalStackProps?.storageStack.invoiceBucket
-              .bucketName as string,
-            tableName: additionalStackProps?.storageStack.invoiceTable
-              .tableName as string,
             assetBucketName: additionalStackProps?.storageStack.assetBucket
               .bucketName as string,
             stage:
@@ -112,8 +108,6 @@ export class QueueStack extends Stack {
           },
           permissions: [
             additionalStackProps?.storageStack.assetBucket as Bucket,
-            additionalStackProps?.storageStack.invoiceBucket as Bucket,
-            additionalStackProps?.storageStack.invoiceTable as Table,
           ],
           bundle: {
             copyFiles: [{ from: "src/amp/templates", to: "src/amp/templates" }],
