@@ -2,7 +2,6 @@ package utils_test
 
 import (
 	"fmt"
-	"pocok/src/mocks"
 	"pocok/src/utils"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -32,21 +31,6 @@ var _ = Describe("Utils", func() {
 				Expect(structData.A).To(Equal("cica"))
 			})
 
-		})
-	})
-
-	Describe("MapInvoiceToInvoiceServiceIndexes", func() {
-		When("it receives  an invoice list as param", func() {
-			It("returns same invoice values with indexed services", func() {
-				invoices := mocks.Invoices
-				indexedInvoices := utils.MapInvoiceToInvoiceServiceIndexes(invoices)
-				Expect(len(indexedInvoices)).To(Equal(len(invoices)))
-				for _, invoice := range indexedInvoices {
-					for i, service := range invoice.Services {
-						Expect(service.Index).To(Equal(i))
-					}
-				}
-			})
 		})
 	})
 
