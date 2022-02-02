@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"net/http"
 	"os"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
@@ -25,7 +26,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	if token != d.demoToken {
 		utils.LogError("Token validation failed", errors.New("token validation failed"))
 		return &events.APIGatewayProxyResponse{
-			StatusCode: 500,
+			StatusCode: http.StatusInternalServerError,
 			Body:       "Token validation failed",
 		}, nil
 	}
@@ -37,12 +38,12 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	if sqsErr != nil {
 		utils.LogError("Error while sending message to SQS", sqsErr)
 		return &events.APIGatewayProxyResponse{
-			StatusCode: 500,
+			StatusCode: http.StatusInternalServerError,
 			Body:       sqsErr.Error(),
 		}, sqsErr
 	}
 	return &events.APIGatewayProxyResponse{
-		StatusCode: 200,
+		StatusCode: http.StatusOK,
 		Body:       "Done",
 	}, nil
 }
