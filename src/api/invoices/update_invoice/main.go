@@ -56,28 +56,28 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 
 	update, validationError := db.CreateStatusUpdate(data)
 	if validationError != nil {
-		utils.LogError("Invalid update payload", validationError)
+		utils.LogError("Invalid while validating update", validationError)
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), nil
 	}
 
 	if update.Status == models.REJECTED {
-		removeError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId)
-		if removeError != nil {
-			utils.LogError("Error updating db", removeError)
+		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
+		if deleteError != nil {
+			utils.LogError("Error while removing invoice", deleteError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 		}
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
 	if update.Status == models.ACCEPTED {
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *update)
 		if updateError != nil {
-			utils.LogError("Error updating db", updateError)
+			utils.LogError("Error while updating invoice", updateError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 		}
 		feedbackError := updateFeedback(d, claims.OrgId, update.InvoiceId)
 		if feedbackError != nil {
-			utils.LogError("Error updating db", feedbackError)
+			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}

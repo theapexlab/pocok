@@ -185,6 +185,11 @@
                         name="status"
                         value="[[.Rejected]]"
                       />
+                      <input
+                        type="hidden"
+                        name="filename"
+                        value="{{fileName}}"
+                      />
                       <button
                         type="button"
                         on="tap:{{invoiceId}}-reject-modal.show"
