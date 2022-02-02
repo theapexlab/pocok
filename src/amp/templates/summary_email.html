@@ -135,7 +135,7 @@
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div class="item item-view" id="{{invoiceId}}-item-view">
+            <div class="item item-view" id="{{invoice.invoiceId}}-item-view">
               <div class="item-header">
                 <div>
                   <div>ID: {{invoice.invoiceId}}</div>
@@ -159,7 +159,7 @@
                       <input
                         type="hidden"
                         name="invoiceId"
-                        value="{{invoiceId}}"
+                        value="{{invoice.invoiceId}}"
                       />
                       <input
                         type="hidden"
@@ -178,7 +178,7 @@
                       <input
                         type="hidden"
                         name="invoiceId"
-                        value="{{invoiceId}}"
+                        value="{{invoice.invoiceId}}"
                       />
                       <input
                         type="hidden"
@@ -188,15 +188,15 @@
                       <input
                         type="hidden"
                         name="filename"
-                        value="{{fileName}}"
+                        value="{{invoice.fileName}}"
                       />
                       <button
                         type="button"
-                        on="tap:{{invoiceId}}-reject-modal.show"
+                        on="tap:{{invoice.invoiceId}}-reject-modal.show"
                       >
                         Reject
                       </button>
-                      <div class="modal" id="{{invoiceId}}-reject-modal" hidden>
+                      <div class="modal" id="{{invoice.invoiceId}}-reject-modal" hidden>
                         <div>
                           <div submit-error>Reject failed.</div>
                           <div submit-success>Reject successful.</div>
@@ -205,7 +205,7 @@
                         <button type="submit">Yes king</button>
                         <button
                           type="button"
-                          on="tap:{{invoiceId}}-reject-modal.hide"
+                          on="tap:{{invoice.invoiceId}}-reject-modal.hide"
                         >
                           No, please I enjoy this invoice so much
                         </button>
@@ -214,7 +214,7 @@
                   </div>
 
                   <button
-                    on="tap:{{invoiceId}}-item-edit.show,{{invoiceId}}-item-view.hide"
+                    on="tap:{{invoice.invoiceId}}-item-edit.show,{{invoice.invoiceId}}-item-view.hide"
                   >
                     Edit
                   </button>
@@ -253,7 +253,7 @@
               </div>
             </div>
 
-            <div class="item item-edit" id="{{invoiceId}}-item-edit" hidden>
+            <div class="item item-edit" id="{{invoice.invoiceId}}-item-edit" hidden>
               <div class="item-header">
                 <div>
                   <div>{{invoice.invoiceId}} {{invoice.status}}</div>
@@ -278,7 +278,7 @@
                   action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
                   on="submit-success:invoiceList.refresh"
                 >
-                  <input type="text" value="{{id}}" hidden />
+                  <input type="text" value="{{invoice.invoiceId}}" hidden />
                   <fieldset>
                     <legend>Invoice details</legend>
 
@@ -442,7 +442,7 @@
                     <button type="submit">Save</button>
                     <button
                       type="button"
-                      on="tap:{{invoiceId}}-item-edit.hide,{{invoiceId}}-item-view.show"
+                      on="tap:{{invoice.invoiceId}}-item-edit.hide,{{invoice.invoiceId}}-item-view.show"
                     >
                       Cancel
                     </button>
