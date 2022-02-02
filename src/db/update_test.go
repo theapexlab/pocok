@@ -2,7 +2,6 @@ package db_test
 
 import (
 	"pocok/src/db"
-	"pocok/src/utils"
 	"pocok/src/utils/models"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -19,7 +18,6 @@ var _ = Describe("Status update validation", func() {
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
-			utils.Log(update)
 		})
 
 		It("does not error", func() {
