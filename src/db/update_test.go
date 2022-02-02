@@ -1,7 +1,6 @@
 package db_test
 
 import (
-	"fmt"
 	"pocok/src/db"
 	"pocok/src/utils/models"
 
@@ -19,7 +18,6 @@ var _ = Describe("Status update validation", func() {
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
-			fmt.Println(update)
 		})
 
 		It("does not error", func() {
