@@ -76,7 +76,7 @@ var _ = Describe("Status update validation", func() {
 		})
 
 		It("errors", func() {
-			Expect(err).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 })
