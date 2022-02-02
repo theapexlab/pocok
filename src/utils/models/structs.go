@@ -11,12 +11,13 @@ type UploadInvoiceMessage struct {
 type Service struct {
 	Name         string `json:"name" dynamodbav:"name,omitempty"`
 	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
-	Unit         string `json:"" dynamodbav:"unit,omitempty"`
+	Unit         string `json:"unit" dynamodbav:"unit,omitempty"`
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
+	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
 }
 
 type Invoice struct {
@@ -54,8 +55,8 @@ type Vendor struct {
 }
 
 type InvoiceResponse struct {
-	Items []Invoice `json:"items"`
-	Total int       `json:"total"`
+	Items []InvoiceWithServiceIndex `json:"items"`
+	Total int                       `json:"total"`
 }
 
 type EmailAttachment struct {
@@ -86,4 +87,14 @@ type JWTCustomClaims struct {
 type JWTClaims struct {
 	jwt.StandardClaims
 	JWTCustomClaims
+}
+
+type ServiceWithIndex struct {
+	Service
+	Index int `json:"index"`
+}
+
+type InvoiceWithServiceIndex struct {
+	Invoice
+	Services []ServiceWithIndex `json:"services"`
 }

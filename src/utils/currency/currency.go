@@ -1,6 +1,7 @@
 package currency
 
 import (
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
@@ -8,8 +9,9 @@ import (
 
 func GetValueFromPrice(price string) string {
 	r := regexp.MustCompile(`[^0-9,\.]*([0-9,\.]*)[^0-9,\.\n]*`)
-	firstMatch := r.FindStringSubmatch(price)[1]
-	if num, parseFloatError := strconv.ParseFloat(strings.ReplaceAll(firstMatch, ",", ""), 32); parseFloatError == nil && num > 0 {
+	priceWithoutSpaces := strings.ReplaceAll(price, " ", "")
+	firstMatch := r.FindStringSubmatch(priceWithoutSpaces)[1]
+	if _, err := ConvertPriceToFloat(firstMatch); err == nil {
 		return firstMatch
 	}
 	return ""
@@ -31,4 +33,14 @@ func GetCurrencyFromString(price string) string {
 	}
 
 	return ""
+}
+
+func ConvertPriceToFloat(price string) (float64, error) {
+	priceWithoutSpaces := strings.ReplaceAll(price, " ", "")
+	priceWithoutCommas := strings.ReplaceAll(priceWithoutSpaces, ",", "")
+	num, err := strconv.ParseFloat(priceWithoutCommas, 32)
+	if err == nil && num > 0 {
+		return num, nil
+	}
+	return 0, errors.New("invalid price")
 }

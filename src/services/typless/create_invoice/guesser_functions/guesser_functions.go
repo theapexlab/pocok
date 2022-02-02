@@ -2,14 +2,15 @@ package guesser_functions
 
 import (
 	"pocok/src/services/typless"
+	"pocok/src/utils"
 	"pocok/src/utils/currency"
+	"pocok/src/utils/models"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/almerlucke/go-iban/iban"
 	"github.com/araddon/dateparse"
 )
 
@@ -45,9 +46,9 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
 		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
-		iban, _ := iban.NewIBAN(formattedBlock)
-		if iban != nil {
-			return iban.Code
+		iban, _ := utils.GetValidIban(formattedBlock)
+		if iban != "" {
+			return iban
 		}
 	}
 	return ""
@@ -55,40 +56,42 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
-		v := strings.TrimSpace(block.Value)
-		r, _ := regexp.Compile("[0-9]{8}-[0-9]{8}-[0-9]{8}")
-		match := r.FindString(v)
+		// todo: currently fails to guess if bank account parts are deliminated with " " instead of "-"
+		valueParts := strings.Split(block.Value, " ")
+		for _, v := range valueParts {
+			r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
+			match := r.FindString(v)
 
-		if match != "" {
-			return match
-		}
-		r, _ = regexp.Compile("^[0-9]{8}-[0-9]{8}$")
-		match = r.FindString(v)
+			if match != "" {
+				return match
+			}
+			r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
+			match = r.FindString(v)
 
-		if match != "" {
-			return match
+			if match != "" {
+				return match
+			}
 		}
 	}
 	return ""
 }
 
+//  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
-	//  Gest highest price mentioned in texblocks
+	//  Gets highest price mentioned in texblocks
 	highestPrice := ""
 	for _, block := range *textBlocks {
 		v := block.Value
-		if currency.GetCurrencyFromString(v) != "" {
+		if currency.GetCurrencyFromString(v) == "" {
 			continue
 		}
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, convertHighestPriceError := strconv.Atoi(highestPrice)
-		if convertHighestPriceError != nil {
-			continue
-		}
-		priceInt, convertPriceError := strconv.Atoi(price)
-		if convertPriceError != nil {
+		highestPriceInt, err := currency.ConvertPriceToFloat(highestPrice)
+		priceInt, err := currency.ConvertPriceToFloat(price)
+
+		if err != nil {
 			continue
 		}
 
@@ -100,19 +103,32 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 }
 
 func GuessVendorName(textBlocks *[]typless.TextBlock) string {
-	// Gets first "Title Cased" value, which must include atleast one " " in it
+	// Gets first "Title Cased" value, which must include atleast one " " in it and no invoice indicator
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
-		if !strings.Contains(v, " ") {
+		containsSpace := strings.Contains(v, " ")
+		if !containsSpace || containsInvoiceIndicator(v) {
 			continue
 		}
-		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰ-]*)*$")
+		// todo: match for names with known pre- and suffixes eg.: dr. Test Zoltán ev.
+		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰüÜ-]*)*$")
 		match := r.FindString(v)
 		if match != "" {
 			return v
 		}
 	}
 	return ""
+}
+
+func containsInvoiceIndicator(v string) bool {
+	invoiceIndicators := []string{"invoice", "szamla", "számla"}
+	contains := false
+	for _, indicator := range invoiceIndicators {
+		if strings.Contains(strings.ToLower(v), indicator) {
+			contains = true
+		}
+	}
+	return contains
 }
 
 func GuessCurrency(textBlocks *[]typless.TextBlock) string {
