@@ -20,22 +20,22 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	invoiceMessage, emailParseErr := parse_email.ParseEmail(request.Body)
-	if emailParseErr != nil {
-		utils.LogError("Error while parsing email", emailParseErr)
-		return utils.ApiResponse(http.StatusInternalServerError, ""), emailParseErr
+	invoiceMessage, emailParseError := parse_email.ParseEmail(request.Body)
+	if emailParseError != nil {
+		utils.LogError("Error while parsing email", emailParseError)
+		return utils.ApiResponse(http.StatusInternalServerError, ""), emailParseError
 	}
 
 	invoiceMessageByteArr, _ := json.Marshal(invoiceMessage)
 	invoiceMessageString := string(invoiceMessageByteArr)
 
-	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: &invoiceMessageString,
 		QueueUrl:    &d.queueUrl,
 	})
-	if sqsErr != nil {
-		utils.LogError("Error while sending message to SQS", emailParseErr)
-		return utils.ApiResponse(http.StatusInternalServerError, ""), sqsErr
+	if sqsError != nil {
+		utils.LogError("Error while sending message to SQS", emailParseError)
+		return utils.ApiResponse(http.StatusInternalServerError, ""), sqsError
 	}
 
 	return utils.ApiResponse(http.StatusOK, ""), nil

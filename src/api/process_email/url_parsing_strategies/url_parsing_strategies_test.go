@@ -10,11 +10,11 @@ import (
 
 var _ = Describe("GetPdfUrlFromEmail", func() {
 	var url string
-	var err error
+	var testError error
 
 	When("there are no strategy for a sender", func() {
 		BeforeEach(func() {
-			url, err = url_parsing_strategies.GetPdfUrlFromEmail(&models.EmailWebhookBody{
+			url, testError = url_parsing_strategies.GetPdfUrlFromEmail(&models.EmailWebhookBody{
 				From: []*models.EmailFrom{
 					{
 						Address: "test@test.com",
@@ -28,7 +28,7 @@ var _ = Describe("GetPdfUrlFromEmail", func() {
 		})
 
 		It("errors", func() {
-			Expect(err).To(MatchError(url_parsing_strategies.ErrNoUrlParsingStrategyFound))
+			Expect(testError).To(MatchError(url_parsing_strategies.ErrNoUrlParsingStrategyFound))
 		})
 	})
 })

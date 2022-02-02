@@ -30,16 +30,16 @@ func main() {
 
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
-	claims, err := auth.ParseToken(token)
-	if err != nil {
-		utils.LogError("Token validation failed", err)
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
+	claims, parseTokenError := auth.ParseToken(token)
+	if parseTokenError != nil {
+		utils.LogError("Token validation failed", parseTokenError)
+		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
 	}
 
-	data, err := request_parser.ParseUrlEncodedFormData(r)
-	if err != nil {
-		utils.LogError("Form body parse failed", err)
-		return utils.MailApiResponse(http.StatusBadRequest, ""), err
+	data, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
+	if parseFormDataError != nil {
+		utils.LogError("Form body parse failed", parseFormDataError)
+		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
 	var invoiceIds []string
@@ -47,9 +47,9 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		invoiceIds = append(invoiceIds, invoiceId)
 	}
 
-	updateErr := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, invoiceIds, models.ACCEPTED)
-	if updateErr != nil {
-		utils.LogError("Error updating dynamo db", updateErr)
+	updateError := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, invoiceIds, models.ACCEPTED)
+	if updateError != nil {
+		utils.LogError("Error updating dynamo db", updateError)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
 	return utils.MailApiResponse(http.StatusOK, "{}"), nil

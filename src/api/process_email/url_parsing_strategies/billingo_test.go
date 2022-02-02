@@ -22,7 +22,7 @@ var _ = AfterSuite(func() {
 var _ = Describe("Billingo", func() {
 	billingo := url_parsing_strategies.Billingo{}
 	var url string
-	var err error
+	var testError error
 
 	When("sender is billingo with valid html body", func() {
 		awsTrackUrl := "https://2g2zw50k.r.eu-central-1.awstrack.me/L0/https:%2F%2Fapp.billingo.hu%2Fdocument-access%2FK90RVdAvQ7gNoq62XvLWJeXq2lDny6aO/1/0107017dfb72c633-ff7877cf-fac2-415e-bb98-6f1709ae7470-000000/OHClr1vWQbzCIWXrIxHWiBDQDHg=30"
@@ -40,7 +40,7 @@ var _ = Describe("Billingo", func() {
 				})
 			httpmock.RegisterResponder("GET", invoiceSummaryUrl, httpmock.NewStringResponder(200, ""))
 
-			url, err = billingo.Parse(&models.EmailWebhookBody{
+			url, testError = billingo.Parse(&models.EmailWebhookBody{
 				From: []*models.EmailFrom{
 					{
 						Address: url_parsing_strategies.BillingoAddress,
@@ -58,7 +58,7 @@ var _ = Describe("Billingo", func() {
 		})
 
 		It("does not error", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 	})
 })

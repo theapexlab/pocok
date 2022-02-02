@@ -27,7 +27,7 @@ var testOrg string = "TEST_ORGANIZATION"
 var testJwtKey string = "TEST_KICSI_CICA"
 
 var _ = Describe("Auth", func() {
-	var err error
+	var testError error
 	var token string
 	var payload *models.JWTClaims
 	os.Setenv("jwtKey", testJwtKey)
@@ -35,12 +35,12 @@ var _ = Describe("Auth", func() {
 	When("Creating token", func() {
 		BeforeEach(func() {
 			at(time.Unix(0, 0), func() {
-				token, err = CreateToken(testOrg)
+				token, testError = CreateToken(testOrg)
 			})
 		})
 
 		It("should not error", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("should give back encrypted token", func() {
@@ -51,12 +51,12 @@ var _ = Describe("Auth", func() {
 	When("parsing valid token", func() {
 		BeforeEach(func() {
 			at(time.Unix(0, 0), func() {
-				payload, err = ParseToken(testToken)
+				payload, testError = ParseToken(testToken)
 			})
 		})
 
 		It("should not error", func() {
-			Expect(err).To(BeNil())
+			Expect(testError).To(BeNil())
 		})
 
 		It("should give back encrypted token", func() {
@@ -67,12 +67,12 @@ var _ = Describe("Auth", func() {
 	When("parsing expired token", func() {
 		BeforeEach(func() {
 			at(time.Unix(172801, 0), func() {
-				payload, err = ParseToken(testToken)
+				payload, testError = ParseToken(testToken)
 			})
 		})
 
 		It("should have error", func() {
-			Expect(err).To(MatchError("token is expired by 1s"))
+			Expect(testError).To(MatchError("token is expired by 1s"))
 		})
 
 		It("should not give back payload", func() {
@@ -81,17 +81,17 @@ var _ = Describe("Auth", func() {
 	})
 
 	When("creating and parsing from token", func() {
-		var createErr error
-		var parseErr error
+		var createError error
+		var parseError error
 		testPayload := time.Now().GoString()
 		BeforeEach(func() {
-			token, createErr = CreateToken(testPayload)
-			payload, parseErr = ParseToken(token)
+			token, createError = CreateToken(testPayload)
+			payload, parseError = ParseToken(token)
 		})
 
 		It("should not have any error", func() {
-			Expect(createErr).To(BeNil())
-			Expect(parseErr).To(BeNil())
+			Expect(createError).To(BeNil())
+			Expect(parseError).To(BeNil())
 		})
 
 		It("should not give back payload", func() {
