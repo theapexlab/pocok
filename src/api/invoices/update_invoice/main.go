@@ -61,7 +61,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	if update.Status == models.REJECTED {
-		removeErr := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId)
+		removeErr := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
 		if removeErr != nil {
 			utils.LogError("Error updating db", removeErr)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
@@ -70,7 +70,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	if update.Status == models.ACCEPTED {
-		updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
+		updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *update)
 		if updateErr != nil {
 			utils.LogError("Error updating db", updateErr)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
