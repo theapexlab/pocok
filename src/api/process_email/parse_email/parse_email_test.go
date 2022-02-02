@@ -87,12 +87,6 @@ var _ = Describe("ParseEmail", func() {
 						"length": "1",
 						"transferEncoding": "base64",
 						"fileName": "BRUH-1.pdf"
-					}, {
-						"contentType": "application/pdf",
-						"content_b64": "1",
-						"length": "1",
-						"transferEncoding": "base64",
-						"fileName": "BRUH-1.pdf"
 					},
 					{
 						"contentType": "application/pdf",
@@ -100,6 +94,12 @@ var _ = Describe("ParseEmail", func() {
 						"length": "1",
 						"transferEncoding": "base64",
 						"fileName": "BRUH-2.pdf"
+					}, {
+						"contentType": "application/pdf",
+						"content_b64": "1",
+						"length": "1",
+						"transferEncoding": "base64",
+						"fileName": "BRUH-1.pdf"
 					}
 				]
 			}`)
@@ -109,8 +109,8 @@ var _ = Describe("ParseEmail", func() {
 			Expect(testError).To(BeNil())
 		})
 
-		It("returns the invoices correctly, and filters duplicates", func() {
-			Expect(len(invoiceMessages)).To(Equal(2))
+		It("returns the invoices correctly", func() {
+			Expect(len(invoiceMessages)).To(Equal(3))
 			Expect(invoiceMessages[0].Type).To(Equal("base64"))
 			Expect(invoiceMessages[0].Body).To(Equal("1"))
 			Expect(invoiceMessages[0].Filename).To(Equal("BRUH-1.pdf"))
