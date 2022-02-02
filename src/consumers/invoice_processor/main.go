@@ -48,6 +48,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		// get the invoice from s3
 		s3Invoice, s3GetError := d.getS3Invoice(filename)
 		if s3GetError != nil {
+			utils.LogError("Failed to get s3 invoice", s3GetError)
 			return s3GetError
 		}
 
@@ -55,6 +56,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 		invoicePdf, readError := ioutil.ReadAll(s3Invoice.Body)
 		if readError != nil {
+			utils.LogError("Failed to read invoice body", readError)
 			return readError
 		}
 
@@ -63,9 +65,10 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			DocType: d.typlessDocType,
 		}
 
-		lambdaTimeout, atioError := strconv.Atoi(d.lambdaTimeout)
-		if atioError != nil {
-			return atioError
+		lambdaTimeout, atoiError := strconv.Atoi(d.lambdaTimeout)
+		if atoiError != nil {
+			utils.LogError("Failed convert lambda timeout", atoiError)
+			return atoiError
 		}
 
 		// to make sure we close http connection before lambda times out
@@ -104,6 +107,7 @@ func (d *dependencies) getS3Invoice(filename string) (*s3.GetObjectOutput, error
 		Key:    &filename,
 	})
 	if s3GetError != nil {
+		utils.LogError("Failed to get invoice from s3", s3GetError)
 		return nil, s3GetError
 	}
 
