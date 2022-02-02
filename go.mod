@@ -35,6 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.11.0 // indirect
 	github.com/aws/smithy-go v1.10.0 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
