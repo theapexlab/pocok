@@ -12,9 +12,9 @@ type urlParsingStrategy interface {
 var ErrNoUrlParsingStrategyFound = errors.New("no url parsing strategy found")
 
 func GetPdfUrlFromEmail(jsonBody *models.EmailWebhookBody) (string, error) {
-	strategy, err := getStrategy(jsonBody)
-	if err != nil {
-		return "", err
+	strategy, getStrategyError := getStrategy(jsonBody)
+	if getStrategyError != nil {
+		return "", getStrategyError
 	}
 
 	return strategy.Parse(jsonBody)

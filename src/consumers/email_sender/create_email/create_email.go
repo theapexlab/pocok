@@ -16,16 +16,16 @@ import (
 func GetAttachments(client *s3.Client, bucketName string, invoices []models.Invoice) (map[string][]byte, error) {
 	attachments := map[string][]byte{}
 	for _, invoice := range invoices {
-		s3Resp, s3Err := client.GetObject(context.TODO(), &s3.GetObjectInput{
+		s3Resp, s3Error := client.GetObject(context.TODO(), &s3.GetObjectInput{
 			Bucket: &bucketName,
 			Key:    &invoice.Filename,
 		})
-		if s3Err != nil {
-			return attachments, s3Err
+		if s3Error != nil {
+			return attachments, s3Error
 		}
-		file, readErr := ioutil.ReadAll(s3Resp.Body)
-		if readErr != nil {
-			return attachments, readErr
+		file, readError := ioutil.ReadAll(s3Resp.Body)
+		if readError != nil {
+			return attachments, readError
 		}
 		attachments[invoice.Filename] = file
 	}
@@ -41,23 +41,23 @@ type emailTemplateData struct {
 }
 
 func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
-	summaryTemplate, summaryErr := summary_email_template.Get()
+	summaryTemplate, summaryError := summary_email_template.Get()
 
-	if summaryErr != nil {
-		utils.LogError("Error while reading in summary file", summaryErr)
-		return "", summaryErr
+	if summaryError != nil {
+		utils.LogError("Error while reading in summary file", summaryError)
+		return "", summaryError
 	}
 
-	t, templateErr := template.New("Template").Delims("[[", "]]").Parse(summaryTemplate)
-	if templateErr != nil {
-		utils.LogError("Error while creating template.", templateErr)
-		return "", templateErr
+	t, templateError := template.New("Template").Delims("[[", "]]").Parse(summaryTemplate)
+	if templateError != nil {
+		utils.LogError("Error while creating template.", templateError)
+		return "", templateError
 	}
 
-	token, tokenErr := auth.CreateToken(models.APEX_ID)
-	if tokenErr != nil {
-		utils.LogError("Error while creating token.", tokenErr)
-		return "", tokenErr
+	token, tokenError := auth.CreateToken(models.APEX_ID)
+	if tokenError != nil {
+		utils.LogError("Error while creating token.", tokenError)
+		return "", tokenError
 	}
 
 	templateData := emailTemplateData{
@@ -69,11 +69,11 @@ func GetHtmlSummary(apiUrl string, logoUrl string) (string, error) {
 	}
 
 	var templateBuffer bytes.Buffer
-	executionErr := t.Execute(&templateBuffer, templateData)
+	executionError := t.Execute(&templateBuffer, templateData)
 
-	if executionErr != nil {
-		utils.LogError("Error while executing template insetion.", executionErr)
-		return "", executionErr
+	if executionError != nil {
+		utils.LogError("Error while executing template insetion.", executionError)
+		return "", executionError
 	}
 	return templateBuffer.String(), nil
 }

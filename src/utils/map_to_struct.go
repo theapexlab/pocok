@@ -5,15 +5,15 @@ import (
 )
 
 func MapToStruct(data interface{}, v interface{}) error {
-	jsonData, marshalErr := json.Marshal(data)
-	if marshalErr != nil {
-		LogError("error while marshaling json", marshalErr)
-		return marshalErr
+	jsonData, marshalError := json.Marshal(data)
+	if marshalError != nil {
+		LogError("error while marshaling json", marshalError)
+		return marshalError
 	}
-	unmarshalErr := json.Unmarshal(jsonData, v)
-	if unmarshalErr != nil {
-		LogError("error while unmarshaling json", unmarshalErr)
-		return unmarshalErr
+	unmarshalError := json.Unmarshal(jsonData, v)
+	if unmarshalError != nil {
+		LogError("error while unmarshaling json", unmarshalError)
+		return unmarshalError
 	}
 	return nil
 }

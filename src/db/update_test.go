@@ -10,18 +10,18 @@ import (
 
 var _ = Describe("Status update validation", func() {
 	var update *db.StatusUpdate
-	var err error
+	var updateError error
 
 	When("status is accept and valid", func() {
 		BeforeEach(func() {
-			update, err = db.CreateStatusUpdate(map[string]string{
+			update, updateError = db.CreateStatusUpdate(map[string]string{
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
 		})
 
 		It("does not error", func() {
-			Expect(err).To(BeNil())
+			Expect(updateError).To(BeNil())
 		})
 
 		It("contains the data", func() {
@@ -32,44 +32,44 @@ var _ = Describe("Status update validation", func() {
 
 	When("id is missing", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"status": models.ACCEPTED,
 			})
 		})
 
 		It("errors", func() {
-			Expect(err).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
 	When("status is missing", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"invoiceId": "asd",
 			})
 		})
 
 		It("errors", func() {
-			Expect(err).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
 	When("status is pending", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"status":    models.PENDING,
 				"invoiceId": "ID1",
 			})
 		})
 
 		It("errors", func() {
-			Expect(err).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
 	When("status is reject, but there is no filename", func() {
 		BeforeEach(func() {
-			_, err = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"status":    models.REJECTED,
 				"invoiceId": "ID1",
 			})

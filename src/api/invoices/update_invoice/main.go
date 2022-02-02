@@ -42,42 +42,42 @@ func main() {
 // TODO? hidden _method param for delete & update requests
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
-	claims, err := auth.ParseToken(token)
-	if err != nil {
-		utils.LogError("Token validation failed", err)
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), err
+	claims, parseTokenError := auth.ParseToken(token)
+	if parseTokenError != nil {
+		utils.LogError("Token validation failed", parseTokenError)
+		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
 	}
 
-	data, err := request_parser.ParseUrlEncodedFormData(r)
-	if err != nil {
-		utils.LogError("Form body parse failed", err)
-		return utils.MailApiResponse(http.StatusBadRequest, ""), err
+	data, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
+	if parseFormDataError != nil {
+		utils.LogError("Form body parse failed", parseFormDataError)
+		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	update, validationErr := db.CreateStatusUpdate(data)
-	if validationErr != nil {
-		utils.LogError("Invalid update payload", validationErr)
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationErr.Error()), nil
+	update, validationError := db.CreateStatusUpdate(data)
+	if validationError != nil {
+		utils.LogError("Invalid update payload", validationError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), nil
 	}
 
 	if update.Status == models.REJECTED {
-		removeErr := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
-		if removeErr != nil {
-			utils.LogError("Error updating db", removeErr)
+		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
+		if deleteError != nil {
+			utils.LogError("Error updating db", deleteError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 		}
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
 	if update.Status == models.ACCEPTED {
-		updateErr := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *update)
-		if updateErr != nil {
-			utils.LogError("Error updating db", updateErr)
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *update)
+		if updateError != nil {
+			utils.LogError("Error updating db", updateError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 		}
-		feedbackErr := updateFeedback(d, claims.OrgId, update.InvoiceId)
-		if feedbackErr != nil {
-			utils.LogError("Error updating db", feedbackErr)
+		feedbackError := updateFeedback(d, claims.OrgId, update.InvoiceId)
+		if feedbackError != nil {
+			utils.LogError("Error updating db", feedbackError)
 		}
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
@@ -86,22 +86,22 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 }
 
 func updateFeedback(d *dependencies, orgId string, invoiceId string) error {
-	invoice, dbErr := db.GetInvoice(d.dbClient, d.tableName, orgId, invoiceId)
-	if dbErr != nil {
-		utils.LogError("Error getting invoice from db", dbErr)
-		return dbErr
+	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, orgId, invoiceId)
+	if getInvoiceError != nil {
+		utils.LogError("Error getting invoice from db", getInvoiceError)
+		return getInvoiceError
 	}
 
-	typlessErr := typless.AddDocumentFeedback(
+	typlessError := typless.AddDocumentFeedback(
 		&typless.Config{
 			Token:   d.typlessToken,
 			DocType: d.typlessDocType,
 		},
 		*create_training_data.CreateTrainingData(invoice),
 	)
-
-	if typlessErr != nil {
-		utils.LogError("Error adding document feedback to typless", typlessErr)
+	if typlessError != nil {
+		utils.LogError("Error adding document feedback to typless", typlessError)
 	}
+
 	return nil
 }

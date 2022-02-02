@@ -15,7 +15,7 @@ var ErrEmailFromSenderAddress = errors.New("email sent from mailgun sender addre
 func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
 	var jsonBody models.EmailWebhookBody
 
-	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
+	if unmarshalError := json.Unmarshal([]byte(body), &jsonBody); unmarshalError != nil {
 		return nil, models.ErrInvalidJson
 	}
 
@@ -52,11 +52,11 @@ func hasPdfAttachment(attachments []*models.EmailAttachment) bool {
 }
 
 func hasPdfUrl(jsonBody *models.EmailWebhookBody) (bool, string) {
-	url, err := url_parsing_strategies.GetPdfUrlFromEmail(jsonBody)
-	if !errors.Is(err, url_parsing_strategies.ErrNoUrlParsingStrategyFound) {
-		utils.LogError("error while parsing url from email", err)
+	url, parseError := url_parsing_strategies.GetPdfUrlFromEmail(jsonBody)
+	if !errors.Is(parseError, url_parsing_strategies.ErrNoUrlParsingStrategyFound) {
+		utils.LogError("error while parsing url from email", parseError)
 	}
-	return err == nil && url != "", url
+	return parseError == nil && url != "", url
 }
 
 func isSentFromRecipientAddress(jsonBody *models.EmailWebhookBody) bool {

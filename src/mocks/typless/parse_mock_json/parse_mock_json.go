@@ -13,16 +13,16 @@ func Parse(mockFilename string) *typless.ExtractDataFromFileOutput {
 	_, filename, _, _ := runtime.Caller(0)
 	currentPath := path.Dir(filename)
 	filePath := currentPath + "/../" + mockFilename
-	mock, readFileErr := os.ReadFile(filePath)
+	mock, readFileError := os.ReadFile(filePath)
 
 	var extractedData *typless.ExtractDataFromFileOutput
 
-	if readFileErr != nil {
-		utils.LogError("", readFileErr)
+	if readFileError != nil {
+		utils.LogError("", readFileError)
 		panic("Failed to read mock file")
 	}
 
-	if err := json.Unmarshal(mock, &extractedData); err != nil {
+	if unmarshalError := json.Unmarshal(mock, &extractedData); unmarshalError != nil {
 		panic("Failed to unmarshal mock file")
 	}
 

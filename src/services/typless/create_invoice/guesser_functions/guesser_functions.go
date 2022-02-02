@@ -26,10 +26,12 @@ func cutPrefix(str string) string {
 
 func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextBlock) string {
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
+	bankAccountRegex, _ := regexp.Compile(`^[_\d\w-]{3,17}$`)
+	containsNumberRegex, _ := regexp.Compile(`[\d+]`)
 	for _, block := range *textBlocks {
 		v := block.Value
-		isMatching, _ := regexp.MatchString(`^[_\d\w-]{3,17}$`, v)
-		containsNumber, _ := regexp.MatchString(`[\d+]`, v)
+		isMatching := bankAccountRegex.MatchString(v)
+		containsNumber := containsNumberRegex.MatchString(v)
 		if strings.Contains(filename, v) &&
 			containsNumber &&
 			isMatching {
@@ -81,9 +83,12 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, err := strconv.Atoi(highestPrice)
-		priceInt, err := strconv.Atoi(price)
-		if err != nil {
+		highestPriceInt, convertHighestPriceError := strconv.Atoi(highestPrice)
+		if convertHighestPriceError != nil {
+			continue
+		}
+		priceInt, convertPriceError := strconv.Atoi(price)
+		if convertPriceError != nil {
 			continue
 		}
 
@@ -135,14 +140,12 @@ func GuessDueDate(textBlocks *[]typless.TextBlock) string {
 		v := cutPrefix(block.Value)
 		v = strings.ReplaceAll(v, " ", "")
 		for i, month := range months {
-			if strings.Contains(v, month) {
-				v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
-			}
+			v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
 		}
 		v = strings.TrimRight(v, ".") // trailing "." makes dateparsing fail
 
-		date, err := dateparse.ParseAny(v)
-		if err != nil {
+		date, parseError := dateparse.ParseAny(v)
+		if parseError != nil {
 			continue
 		}
 

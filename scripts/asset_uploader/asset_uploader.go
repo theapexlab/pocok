@@ -24,16 +24,16 @@ func main() {
 	_, filename, _, _ := runtime.Caller(0)
 	assetFolder := path.Dir(filename) + "/../../assets/"
 
-	assetBucketName, err := getAssetBucketName(client)
-	if err != nil {
-		utils.LogFatal(err)
+	assetBucketName, getBucketError := getAssetBucketName(client)
+	if getBucketError != nil {
+		utils.LogFatal(getBucketError)
 	}
 
 	emptyAssetBucket(client, assetBucketName)
 
-	files, err := ioutil.ReadDir(assetFolder)
-	if err != nil {
-		utils.LogFatal(err)
+	files, readDirError := ioutil.ReadDir(assetFolder)
+	if readDirError != nil {
+		utils.LogFatal(readDirError)
 	}
 	uploadFiles(client, assetBucketName, assetFolder, files)
 
@@ -44,10 +44,10 @@ func uploadFiles(client *s3.Client, assetBucketName string, assetFolder string, 
 	for _, file := range files {
 		if !file.IsDir() {
 			fileName := file.Name()
-			utils.Log("Uploading -  %s  \n", fileName)
-			err := uploadObject(client, assetBucketName, assetFolder, fileName)
-			if err != nil {
-				utils.LogFatal(err)
+			utils.Logf("Uploading - %s \n", fileName)
+			uploadError := uploadObject(client, assetBucketName, assetFolder, fileName)
+			if uploadError != nil {
+				utils.LogFatal(uploadError)
 			}
 		}
 	}
@@ -55,9 +55,9 @@ func uploadFiles(client *s3.Client, assetBucketName string, assetFolder string, 
 }
 
 func getAssetBucketName(client *s3.Client) (string, error) {
-	buckets, err := client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
-	if err != nil {
-		utils.LogFatal(err)
+	buckets, listBucketError := client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
+	if listBucketError != nil {
+		utils.LogFatal(listBucketError)
 	}
 
 	assetBucketName := ""
@@ -76,18 +76,21 @@ func getAssetBucketName(client *s3.Client) (string, error) {
 }
 
 func uploadObject(client *s3.Client, assetBucketName string, assetFolder string, fileName string) error {
-	upFile, err := os.Open(assetFolder + fileName)
-	if err != nil {
-		return err
+	upFile, fileOpenError := os.Open(assetFolder + fileName)
+	if fileOpenError != nil {
+		return fileOpenError
 	}
 	defer upFile.Close()
 
 	upFileInfo, _ := upFile.Stat()
 	var fileSize int64 = upFileInfo.Size()
 	fileBuffer := make([]byte, fileSize)
-	upFile.Read(fileBuffer)
+	_, readError := upFile.Read(fileBuffer)
+	if readError != nil {
+		return readError
+	}
 
-	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+	_, s3UploadError := client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket:        aws.String(assetBucketName),
 		Key:           aws.String(fileName),
 		ACL:           "public-read",
@@ -96,18 +99,18 @@ func uploadObject(client *s3.Client, assetBucketName string, assetFolder string,
 		ContentType:   aws.String(http.DetectContentType(fileBuffer)),
 	})
 
-	return err
+	return s3UploadError
 }
 
 func deleteObject(client *s3.Client, bucket, key, versionId *string) {
-	utils.Log("Deleting - %s \n", *key)
-	_, err := client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+	utils.Logf("Deleting - %s \n", *key)
+	_, s3DeleteError := client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 		Bucket:    bucket,
 		Key:       key,
 		VersionId: versionId,
 	})
-	if err != nil {
-		utils.LogFatalf("Failed to delete object: %v", err)
+	if s3DeleteError != nil {
+		utils.LogFatalf("Failed to delete object: %v", s3DeleteError)
 	}
 }
 
@@ -117,9 +120,9 @@ func emptyAssetBucket(client *s3.Client, assetBucketName string) {
 
 	in := &s3.ListObjectsV2Input{Bucket: bucket}
 	for {
-		out, err := client.ListObjectsV2(context.TODO(), in)
-		if err != nil {
-			utils.LogFatalf("Failed to list objects: %v", err)
+		out, s3ListError := client.ListObjectsV2(context.TODO(), in)
+		if s3ListError != nil {
+			utils.LogFatalf("Failed to list objects: %v", s3ListError)
 		}
 
 		for _, item := range out.Contents {
@@ -135,9 +138,9 @@ func emptyAssetBucket(client *s3.Client, assetBucketName string) {
 
 	inVer := &s3.ListObjectVersionsInput{Bucket: bucket}
 	for {
-		out, err := client.ListObjectVersions(context.TODO(), inVer)
-		if err != nil {
-			utils.LogFatalf("Failed to list version objects: %v", err)
+		out, s3ListObjectVersionsError := client.ListObjectVersions(context.TODO(), inVer)
+		if s3ListObjectVersionsError != nil {
+			utils.LogFatalf("Failed to list version objects: %v", s3ListObjectVersionsError)
 		}
 
 		for _, item := range out.DeleteMarkers {

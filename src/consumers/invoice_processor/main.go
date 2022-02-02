@@ -46,16 +46,18 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		filename := record.Body
 
 		// get the invoice from s3
-		s3Invoice, err := d.getS3Invoice(filename)
-		if err != nil {
-			return err
+		s3Invoice, s3GetError := d.getS3Invoice(filename)
+		if s3GetError != nil {
+			utils.LogError("Failed to get s3 invoice", s3GetError)
+			return s3GetError
 		}
 
 		originalFilename := s3Invoice.Metadata["OriginalFilename"]
 
-		invoicePdf, err := ioutil.ReadAll(s3Invoice.Body)
-		if err != nil {
-			return err
+		invoicePdf, readError := ioutil.ReadAll(s3Invoice.Body)
+		if readError != nil {
+			utils.LogError("Failed to read invoice body", readError)
+			return readError
 		}
 
 		typlessConfig := &typless.Config{
@@ -63,20 +65,21 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			DocType: d.typlessDocType,
 		}
 
-		lambdaTimeout, atioErr := strconv.Atoi(d.lambdaTimeout)
-		if atioErr != nil {
-			return atioErr
+		lambdaTimeout, atoiError := strconv.Atoi(d.lambdaTimeout)
+		if atoiError != nil {
+			utils.LogError("Failed convert lambda timeout", atoiError)
+			return atoiError
 		}
 
 		// to make sure we close http connection before lambda times out
 		safetyTimeout := lambdaTimeout - 5
 
 		// extract the text from the invoice
-		extractedData, err := typless.ExtractData(typlessConfig, invoicePdf, safetyTimeout)
+		extractedData, extractError := typless.ExtractData(typlessConfig, invoicePdf, safetyTimeout)
 
-		if err != nil {
-			utils.LogError("Failed to extract data", err)
-			return err
+		if extractError != nil {
+			utils.LogError("Failed to extract data", extractError)
+			return extractError
 		}
 
 		createInvoiceService := create_invoice.CreateInvoiceService{
@@ -86,11 +89,11 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		invoice := createInvoiceService.CreateInvoice()
 		invoice.Filename = filename
 
-		_, dbErr := db.PutInvoice(d.dbClient, d.tableName, invoice)
+		_, saveInvoiceError := db.PutInvoice(d.dbClient, d.tableName, invoice)
 
-		if dbErr != nil {
-			utils.LogError("Failed to save invoice to db", dbErr)
-			return dbErr
+		if saveInvoiceError != nil {
+			utils.LogError("Failed to save invoice to db", saveInvoiceError)
+			return saveInvoiceError
 		}
 
 	}
@@ -99,14 +102,14 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 }
 
 func (d *dependencies) getS3Invoice(filename string) (*s3.GetObjectOutput, error) {
-	invoice, err := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
+	invoice, s3GetError := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: &d.bucketName,
 		Key:    &filename,
 	})
-
-	if err != nil {
-		return nil, err
+	if s3GetError != nil {
+		utils.LogError("Failed to get invoice from s3", s3GetError)
+		return nil, s3GetError
 	}
 
-	return invoice, err
+	return invoice, s3GetError
 }
