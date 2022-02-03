@@ -201,14 +201,6 @@ var _ = Describe("Utils", func() {
 			})
 		})
 
-		When("GetValidDueDate recieves a past date ", func() {
-			It("throws error", func() {
-				mockDate := "2000-01-01"
-				_, err := utils.GetValidDueDate(mockDate)
-				Expect(err).To(MatchError("invalid date"))
-			})
-		})
-
 		When("GetValidPrice recieves a valid price ", func() {
 			It("return same price without error", func() {
 				testPrices := []string{

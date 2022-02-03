@@ -6,7 +6,6 @@ import (
 	"pocok/src/utils/models"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/araddon/dateparse"
 
@@ -50,11 +49,9 @@ func GetValidPrice(price string) (string, error) {
 }
 
 func GetValidDueDate(dueDate string) (string, error) {
-	currentTime := time.Now()
-	date, dateParseError := dateparse.ParseAny(dueDate)
-
-	if dateParseError == nil && date.After(currentTime) {
-		return dueDate, nil
+	_, dateParseError := dateparse.ParseAny(dueDate)
+	if dateParseError != nil {
+		return "", errors.New("invalid date")
 	}
-	return "", errors.New("invalid date")
+	return dueDate, nil
 }
