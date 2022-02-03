@@ -64,9 +64,9 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 }
 
 func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
-	update, err := utils.MapUpdateDataToInvoice(data)
+	update, updateError := utils.MapUpdateDataToInvoice(data)
 
-	if err != nil {
+	if updateError != nil {
 		return update, errors.New("invalid input")
 	}
 
@@ -79,36 +79,36 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	}
 
 	if update.AccountNumber == "" && update.Iban == "" {
-		return update, errors.New("Iban or account number must be provided")
+		return update, errors.New("iban or account number must be provided")
 	}
 
 	if update.Iban != "" {
-		_, ibanErr := utils.GetValidIban(update.Iban)
-		if ibanErr != nil {
-			return update, ibanErr
+		_, ibanError := utils.GetValidIban(update.Iban)
+		if ibanError != nil {
+			return update, ibanError
 		}
 	}
 
 	if update.AccountNumber != "" {
-		_, err := utils.GetValidAccountNumber(update.AccountNumber)
-		if err != nil {
-			return update, err
+		_, accountNumberError := utils.GetValidAccountNumber(update.AccountNumber)
+		if accountNumberError != nil {
+			return update, accountNumberError
 		}
 	}
 
-	_, priceErr := utils.GetValidPrice(update.GrossPrice)
-	if priceErr != nil {
+	_, priceError := utils.GetValidPrice(update.GrossPrice)
+	if priceError != nil {
 		return update, errors.New("invalid gross price")
 	}
 
-	_, dateErr := utils.GetValidDueDate(update.DueDate)
-	if dateErr != nil {
+	_, dateError := utils.GetValidDueDate(update.DueDate)
+	if dateError != nil {
 		return update, errors.New("invalid due date")
 	}
 
-	_, currErr := utils.GetValidCurrency(update.Currency)
-	if currErr != nil {
-		return update, currErr
+	_, currError := utils.GetValidCurrency(update.Currency)
+	if currError != nil {
+		return update, currError
 	}
 
 	//  todo: add additional validation for fields below
@@ -119,13 +119,13 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 }
 
 func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
-	serviceList, marshalErr := attributevalue.MarshalList(update.Services)
-	if marshalErr != nil {
-		utils.LogError("Cannot marshal invoice services", marshalErr)
-		return marshalErr
+	serviceList, marshalError := attributevalue.MarshalList(update.Services)
+	if marshalError != nil {
+		utils.LogError("Cannot marshal invoice services", marshalError)
+		return marshalError
 	}
 
-	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
@@ -162,7 +162,7 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			":v12": &types.AttributeValueMemberS{Value: update.InvoiceNumber},
 		},
 	})
-	return err
+	return updateError
 }
 
 func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId string, invoiceIds []string, status string) error {
