@@ -11,12 +11,13 @@ type UploadInvoiceMessage struct {
 type Service struct {
 	Name         string `json:"name" dynamodbav:"name,omitempty"`
 	Amount       string `json:"amount" dynamodbav:"amount,omitempty"`
-	Unit         string `json:"" dynamodbav:"unit,omitempty"`
+	Unit         string `json:"unit" dynamodbav:"unit,omitempty"`
 	UnitNetPrice string `json:"unitNetPrice" dynamodbav:"unitNetPrice,omitempty"`
 	NetPrice     string `json:"netPrice" dynamodbav:"netPrice,omitempty"`
 	GrossPrice   string `json:"grossPrice" dynamodbav:"grossPrice,omitempty"`
 	VatAmount    string `json:"vatAmount" dynamodbav:"vatAmount,omitempty"`
 	VatRate      string `json:"vatRate" dynamodbav:"vatRate,omitempty"`
+	Currency     string `json:"currency" dynamodbav:"currency,omitempty"`
 }
 
 type Invoice struct {

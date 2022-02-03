@@ -4,7 +4,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	. "pocok/src/api/process_email/parse_email"
+	"pocok/src/api/process_email/parse_email"
 	"pocok/src/utils/models"
 )
 
@@ -14,7 +14,7 @@ var _ = Describe("ParseEmail", func() {
 
 	When("body is malformed", func() {
 		BeforeEach(func() {
-			invoiceMessage, testError = ParseEmail("")
+			invoiceMessage, testError = parse_email.ParseEmail("")
 		})
 
 		It("returns nil", func() {
@@ -28,7 +28,7 @@ var _ = Describe("ParseEmail", func() {
 
 	When("body doesn't contain pdf attachment", func() {
 		BeforeEach(func() {
-			invoiceMessage, testError = ParseEmail(`{
+			invoiceMessage, testError = parse_email.ParseEmail(`{
 				"attachments": [
 					{
 						"contentType": "image/gif",
@@ -46,13 +46,13 @@ var _ = Describe("ParseEmail", func() {
 		})
 
 		It("errors", func() {
-			Expect(testError).To(MatchError(ErrNoPdfAttachmentFound))
+			Expect(testError).To(MatchError(parse_email.ErrNoPdfAttachmentFound))
 		})
 	})
 
 	When("body does contain a pdf attachment", func() {
 		BeforeEach(func() {
-			invoiceMessage, testError = ParseEmail(`{
+			invoiceMessage, testError = parse_email.ParseEmail(`{
 				"attachments": [
 					{
 						"contentType": "application/pdf",
