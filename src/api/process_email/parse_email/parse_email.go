@@ -24,7 +24,6 @@ func ParseEmail(body string) ([]models.UploadInvoiceMessage, error) {
 	}
 
 	if hasPdfAttachment(jsonBody.Attachments) {
-		// Map, so only unique values go throuh
 		messages := []models.UploadInvoiceMessage{}
 		for _, attachment := range jsonBody.Attachments {
 			message := models.UploadInvoiceMessage{
