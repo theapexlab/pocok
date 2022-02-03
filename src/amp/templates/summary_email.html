@@ -286,12 +286,7 @@
                     </label>
                     <label>
                       Due Date:
-                      <input
-                        type="text"
-                        name="dueDate"
-                        value="{{dueDate}}"
-                        pattern="\d{4}-\d{2}-\d{2}"
-                      />
+                      <input type="date" name="dueDate" value="{{dueDate}}" />
                     </label>
                   </fieldset>
 
@@ -321,7 +316,7 @@
                         type="text"
                         name="iban"
                         value="{{iban}}"
-                        pattern="\b[A-Z]{2}[0-9]{2}(?:[ -]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
+                        pattern="\b[A-Z]{2}[0-9]{2}(?:[ ]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
                       />
                     </label>
 
