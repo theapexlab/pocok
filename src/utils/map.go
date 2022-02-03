@@ -21,21 +21,16 @@ func MapToStruct(data interface{}, v interface{}) error {
 	return nil
 }
 
-func MapInvoiceToInvoiceServiceIndexes(invoices []models.Invoice) []models.InvoiceWithServiceIndex {
-	indexedInvoices := []models.InvoiceWithServiceIndex{}
-
-	for _, invoice := range invoices {
-		newInvoice := models.InvoiceWithServiceIndex{Invoice: invoice}
-		for i, service := range invoice.Services {
-			newInvoice.Services = append(newInvoice.Services, models.ServiceWithIndex{
-				Service: service,
-				Index:   i,
-			})
-		}
-		indexedInvoices = append(indexedInvoices, newInvoice)
+func ExtendInvoice(invoice models.Invoice) *models.ExtendedInvoice {
+	indexedInvoice := models.ExtendedInvoice{Invoice: invoice}
+	for i, service := range invoice.Services {
+		indexedInvoice.Services = append(indexedInvoice.Services, models.ExtendedService{
+			Service: service,
+			Index:   i,
+		})
 	}
 
-	return indexedInvoices
+	return &indexedInvoice
 }
 
 func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
@@ -67,5 +62,4 @@ func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
 	}
 
 	return invoice, mapToStructError
-
 }
