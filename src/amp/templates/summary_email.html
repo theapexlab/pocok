@@ -114,6 +114,9 @@
       .hidden {
         display: none;
       }
+      .save-error {
+        color: red;
+      }
     </style>
   </head>
 
@@ -169,7 +172,7 @@
                       />
                       <button type="submit">Accept</button>
                       <div submit-success>Accept successful.</div>
-                      <div submit-error template="submit_error_template"></div>
+                      <div submit-error>Accept failed.</div>
                     </form>
                     <form
                       method="post"
@@ -513,7 +516,9 @@
           {{/items}}
         </template>
         <template type="amp-mustache" id="submit_error_template">
-          Oops! {{message}}.
+          <div class="save-error">Azthittem fölöltözöl rendesen!</div>
+          <br />
+          <div>{{message}}</div>
         </template>
       </amp-list>
     </div>
