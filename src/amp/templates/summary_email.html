@@ -135,19 +135,19 @@
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div class="item item-view" id="{{invoiceId}}-item-view">
+            <div class="item item-view" id="{{invoice.invoiceId}}-item-view">
               <div class="item-header">
                 <div>
-                  <div>ID: {{invoiceId}}</div>
-                  <div>Status: {{status}}</div>
-                  <div>Received at: {{receivedAt}}</div>
+                  <div>ID: {{invoice.invoiceId}}</div>
+                  <div>Status: {{invoice.status}}</div>
+                  <div>Received at: {{invoice.receivedAt}}</div>
                   <br />
-                  <div>Vendor Name: {{vendorName}}</div>
-                  <div>Vendor Email: {{vendorEmail}}</div>
-                  <div>Iban: {{iban}}</div>
-                  <div>Bank account: {{accountNumber}}</div>
+                  <div>Vendor Name: {{invoice.vendorName}}</div>
+                  <div>Vendor Email: {{invoice.vendorEmail}}</div>
+                  <div>Iban: {{invoice.iban}}</div>
+                  <div>Bank account: {{invoice.accountNumber}}</div>
                   <br />
-                  <div>Gross Price: {{grossPrice}} {{currency}}</div>
+                  <div>Gross Price: {{invoice.grossPrice}} {{invoice.currency}}</div>
                 </div>
                 <div class="item-header-actions">
                   <div>
@@ -159,7 +159,7 @@
                       <input
                         type="hidden"
                         name="invoiceId"
-                        value="{{invoiceId}}"
+                        value="{{invoice.invoiceId}}"
                       />
                       <input
                         type="hidden"
@@ -178,7 +178,7 @@
                       <input
                         type="hidden"
                         name="invoiceId"
-                        value="{{invoiceId}}"
+                        value="{{invoice.invoiceId}}"
                       />
                       <input
                         type="hidden"
@@ -188,15 +188,15 @@
                       <input
                         type="hidden"
                         name="filename"
-                        value="{{fileName}}"
+                        value="{{invoice.fileName}}"
                       />
                       <button
                         type="button"
-                        on="tap:{{invoiceId}}-reject-modal.show"
+                        on="tap:{{invoice.invoiceId}}-reject-modal.show"
                       >
                         Reject
                       </button>
-                      <div class="modal" id="{{invoiceId}}-reject-modal" hidden>
+                      <div class="modal" id="{{invoice.invoiceId}}-reject-modal" hidden>
                         <div>
                           <div submit-error>Reject failed.</div>
                           <div submit-success>Reject successful.</div>
@@ -205,7 +205,7 @@
                         <button type="submit">Yes king</button>
                         <button
                           type="button"
-                          on="tap:{{invoiceId}}-reject-modal.hide"
+                          on="tap:{{invoice.invoiceId}}-reject-modal.hide"
                         >
                           No, please I enjoy this invoice so much
                         </button>
@@ -214,7 +214,7 @@
                   </div>
 
                   <button
-                    on="tap:{{invoiceId}}-item-edit.show,{{invoiceId}}-item-view.hide"
+                    on="tap:{{invoice.invoiceId}}-item-edit.show,{{invoice.invoiceId}}-item-view.hide"
                   >
                     Edit
                   </button>
@@ -222,19 +222,19 @@
               </div>
 
               <div class="item-content">
-                <div>
-                  <div>Invoice Number: {{invoiceNumber}}</div>
-                  <div>Net Price: {{netPrice}} {{currency}}</div>
-                  <div>Gross Price: {{grossPrice}} {{currency}}</div>
-                  <div>Vat Amount: {{vatAmount}} {{currency}}</div>
-                  <div>Vat Rate: {{vatRate}}</div>
+                <div>                  
+                  <div>Invoice Number: {{invoice.invoiceNumber}}</div>
+                  <div>Net Price: {{invoice.netPrice}} {{invoice.currency}}</div>
+                  <div>Gross Price: {{invoice.grossPrice}} {{invoice.currency}}</div>
+                  <div>Vat Amount: {{invoice.vatAmount}} {{invoice.currency}}</div>
+                  <div>Vat Rate: {{invoice.vatRate}}</div>
                   <br />
-                  <div>Due: {{dueDate}}</div>
+                  <div>Due: {{invoice.dueDate}}</div>
                   <div>
                     <div>
                       <p>Services:</p>
                     </div>
-                    {{#services}}
+                    {{#invoice.services}}
                     <div>
                       <div>Name: {{name}}</div>
                       <div>Amount: {{amount}}</div>
@@ -246,17 +246,18 @@
                       <div>Vat Amount: {{vatAmount}}</div>
                       <div>Vat Rate:{{vatRate}}</div>
                     </div>
-                    {{/services}}
+                    {{/invoice.services}}
                   </div>
                 </div>
+                <a href="{{link}}">PDF link</a>
               </div>
             </div>
 
-            <div class="item item-edit" id="{{invoiceId}}-item-edit" hidden>
+            <div class="item item-edit" id="{{invoice.invoiceId}}-item-edit" hidden>
               <div class="item-header">
                 <div>
-                  <div>{{invoiceId}} {{status}}</div>
-                  <div>Received at: {{receivedAt}}</div>
+                  <div>{{invoice.invoiceId}} {{invoice.status}}</div>
+                  <div>Received at: {{invoice.receivedAt}}</div>
                 </div>
                 <div class="item-header-actions">
                   <div>
@@ -277,7 +278,7 @@
                   action-xhr="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
                   on="submit-success:invoiceList.refresh"
                 >
-                  <input type="text" value="{{id}}" hidden />
+                  <input type="text" value="{{invoice.invoiceId}}" hidden />
                   <fieldset>
                     <legend>Invoice details</legend>
 
@@ -286,12 +287,12 @@
                       <input
                         type="text"
                         name="invoiceNumber"
-                        value="{{invoiceNumber}}"
+                        value="{{invoice.invoiceNumber}}"
                       />
                     </label>
                     <label>
                       Due Date:
-                      <input type="text" name="dueDate" value="{{dueDate}}" />
+                      <input type="text" name="dueDate" value="{{invoice.dueDate}}" />
                     </label>
                   </fieldset>
 
@@ -303,7 +304,7 @@
                       <input
                         type="text"
                         name="vendorName"
-                        value="{{vendorName}}"
+                        value="{{invoice.vendorName}}"
                       />
                     </label>
                     <label>
@@ -311,14 +312,14 @@
                       <input
                         type="text"
                         name="vendorEmail"
-                        value="{{vendorEmail}}"
+                        value="{{invoice.vendorEmail}}"
                         pattern="[a-z0-9]*@[a-z0-9]*[\.].[a-z0-9]*"
                       />
                     </label>
 
                     <label>
                       Iban:
-                      <input type="text" name="iban" value="{{iban}}" />
+                      <input type="text" name="iban" value="{{invoice.iban}}" />
                     </label>
 
                     <label>
@@ -326,7 +327,7 @@
                       <input
                         type="text"
                         name="accountNumber"
-                        value="{{accountNumber}}"
+                        value="{{invoice.accountNumber}}"
                       />
                     </label>
                   </fieldset>
@@ -335,37 +336,37 @@
                     <legend>Prices</legend>
                     <label>
                       Net Price:
-                      <input type="text" name="netPrice" value="{{netPrice}}" />
+                      <input type="text" name="netPrice" value="{{invoice.netPrice}}" />
                     </label>
                     <label>
                       Gross Price:
                       <input
                         type="text"
                         name="grossPrice"
-                        value="{{grossPrice}}"
+                        value="{{invoice.grossPrice}}"
                       />
                     </label>
                     <label>
                       Currency:
-                      <input type="text" name="currency" value="{{currency}}" />
+                      <input type="text" name="currency" value="{{invoice.currency}}" />
                     </label>
                     <label>
                       Vat Amount:
                       <input
                         type="text"
                         name="vatAmount"
-                        value="{{vatAmount}}"
+                        value="{{invoice.vatAmount}}"
                       />
                     </label>
                     <label>
                       Vat Rate:
-                      <input type="text" name="vatRate" value="{{vatRate}}" />
+                      <input type="text" name="vatRate" value="{{invoice.vatRate}}" />
                     </label>
                   </fieldset>
 
                   <fieldset>
                     <legend>Services</legend>
-                    {{#services}}
+                    {{#invoice.services}}
                     <fieldset>
                       <legend>{{name}}</legend>
 
@@ -434,14 +435,14 @@
                         /></label>
                       </div>
                     </fieldset>
-                    {{/services}}
+                    {{/invoice.services}}
                   </fieldset>
 
                   <div class="edit-actions">
                     <button type="submit">Save</button>
                     <button
                       type="button"
-                      on="tap:{{invoiceId}}-item-edit.hide,{{invoiceId}}-item-view.show"
+                      on="tap:{{invoice.invoiceId}}-item-edit.hide,{{invoice.invoiceId}}-item-view.show"
                     >
                       Cancel
                     </button>
@@ -458,7 +459,7 @@
             on="submit-success:invoiceList.refresh"
           >
             {{#items}}
-            <input type="hidden" name="{{invoiceId}}" value="accept" hidden />
+            <input type="hidden" name="{{invoice.invoiceId}}" value="accept" hidden />
             {{/items}}
             <input type="submit" value="Accept all" />
           </form>
