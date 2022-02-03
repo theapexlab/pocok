@@ -54,9 +54,24 @@ type Vendor struct {
 	VendorEmail string `json:"vendorEmail" dynamodbav:"vendorEmail,omitempty"`
 }
 
+type ExtendedService struct {
+	Service
+	Index int `json:"index"`
+}
+
+type ExtendedInvoice struct {
+	Invoice
+	Services []ExtendedService `json:"services"`
+}
+
+type InvoiceResponseItem struct {
+	Invoice ExtendedInvoice `json:"invoice"`
+	Link    string          `json:"link"`
+}
+
 type InvoiceResponse struct {
-	Items []InvoiceWithServiceIndex `json:"items"`
-	Total int                       `json:"total"`
+	Items []InvoiceResponseItem `json:"items"`
+	Total int                   `json:"total"`
 }
 type ValidationErrorResponse struct {
 	Message string `json:"message"`
@@ -79,25 +94,10 @@ type EmailWebhookBody struct {
 	From        []*EmailFrom       `json:"from"`
 }
 
-type EmailResponseData struct {
-	Amp         string
-	Attachments map[string][]byte
-}
-
 type JWTCustomClaims struct {
 	OrgId string `json:"orgId"`
 }
 type JWTClaims struct {
 	jwt.StandardClaims
 	JWTCustomClaims
-}
-
-type ServiceWithIndex struct {
-	Service
-	Index int `json:"index"`
-}
-
-type InvoiceWithServiceIndex struct {
-	Invoice
-	Services []ServiceWithIndex `json:"services"`
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"os"
@@ -9,22 +10,28 @@ import (
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
+	"time"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
 type dependencies struct {
-	dbClient  *dynamodb.Client
-	tableName string
+	dbClient   *dynamodb.Client
+	tableName  string
+	bucketName string
+	s3Client   *s3.Client
 }
 
 func main() {
 
 	d := &dependencies{
-		tableName: os.Getenv("tableName"),
-		dbClient:  aws_clients.GetDbClient(),
+		tableName:  os.Getenv("tableName"),
+		dbClient:   aws_clients.GetDbClient(),
+		bucketName: os.Getenv("bucketName"),
+		s3Client:   aws_clients.GetS3Client(),
 	}
 
 	lambda.Start(d.handler)
@@ -43,14 +50,10 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 		return nil, getPendingInvoicesError
 	}
 
-	// For testing use:
-	// invoices := mocks.Invoices
-
-	indexedInvoices := utils.MapInvoiceToInvoiceServiceIndexes(invoices)
-
-	response := models.InvoiceResponse{
-		Items: indexedInvoices,
-		Total: len(indexedInvoices),
+	response, responseError := getInvoiceResponse(d, invoices)
+	if responseError != nil {
+		utils.LogError(responseError.Error(), responseError)
+		return nil, responseError
 	}
 
 	invoiceBytes, marshalError := json.Marshal(response)
@@ -61,4 +64,34 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 
 	invoiceStr := string(invoiceBytes)
 	return utils.MailApiResponse(http.StatusOK, invoiceStr), nil
+}
+
+func getInvoiceResponse(d *dependencies, invoices []models.Invoice) (*models.InvoiceResponse, error) {
+	psClient := s3.NewPresignClient(d.s3Client)
+
+	items := make([]models.InvoiceResponseItem, len(invoices))
+	for i, invoice := range invoices {
+		extendedInvoice := utils.ExtendInvoice(invoice)
+
+		input := &s3.GetObjectInput{
+			Bucket: &d.bucketName,
+			Key:    &invoice.Filename,
+		}
+		resp, presignError := psClient.PresignGetObject(context.TODO(), input, s3.WithPresignExpires(time.Hour))
+		if presignError != nil {
+			utils.LogError(presignError.Error(), presignError)
+			return nil, presignError
+		}
+
+		items[i] = models.InvoiceResponseItem{
+			Invoice: *extendedInvoice,
+			Link:    resp.URL,
+		}
+	}
+	response := models.InvoiceResponse{
+		Items: items,
+		Total: len(items),
+	}
+
+	return &response, nil
 }
