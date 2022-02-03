@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"os"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -45,7 +47,17 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	update, validationErr := db.CreateValidDataUpdate(data)
 	if validationErr != nil {
 		utils.LogError("Invalid update payload", validationErr)
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationErr.Error()), nil
+		response := models.ValidationErrorResponse{
+			Message: validationErr.Error(),
+		}
+		messageBytes, marshalError := json.Marshal(response)
+		if marshalError != nil {
+			utils.LogError("Error while parsing validation error response", marshalError)
+			return nil, marshalError
+		}
+
+		messageStr := string(messageBytes)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, messageStr), nil
 	}
 
 	updateErr := db.UpdateInvoiceData(d.dbClient, d.tableName, claims.OrgId, update)
@@ -53,15 +65,6 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
-
-	//  todo: send json response
-	// invoiceBytes, err := json.Marshal(response)
-	// if err != nil {
-	// 	utils.LogError("Error while parsing invoices from db", err)
-	// 	return nil, err
-	// }
-
-	// invoiceStr := string(invoiceBytes)
 
 	return utils.MailApiResponse(http.StatusOK, ""), nil
 

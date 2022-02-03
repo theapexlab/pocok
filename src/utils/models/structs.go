@@ -58,6 +58,9 @@ type InvoiceResponse struct {
 	Items []InvoiceWithServiceIndex `json:"items"`
 	Total int                       `json:"total"`
 }
+type ValidationErrorResponse struct {
+	Message string `json:"message"`
+}
 
 type EmailAttachment struct {
 	ContentType string `json:"contentType"`
