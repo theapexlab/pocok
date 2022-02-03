@@ -9,19 +9,19 @@ import (
 )
 
 var _ = Describe("Status update validation", func() {
-	var update db.StatusUpdate
-	var testError error
+	var update *db.StatusUpdate
+	var updateError error
 
-	When("the input is valid", func() {
+	When("status is accept and valid", func() {
 		BeforeEach(func() {
-			update, testError = db.CreateStatusUpdate(map[string]string{
+			update, updateError = db.CreateStatusUpdate(map[string]string{
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
 		})
 
 		It("does not error", func() {
-			Expect(testError).To(BeNil())
+			Expect(updateError).To(BeNil())
 		})
 
 		It("contains the data", func() {
@@ -30,41 +30,53 @@ var _ = Describe("Status update validation", func() {
 		})
 	})
 
-	When("the invoiceId is missing", func() {
+	When("id is missing", func() {
 		BeforeEach(func() {
-			_, testError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"status": models.ACCEPTED,
 			})
 		})
 
 		It("errors", func() {
-			Expect(testError).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
-	When("the status is missing", func() {
+	When("status is missing", func() {
 		BeforeEach(func() {
-			_, testError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"invoiceId": "asd",
 			})
 		})
 
 		It("errors", func() {
-			Expect(testError).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
-	When("the the status is invalid", func() {
+	When("status is pending", func() {
 		BeforeEach(func() {
-			_, testError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.CreateStatusUpdate(map[string]string{
 				"status":    models.PENDING,
 				"invoiceId": "ID1",
 			})
 		})
 
 		It("errors", func() {
-			Expect(testError).ToNot(BeNil())
+			Expect(updateError).ToNot(BeNil())
 		})
 	})
 
+	When("status is reject, but there is no filename", func() {
+		BeforeEach(func() {
+			_, updateError = db.CreateStatusUpdate(map[string]string{
+				"status":    models.REJECTED,
+				"invoiceId": "ID1",
+			})
+		})
+
+		It("errors", func() {
+			Expect(updateError).ToNot(BeNil())
+		})
+	})
 })

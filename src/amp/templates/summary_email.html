@@ -185,6 +185,11 @@
                         name="status"
                         value="[[.Rejected]]"
                       />
+                      <input
+                        type="hidden"
+                        name="filename"
+                        value="{{fileName}}"
+                      />
                       <button
                         type="button"
                         on="tap:{{invoiceId}}-reject-modal.show"
@@ -217,7 +222,7 @@
               </div>
 
               <div class="item-content">
-                <div>                  
+                <div>
                   <div>Invoice Number: {{invoiceNumber}}</div>
                   <div>Net Price: {{netPrice}} {{currency}}</div>
                   <div>Gross Price: {{grossPrice}} {{currency}}</div>
