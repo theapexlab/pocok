@@ -67,7 +67,6 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	return ""
 }
 
-//  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 	//  Gets highest price mentioned in texblocks
 	highestPrice := "0"
