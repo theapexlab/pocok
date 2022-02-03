@@ -56,27 +56,17 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
-		// todo: currently fails to guess if bank account parts are deliminated with " " instead of "-"
-		valueParts := strings.Split(block.Value, " ")
-		for _, v := range valueParts {
-			r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
-			match := r.FindString(v)
+		v := strings.TrimSpace(block.Value)
+		r := regexp.MustCompile(models.HUN_BANK_ACC)
+		match := r.FindString(v)
 
-			if match != "" {
-				return match
-			}
-			r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
-			match = r.FindString(v)
-
-			if match != "" {
-				return match
-			}
+		if match != "" {
+			return match
 		}
 	}
 	return ""
 }
 
-//  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 	//  Gets highest price mentioned in texblocks
 	highestPrice := "0"

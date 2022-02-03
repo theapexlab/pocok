@@ -15,17 +15,17 @@ var _ = Describe("Utils", func() {
 		}
 		var mapData map[string]string
 		var structData structType
-		var err error
+		var testError error
 
 		When("it takes correct params", func() {
 			BeforeEach(func() {
 				mapData = map[string]string{"a": "cica"}
 				structData = structType{}
-				err = utils.MapToStruct(mapData, &structData)
+				testError = utils.MapToStruct(mapData, &structData)
 			})
 
 			It("does not error", func() {
-				Expect(err).To(BeNil())
+				Expect(testError).To(BeNil())
 			})
 			It("the struct has the map data", func() {
 				Expect(structData.A).To(Equal("cica"))
@@ -112,10 +112,9 @@ var _ = Describe("Utils", func() {
 				mockBankAccNumbers := []string{
 					"12345678-12345678-12345678",
 					"12345678 12345678 12345678",
-					"123456781234567812345678",
+					"12345678 12345678-12345678",
 					"12345678-12345678",
 					"12345678 12345678",
-					"1234567812345678",
 				}
 				for i, accNr := range mockBankAccNumbers {
 					result, err := utils.GetValidAccountNumber(accNr)
