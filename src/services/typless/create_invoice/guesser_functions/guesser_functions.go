@@ -16,7 +16,7 @@ import (
 
 func cutPrefix(str string) string {
 	// Example: Payment due date: 2021.09.23.  =>  2021.09.23.
-	r, _ := regexp.Compile("^[A-Za-z ]*:")
+	r := regexp.MustCompile("^[A-Za-z ]*:")
 	match := r.FindString(str)
 	if match != "" {
 		strWithoutPrefix := strings.Replace(str, match, "", 1)
@@ -27,8 +27,8 @@ func cutPrefix(str string) string {
 
 func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextBlock) string {
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
-	bankAccountRegex, _ := regexp.Compile(`^[_\d\w-]{3,17}$`)
-	containsNumberRegex, _ := regexp.Compile(`[\d+]`)
+	bankAccountRegex := regexp.MustCompile(`^[_\d\w-]{3,17}$`)
+	containsNumberRegex := regexp.MustCompile(`[\d+]`)
 	for _, block := range *textBlocks {
 		v := block.Value
 		isMatching := bankAccountRegex.MatchString(v)
