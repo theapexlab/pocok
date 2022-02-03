@@ -15,6 +15,7 @@ import (
 type StatusUpdate struct {
 	InvoiceId string
 	Status    string
+	Filename  string
 }
 
 const TRANSACTION_LIMIT = 25 // 25 is the max number of items that can be updated in a single transaction
@@ -24,23 +25,26 @@ type VendorUpdate struct {
 	VendorEmail string
 }
 
-func CreateValidStatusUpdate(data map[string]string) (StatusUpdate, error) {
+func CreateStatusUpdate(data map[string]string) (*StatusUpdate, error) {
 	var update StatusUpdate
-	err := utils.MapToStruct(data, &update)
-	if err != nil {
-		return update, errors.New("invalid input")
+	mapError := utils.MapToStruct(data, &update)
+	if mapError != nil {
+		return nil, errors.New("invalid input")
 	}
 	if update.InvoiceId == "" {
-		return update, errors.New("invalid invoiceId")
+		return nil, errors.New("invalid invoiceId")
 	}
 	if update.Status != models.ACCEPTED && update.Status != models.REJECTED {
-		return update, errors.New("invalid status")
+		return nil, errors.New("invalid status")
 	}
-	return update, nil
+	if update.Status == models.REJECTED && update.Filename == "" {
+		return nil, errors.New("invalid update, filename must be present on reject")
+	}
+	return &update, nil
 }
 
 func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string, update StatusUpdate) error {
-	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
@@ -56,7 +60,7 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 			":v2": &types.AttributeValueMemberS{Value: models.STATUS + "#" + update.Status},
 		},
 	})
-	return err
+	return updateError
 }
 
 func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
@@ -108,16 +112,13 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	}
 
 	//  todo: add additional validation for fields below
-	//  vendorEmail => check if valid & update in db
+	//  vendorEmail => update vendor email if changed
 	//  invoiceNumber =>  invoiceNumber + vendorName must be unique
 
 	return update, nil
 }
 
 func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
-	// todo: check how does it look in db
-	// servicesJson, marshalErr := json.Marshal(update.Services)
-
 	serviceList, marshalErr := attributevalue.MarshalList(update.Services)
 	if marshalErr != nil {
 		utils.LogError("Cannot marshal invoice services", marshalErr)
@@ -190,26 +191,26 @@ func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId stri
 		})
 
 		if len(transactInput.TransactItems) == TRANSACTION_LIMIT {
-			_, err := client.TransactWriteItems(context.TODO(), &transactInput)
-			if err != nil {
-				utils.LogError("error while writing batches to db", err)
-				return err
+			_, transactionError := client.TransactWriteItems(context.TODO(), &transactInput)
+			if transactionError != nil {
+				utils.LogError("error while writing batches to db", transactionError)
+				return transactionError
 			}
 			transactInput.TransactItems = []types.TransactWriteItem{}
 		}
 	}
 
-	_, err := client.TransactWriteItems(context.TODO(), &transactInput)
-	if err != nil {
-		utils.LogError("error while writing batches to db", err)
-		return err
+	_, transactionError := client.TransactWriteItems(context.TODO(), &transactInput)
+	if transactionError != nil {
+		utils.LogError("error while writing batches to db", transactionError)
+		return transactionError
 	}
 
 	return nil
 }
 
 func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, update VendorUpdate) error {
-	_, err := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
@@ -227,5 +228,5 @@ func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, updat
 			":vendorEmail": &types.AttributeValueMemberS{Value: update.VendorEmail},
 		},
 	})
-	return err
+	return updateError
 }

@@ -39,14 +39,14 @@ func PutInvoice(client *dynamodb.Client, tableName string, invoiceData *models.I
 		InvoiceNumber:   invoiceData.InvoiceNumber,
 	}
 
-	item, itemErr := attributevalue.MarshalMap(invoice)
-	if itemErr != nil {
-		return nil, itemErr
+	item, itemError := attributevalue.MarshalMap(invoice)
+	if itemError != nil {
+		return nil, itemError
 	}
 
-	dbResp, dbErr := client.PutItem(context.TODO(), &dynamodb.PutItemInput{
+	dbResp, dbError := client.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: &tableName,
 		Item:      item,
 	})
-	return dbResp, dbErr
+	return dbResp, dbError
 }

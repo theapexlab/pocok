@@ -5,6 +5,7 @@ import (
 	"pocok/src/utils/currency"
 	"pocok/src/utils/models"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/araddon/dateparse"
@@ -13,14 +14,9 @@ import (
 )
 
 func GetValidAccountNumber(accNr string) (string, error) {
-	r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
-	match := r.FindString(accNr)
-
-	if match != "" {
-		return match, nil
-	}
-	r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
-	match = r.FindString(accNr)
+	v := strings.TrimSpace(accNr)
+	r := regexp.MustCompile(models.HUN_BANK_ACC)
+	match := r.FindString(v)
 
 	if match != "" {
 		return match, nil
@@ -30,11 +26,11 @@ func GetValidAccountNumber(accNr string) (string, error) {
 }
 
 func GetValidIban(accNr string) (string, error) {
-	validIban, err := iban.NewIBAN(accNr)
+	validIban, ibanError := iban.NewIBAN(accNr)
 	if validIban != nil {
 		return validIban.Code, nil
 	}
-	return "", err
+	return "", ibanError
 }
 
 func GetValidCurrency(currencyInput string) (string, error) {
@@ -46,18 +42,18 @@ func GetValidCurrency(currencyInput string) (string, error) {
 }
 
 func GetValidPrice(price string) (string, error) {
-	_, err := currency.ConvertPriceToFloat(price)
-	if err != nil {
-		return "", err
+	_, priceConvertError := currency.ConvertPriceToFloat(price)
+	if priceConvertError != nil {
+		return "", priceConvertError
 	}
 	return price, nil
 }
 
 func GetValidDueDate(dueDate string) (string, error) {
 	currentTime := time.Now()
-	date, err := dateparse.ParseAny(dueDate)
+	date, dateParseError := dateparse.ParseAny(dueDate)
 
-	if err == nil && date.After(currentTime) {
+	if dateParseError == nil && date.After(currentTime) {
 		return dueDate, nil
 	}
 	return "", errors.New("invalid date")

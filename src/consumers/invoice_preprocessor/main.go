@@ -45,15 +45,15 @@ func main() {
 
 func (d *dependencies) handler(event events.SQSEvent) error {
 	for _, record := range event.Records {
-		uploadInvoiceMessage, err := parseBody(record.Body)
-		if err != nil {
+		uploadInvoiceMessage, parseError := parseBody(record.Body)
+		if parseError != nil {
 			continue
 		}
 
-		uploadPDFErr := uploadPDF(d, uploadInvoiceMessage)
+		uploadPDFError := uploadPDF(d, uploadInvoiceMessage)
 		// if the original file doesn't exists, no need to retry the message
-		if uploadPDFErr != nil && uploadPDFErr != grab.StatusCodeError(403) {
-			return uploadPDFErr
+		if uploadPDFError != nil && uploadPDFError != grab.StatusCodeError(403) {
+			return uploadPDFError
 		}
 	}
 
@@ -63,8 +63,8 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 func parseBody(body string) (*models.UploadInvoiceMessage, error) {
 	var jsonBody *models.UploadInvoiceMessage
 
-	if err := json.Unmarshal([]byte(body), &jsonBody); err != nil {
-		return nil, err
+	if unmarshalError := json.Unmarshal([]byte(body), &jsonBody); unmarshalError != nil {
+		return nil, unmarshalError
 	}
 
 	return jsonBody, nil
@@ -72,25 +72,25 @@ func parseBody(body string) (*models.UploadInvoiceMessage, error) {
 
 func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessage) error {
 	var data []byte
-	var err error
+	var upoloadError error
 
 	switch uploadInvoiceMessage.Type {
 	case "url":
-		data, err = downloadFile(uploadInvoiceMessage.Body)
+		data, upoloadError = downloadFile(uploadInvoiceMessage.Body)
 	case "base64":
-		data, err = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
+		data, upoloadError = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
 	default:
-		err = errors.New("invalid uploadInvoiceMessage type: " + uploadInvoiceMessage.Type)
+		upoloadError = errors.New("invalid uploadInvoiceMessage type: " + uploadInvoiceMessage.Type)
 	}
 
-	if err != nil {
-		utils.LogError("", err)
-		return err
+	if upoloadError != nil {
+		utils.LogError("", upoloadError)
+		return upoloadError
 	}
 
 	filename := ksuid.New().String() + ".pdf"
 
-	_, s3Err := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
+	_, s3UploadError := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket:      &d.bucketName,
 		Key:         &filename,
 		Body:        bytes.NewReader(data),
@@ -100,28 +100,28 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		},
 	})
 
-	if s3Err != nil {
-		utils.LogError("Error while uploading to s3", s3Err)
-		return s3Err
+	if s3UploadError != nil {
+		utils.LogError("Error while uploading to s3", s3UploadError)
+		return s3UploadError
 	}
 
-	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: aws.String(filename),
 		QueueUrl:    &d.processInvoiceQueueUrl,
 	})
 
-	if sqsErr != nil {
-		utils.LogError("Error while sending message to ProcessInvoice queue", sqsErr)
+	if sqsError != nil {
+		utils.LogError("Error while sending message to ProcessInvoice queue", sqsError)
 
-		_, s3Err := d.s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+		_, s3Error := d.s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 			Bucket: &d.bucketName,
 			Key:    &filename,
 		})
-		if s3Err != nil {
-			utils.LogError("Error while deleting file from s3", s3Err)
+		if s3Error != nil {
+			utils.LogError("Error while deleting file from s3", s3Error)
 		}
 
-		return sqsErr
+		return sqsError
 	}
 
 	return nil
@@ -129,15 +129,15 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 
 func downloadFile(url string) ([]byte, error) {
 	client := grab.NewClient()
-	req, err := grab.NewRequest(".", url)
-	if err != nil {
-		return []byte(nil), err
+	req, requestError := grab.NewRequest(".", url)
+	if requestError != nil {
+		return []byte(nil), requestError
 	}
 
 	// store file in memory
 	req.NoStore = true
 	resp := client.Do(req)
-	data, err := resp.Bytes()
+	data, responseError := resp.Bytes()
 
-	return data, err
+	return data, responseError
 }

@@ -2,7 +2,6 @@ package utils_test
 
 import (
 	"fmt"
-	"pocok/src/mocks"
 	"pocok/src/utils"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -16,37 +15,22 @@ var _ = Describe("Utils", func() {
 		}
 		var mapData map[string]string
 		var structData structType
-		var err error
+		var testError error
 
 		When("it takes correct params", func() {
 			BeforeEach(func() {
 				mapData = map[string]string{"a": "cica"}
 				structData = structType{}
-				err = utils.MapToStruct(mapData, &structData)
+				testError = utils.MapToStruct(mapData, &structData)
 			})
 
 			It("does not error", func() {
-				Expect(err).To(BeNil())
+				Expect(testError).To(BeNil())
 			})
 			It("the struct has the map data", func() {
 				Expect(structData.A).To(Equal("cica"))
 			})
 
-		})
-	})
-
-	Describe("MapInvoiceToInvoiceServiceIndexes", func() {
-		When("it receives  an invoice list as param", func() {
-			It("returns same invoice values with indexed services", func() {
-				invoices := mocks.Invoices
-				indexedInvoices := utils.MapInvoiceToInvoiceServiceIndexes(invoices)
-				Expect(len(indexedInvoices)).To(Equal(len(invoices)))
-				for _, invoice := range indexedInvoices {
-					for i, service := range invoice.Services {
-						Expect(service.Index).To(Equal(i))
-					}
-				}
-			})
 		})
 	})
 
@@ -128,10 +112,9 @@ var _ = Describe("Utils", func() {
 				mockBankAccNumbers := []string{
 					"12345678-12345678-12345678",
 					"12345678 12345678 12345678",
-					"123456781234567812345678",
+					"12345678 12345678-12345678",
 					"12345678-12345678",
 					"12345678 12345678",
-					"1234567812345678",
 				}
 				for i, accNr := range mockBankAccNumbers {
 					result, err := utils.GetValidAccountNumber(accNr)
@@ -168,7 +151,6 @@ var _ = Describe("Utils", func() {
 					ibanCode, err := utils.GetValidIban(iban)
 					Expect(err).To(BeNil())
 					Expect(ibanCode).To(Equal(validIbans[i]))
-					// Expect(err).To(MatchError("invalid account number"))
 				}
 			})
 		})

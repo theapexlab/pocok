@@ -7,7 +7,6 @@ import (
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
@@ -18,14 +17,14 @@ type dependencies struct {
 	sqsClient *sqs.Client
 }
 
-func (d *dependencies) handler(event events.CloudWatchEvent) error {
-	_, sqsErr := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+func (d *dependencies) handler() error {
+	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: aws.String(models.EMAIL_SUMMARY),
 		QueueUrl:    &d.queueUrl,
 	})
-	if sqsErr != nil {
-		utils.LogError("Error while sending message to SQS", sqsErr)
-		return sqsErr
+	if sqsError != nil {
+		utils.LogError("Error while sending message to SQS", sqsError)
+		return sqsError
 	}
 	return nil
 }

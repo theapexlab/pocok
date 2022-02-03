@@ -40,7 +40,7 @@ func MapInvoiceToInvoiceServiceIndexes(invoices []models.Invoice) []models.Invoi
 
 func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
 	var invoice models.Invoice
-	err := MapToStruct(data, &invoice)
+	mapToStructError := MapToStruct(data, &invoice)
 
 	index := 0
 	for {
@@ -58,14 +58,14 @@ func MapUpdateDataToInvoice(data map[string]string) (models.Invoice, error) {
 		if !found {
 			break
 		}
-		err := MapToStruct(serviceMap, &service)
-		if err != nil {
-			LogError("error while parsing service", err)
+		mapToStructError := MapToStruct(serviceMap, &service)
+		if mapToStructError != nil {
+			LogError("error while parsing service", mapToStructError)
 		}
 		invoice.Services = append(invoice.Services, service)
 		index++
 	}
 
-	return invoice, err
+	return invoice, mapToStructError
 
 }

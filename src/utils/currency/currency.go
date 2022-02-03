@@ -11,7 +11,7 @@ func GetValueFromPrice(price string) string {
 	r := regexp.MustCompile(`[^0-9,\.]*([0-9,\.]*)[^0-9,\.\n]*`)
 	priceWithoutSpaces := strings.ReplaceAll(price, " ", "")
 	firstMatch := r.FindStringSubmatch(priceWithoutSpaces)[1]
-	if num, err := strconv.ParseFloat(strings.ReplaceAll(firstMatch, ",", ""), 32); err == nil && num > 0 {
+	if _, err := ConvertPriceToFloat(firstMatch); err == nil {
 		return firstMatch
 	}
 	return ""

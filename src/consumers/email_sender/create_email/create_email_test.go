@@ -11,10 +11,10 @@ var _ = Describe("CreateEmail", func() {
 	When("it gets the html summary", func() {
 		testUrl := "test_api_url"
 		testLogoUrl := "https://github.com/theapexlab/pocok/raw/master/assets/pocok-logo.png"
-		emailContent, err := GetHtmlSummary(testUrl, testLogoUrl)
+		emailContent, getHtmlError := GetHtmlSummary(testUrl, testLogoUrl)
 
 		It("returns nil for error", func() {
-			Expect(err).To(BeNil())
+			Expect(getHtmlError).To(BeNil())
 		})
 
 		It("returns string containing api url", func() {

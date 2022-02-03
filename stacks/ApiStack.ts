@@ -98,19 +98,35 @@ export class ApiStack extends Stack {
           function: {
             handler: "src/api/invoices/accept_all_invoices/main.go",
             environment: {
-              jwtKey: process.env.JWT_KEY as string,
+              ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
             ],
-          }
-        }
+          },
+        },
+        "POST /api/demo/invoice_summary": {
+          function: {
+            handler: "src/api/demo_cron/main.go",
+            environment: {
+              demoToken: process.env.DEMO_TOKEN as string,
+              queueUrl: additionalStackProps?.queueStack.emailSenderQueue
+                .sqsQueue.queueUrl as string,
+            },
+            permissions: [
+              additionalStackProps?.queueStack.emailSenderQueue as Queue,
+            ],
+          },
+        },
       },
-      cors: process.env.NODE_ENV === "development" ? {
-        allowOrigins: ["https://playground.amp.dev"],
-      } : undefined
+      cors:
+        process.env.NODE_ENV === "development"
+          ? {
+              allowOrigins: ["https://playground.amp.dev"],
+            }
+          : undefined,
     });
 
     this.addOutputs({

@@ -4,6 +4,7 @@ on: pull_request
 
 jobs:
   go_build_and_test:
+    name: Build and test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,6 +21,7 @@ jobs:
       run: go test -v ./src/...
 
   amp_validate:
+    name: Validate AMP
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -34,3 +36,14 @@ jobs:
     
     - name: Validate
       run: yarn amp-validate
+
+  golangci:
+    name: Lint GO
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest

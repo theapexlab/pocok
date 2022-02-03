@@ -13,12 +13,12 @@ func GetAmazonS3Url(bucketName string, region string, key string) string {
 }
 
 func GetAssetUrl(client s3.Client, assetBucketName string, key string) (string, error) {
-	region, err := client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
+	region, getBucketLocationError := client.GetBucketLocation(context.TODO(), &s3.GetBucketLocationInput{
 		Bucket: aws.String(assetBucketName),
 	})
-	if err != nil {
-		utils.LogError("Can't find bucket region", err)
-		return "", err
+	if getBucketLocationError != nil {
+		utils.LogError("Can't find bucket region", getBucketLocationError)
+		return "", getBucketLocationError
 	}
 
 	pocokUrl := GetAmazonS3Url(assetBucketName, string(region.LocationConstraint), key)

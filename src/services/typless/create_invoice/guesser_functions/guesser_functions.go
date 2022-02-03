@@ -16,7 +16,7 @@ import (
 
 func cutPrefix(str string) string {
 	// Example: Payment due date: 2021.09.23.  =>  2021.09.23.
-	r, _ := regexp.Compile("^[A-Za-z ]*:")
+	r := regexp.MustCompile("^[A-Za-z ]*:")
 	match := r.FindString(str)
 	if match != "" {
 		strWithoutPrefix := strings.Replace(str, match, "", 1)
@@ -27,10 +27,12 @@ func cutPrefix(str string) string {
 
 func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextBlock) string {
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
+	bankAccountRegex := regexp.MustCompile(`^[_\d\w-]{3,17}$`)
+	containsNumberRegex := regexp.MustCompile(`[\d+]`)
 	for _, block := range *textBlocks {
 		v := block.Value
-		isMatching, _ := regexp.MatchString(`^[_\d\w-]{3,17}$`, v)
-		containsNumber, _ := regexp.MatchString(`[\d+]`, v)
+		isMatching := bankAccountRegex.MatchString(v)
+		containsNumber := containsNumberRegex.MatchString(v)
 		if strings.Contains(filename, v) &&
 			containsNumber &&
 			isMatching {
@@ -54,21 +56,12 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
-		// todo: currently fails to guess if bank account parts are deliminated with " " instead of "-"
-		valueParts := strings.Split(block.Value, " ")
-		for _, v := range valueParts {
-			r, _ := regexp.Compile(models.HUN_BANK_ACC_THREE_PART)
-			match := r.FindString(v)
+		v := strings.TrimSpace(block.Value)
+		r := regexp.MustCompile(models.HUN_BANK_ACC)
+		match := r.FindString(v)
 
-			if match != "" {
-				return match
-			}
-			r, _ = regexp.Compile(models.HUN_BANK_ACC_TWO_PART)
-			match = r.FindString(v)
-
-			if match != "" {
-				return match
-			}
+		if match != "" {
+			return match
 		}
 	}
 	return ""
@@ -77,7 +70,7 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 //  todo: unit test this
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 	//  Gets highest price mentioned in texblocks
-	highestPrice := ""
+	highestPrice := "0"
 	for _, block := range *textBlocks {
 		v := block.Value
 		if currency.GetCurrencyFromString(v) == "" {
@@ -86,10 +79,10 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, err := currency.ConvertPriceToFloat(highestPrice)
-		priceInt, err := currency.ConvertPriceToFloat(price)
+		highestPriceInt, _ := currency.ConvertPriceToFloat(highestPrice)
+		priceInt, convertPriceError := currency.ConvertPriceToFloat(price)
 
-		if err != nil {
+		if convertPriceError != nil {
 			continue
 		}
 
@@ -154,14 +147,12 @@ func GuessDueDate(textBlocks *[]typless.TextBlock) string {
 		v := cutPrefix(block.Value)
 		v = strings.ReplaceAll(v, " ", "")
 		for i, month := range months {
-			if strings.Contains(v, month) {
-				v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
-			}
+			v = strings.Replace(v, month, strconv.Itoa(i+1), 1)
 		}
 		v = strings.TrimRight(v, ".") // trailing "." makes dateparsing fail
 
-		date, err := dateparse.ParseAny(v)
-		if err != nil {
+		date, parseError := dateparse.ParseAny(v)
+		if parseError != nil {
 			continue
 		}
 
