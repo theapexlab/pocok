@@ -39,7 +39,6 @@ func main() {
 	lambda.Start(d.handler)
 }
 
-// TODO? hidden _method param for delete & update requests
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
@@ -54,14 +53,14 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	update, validationError := db.CreateStatusUpdate(data)
+	statusUpdate, validationError := db.GetValidStatusUpdate(data)
 	if validationError != nil {
 		utils.LogError("Invalid while validating update", validationError)
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), nil
 	}
 
-	if update.Status == models.REJECTED {
-		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
+	if statusUpdate.Status == models.REJECTED {
+		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, statusUpdate.InvoiceId, statusUpdate.Filename)
 		if deleteError != nil {
 			utils.LogError("Error while removing invoice", deleteError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
@@ -69,13 +68,13 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
-	if update.Status == models.ACCEPTED {
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *update)
+	if statusUpdate.Status == models.ACCEPTED {
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *statusUpdate)
 		if updateError != nil {
 			utils.LogError("Error while updating invoice", updateError)
 			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 		}
-		feedbackError := updateFeedback(d, claims.OrgId, update.InvoiceId)
+		feedbackError := updateFeedback(d, claims.OrgId, statusUpdate.InvoiceId)
 		if feedbackError != nil {
 			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}

@@ -49,14 +49,10 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 		return nil, getPendingInvoicesError
 	}
 
-	invoicesWithLinks, presignError := getInvoicesWithLinks(d, invoices)
-	if presignError != nil {
-		utils.LogError(presignError.Error(), presignError)
-		return nil, presignError
-	}
-	response := models.InvoiceResponse{
-		Items: invoicesWithLinks,
-		Total: len(invoices),
+	response, responseError := d.getInvoiceResponse(invoices)
+	if responseError != nil {
+		utils.LogError(responseError.Error(), responseError)
+		return nil, responseError
 	}
 
 	invoiceBytes, marshalError := json.Marshal(response)
@@ -69,10 +65,13 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	return utils.MailApiResponse(http.StatusOK, invoiceStr), nil
 }
 
-func getInvoicesWithLinks(d *dependencies, invoices []models.Invoice) ([]models.InvoiceWithLink, error) {
-	invoicesWithLinks := make([]models.InvoiceWithLink, len(invoices))
+func (d *dependencies) getInvoiceResponse(invoices []models.Invoice) (*models.InvoiceResponse, error) {
 	psClient := s3.NewPresignClient(d.s3Client)
+
+	items := make([]models.InvoiceResponseItem, len(invoices))
 	for i, invoice := range invoices {
+		extendedInvoice := utils.ExtendInvoice(invoice)
+
 		input := &s3.GetObjectInput{
 			Bucket: &d.bucketName,
 			Key:    &invoice.Filename,
@@ -83,10 +82,15 @@ func getInvoicesWithLinks(d *dependencies, invoices []models.Invoice) ([]models.
 			return nil, presignError
 		}
 
-		invoicesWithLinks[i] = models.InvoiceWithLink{
-			Invoice: invoice,
+		items[i] = models.InvoiceResponseItem{
+			Invoice: *extendedInvoice,
 			Link:    resp.URL,
 		}
 	}
-	return invoicesWithLinks, nil
+	response := models.InvoiceResponse{
+		Items: items,
+		Total: len(items),
+	}
+
+	return &response, nil
 }

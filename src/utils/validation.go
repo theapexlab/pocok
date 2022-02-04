@@ -6,7 +6,6 @@ import (
 	"pocok/src/utils/models"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/araddon/dateparse"
 
@@ -15,18 +14,21 @@ import (
 
 func GetValidAccountNumber(accNr string) (string, error) {
 	v := strings.TrimSpace(accNr)
-	r := regexp.MustCompile(models.HUN_BANK_ACC)
+	r := regexp.MustCompile(models.VALIDATE_HUN_BANK_ACC)
 	match := r.FindString(v)
 
 	if match != "" {
-		return match, nil
+		reg := regexp.MustCompile("[^0-9]+")
+		accNrWithOnlyNumbers := reg.ReplaceAllString(match, "")
+		return accNrWithOnlyNumbers, nil
 	}
 
 	return "", errors.New("invalid account number")
 }
 
 func GetValidIban(accNr string) (string, error) {
-	validIban, ibanError := iban.NewIBAN(accNr)
+	formattedAccNr := strings.ReplaceAll(accNr, "-", "")
+	validIban, ibanError := iban.NewIBAN(formattedAccNr)
 	if validIban != nil {
 		return validIban.Code, nil
 	}
@@ -50,11 +52,9 @@ func GetValidPrice(price string) (string, error) {
 }
 
 func GetValidDueDate(dueDate string) (string, error) {
-	currentTime := time.Now()
-	date, dateParseError := dateparse.ParseAny(dueDate)
-
-	if dateParseError == nil && date.After(currentTime) {
-		return dueDate, nil
+	_, dateParseError := dateparse.ParseAny(dueDate)
+	if dateParseError != nil {
+		return "", errors.New("invalid date")
 	}
-	return "", errors.New("invalid date")
+	return dueDate, nil
 }

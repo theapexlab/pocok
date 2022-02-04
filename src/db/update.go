@@ -7,6 +7,7 @@ import (
 	"pocok/src/utils/models"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
@@ -16,9 +17,6 @@ type StatusUpdate struct {
 	Status    string
 	Filename  string
 }
-type GenericUpdate struct {
-	InvoiceId string
-}
 
 const TRANSACTION_LIMIT = 25 // 25 is the max number of items that can be updated in a single transaction
 
@@ -27,7 +25,7 @@ type VendorUpdate struct {
 	VendorEmail string
 }
 
-func CreateStatusUpdate(data map[string]string) (*StatusUpdate, error) {
+func GetValidStatusUpdate(data map[string]string) (*StatusUpdate, error) {
 	var update StatusUpdate
 	mapError := utils.MapToStruct(data, &update)
 	if mapError != nil {
@@ -65,8 +63,103 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 	return updateError
 }
 
-func UpdateInvoice(client *dynamodb.Client, tableName string, update GenericUpdate) error {
-	return nil
+func GetValidDataUpdate(data map[string]string) (models.Invoice, error) {
+	update, updateError := utils.MapUpdateDataToInvoice(data)
+
+	if updateError != nil {
+		return update, errors.New("invalid input")
+	}
+
+	if update.InvoiceId == "" {
+		return update, errors.New("invalid invoiceId")
+	}
+
+	if update.VendorName == "" {
+		return update, errors.New("invalid vendor name")
+	}
+
+	if update.AccountNumber == "" && update.Iban == "" {
+		return update, errors.New("iban or account number must be provided")
+	}
+
+	if update.Iban != "" {
+		_, ibanError := utils.GetValidIban(update.Iban)
+		if ibanError != nil {
+			return update, ibanError
+		}
+	}
+
+	if update.AccountNumber != "" {
+		validAccountNumber, accountNumberError := utils.GetValidAccountNumber(update.AccountNumber)
+		if accountNumberError != nil {
+			return update, accountNumberError
+		}
+		update.AccountNumber = validAccountNumber
+	}
+
+	_, priceError := utils.GetValidPrice(update.GrossPrice)
+	if priceError != nil {
+		return update, errors.New("invalid gross price")
+	}
+
+	_, dateError := utils.GetValidDueDate(update.DueDate)
+	if dateError != nil {
+		return update, errors.New("invalid due date")
+	}
+
+	_, currError := utils.GetValidCurrency(update.Currency)
+	if currError != nil {
+		return update, currError
+	}
+
+	return update, nil
+}
+
+func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, update models.Invoice) error {
+	serviceList, marshalError := attributevalue.MarshalList(update.Services)
+	if marshalError != nil {
+		utils.LogError("Cannot marshal invoice services", marshalError)
+		return marshalError
+	}
+
+	_, updateError := client.UpdateItem(context.TODO(), &dynamodb.UpdateItemInput{
+		TableName: &tableName,
+		Key: map[string]types.AttributeValue{
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
+			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + update.InvoiceId},
+		},
+		UpdateExpression: aws.String(`set #k1 = :v1, #k2 = :v2, #k3 = :v3, #k4 = :v4, #k5 = :v5,
+		 #k6 = :v6, #k7 = :v7, #k8 = :v8, #k9 = :v9, #k10 = :v10, #k11 = :v11, #k12 = :v12`),
+		ExpressionAttributeNames: map[string]string{
+			"#k1":  "vendorName",
+			"#k2":  "accountNumber",
+			"#k3":  "iban",
+			"#k4":  "netPrice",
+			"#k5":  "grossPrice",
+			"#k6":  "vatAmount",
+			"#k7":  "vatRate",
+			"#k8":  "currency",
+			"#k9":  "dueDate",
+			"#k10": "services",
+			"#k11": "vendorEmail",
+			"#k12": "invoiceNumber",
+		},
+		ExpressionAttributeValues: map[string]types.AttributeValue{
+			":v1":  &types.AttributeValueMemberS{Value: update.VendorName},
+			":v2":  &types.AttributeValueMemberS{Value: update.AccountNumber},
+			":v3":  &types.AttributeValueMemberS{Value: update.Iban},
+			":v4":  &types.AttributeValueMemberS{Value: update.NetPrice},
+			":v5":  &types.AttributeValueMemberS{Value: update.GrossPrice},
+			":v6":  &types.AttributeValueMemberS{Value: update.VatAmount},
+			":v7":  &types.AttributeValueMemberS{Value: update.VatRate},
+			":v8":  &types.AttributeValueMemberS{Value: update.Currency},
+			":v9":  &types.AttributeValueMemberS{Value: update.DueDate},
+			":v10": &types.AttributeValueMemberL{Value: serviceList},
+			":v11": &types.AttributeValueMemberS{Value: update.VendorEmail},
+			":v12": &types.AttributeValueMemberS{Value: update.InvoiceNumber},
+		},
+	})
+	return updateError
 }
 
 func UpdateInvoiceStatuses(client *dynamodb.Client, tableName string, orgId string, invoiceIds []string, status string) error {

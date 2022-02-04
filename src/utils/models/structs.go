@@ -54,14 +54,27 @@ type Vendor struct {
 	VendorEmail string `json:"vendorEmail" dynamodbav:"vendorEmail,omitempty"`
 }
 
-type InvoiceWithLink struct {
-	Invoice Invoice `json:"invoice"`
-	Link    string  `json:"link"`
+type ExtendedService struct {
+	Service
+	Index int `json:"index"`
+}
+
+type ExtendedInvoice struct {
+	Invoice
+	Services []ExtendedService `json:"services"`
+}
+
+type InvoiceResponseItem struct {
+	Invoice ExtendedInvoice `json:"invoice"`
+	Link    string          `json:"link"`
 }
 
 type InvoiceResponse struct {
-	Items []InvoiceWithLink `json:"items"`
-	Total int               `json:"total"`
+	Items []InvoiceResponseItem `json:"items"`
+	Total int                   `json:"total"`
+}
+type ValidationErrorResponse struct {
+	Message string `json:"message"`
 }
 
 type EmailAttachment struct {
