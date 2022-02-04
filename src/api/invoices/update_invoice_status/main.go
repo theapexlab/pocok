@@ -39,7 +39,6 @@ func main() {
 	lambda.Start(d.handler)
 }
 
-// todo: idea: hidden _method param for delete & update requests
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)

@@ -111,10 +111,6 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 		return update, currError
 	}
 
-	//  todo: add additional validation for fields below
-	//  vendorEmail => update vendor email if changed
-	//  invoiceNumber =>  invoiceNumber + vendorName must be unique
-
 	return update, nil
 }
 

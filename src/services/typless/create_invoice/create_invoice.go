@@ -41,7 +41,6 @@ LineItemsLoop:
 }
 
 func (c *CreateInvoiceService) setFieldValue(reflectValue reflect.Value, fieldMap map[string]string, field typless.ExtractedField) {
-	// todo: maybe add validation to typless currency + iban + accountNumber?
 	fieldName := fieldMap[field.Name]
 	if fieldName == "" {
 		return

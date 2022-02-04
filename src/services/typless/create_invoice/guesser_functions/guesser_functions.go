@@ -100,7 +100,6 @@ func GuessVendorName(textBlocks *[]typless.TextBlock) string {
 		if !containsSpace || containsInvoiceIndicator(v) {
 			continue
 		}
-		// todo: match for names with known pre- and suffixes eg.: dr. Test Zoltán ev.
 		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰüÜ-]*)*$")
 		match := r.FindString(v)
 		if match != "" {
