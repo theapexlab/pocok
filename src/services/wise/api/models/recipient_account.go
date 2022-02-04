@@ -55,12 +55,12 @@ type RecipientAccountList struct {
 }
 
 type RecipientAccountV1 struct {
-	ID                int                       `json:"id"`
-	Profile           int                       `json:"profile"`
-	AccountHolderName string                    `json:"accountHolderName"`
-	Currency          string                    `json:"currency"`
-	Type              string                    `json:"type"` // iban, hungarian; examples: https://api-docs.wise.com/#recipient-accounts-create
-	Details           RecipientAccountV1Details `json:"details"`
+	ID                int                       `json:"id,omitempty"`
+	Profile           int                       `json:"profile,omitempty"`
+	AccountHolderName string                    `json:"accountHolderName,omitempty"`
+	Currency          string                    `json:"currency,omitempty"`
+	Type              string                    `json:"type,omitempty"` // iban, hungarian; examples: https://api-docs.wise.com/#recipient-accounts-create
+	Details           RecipientAccountV1Details `json:"details,omitempty"`
 }
 
 type RecipientAccountV1Details struct {

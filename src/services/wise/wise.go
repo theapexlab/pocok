@@ -50,7 +50,7 @@ func (s *WiseService) GetBusinessProfile() (*models.Profile, error) {
 	return businessProfile, nil
 }
 
-func (s *WiseService) UpsertRecipient(invoice *base_models.Invoice) (*models.RecipientAccount, error) {
+func (s *WiseService) UpsertRecipient(profileId int, invoice *base_models.Invoice) (*models.RecipientAccount, error) {
 	recipients, getRecipientErr := s.WiseApi.GetRecipientAccounts()
 	if getRecipientErr != nil {
 		return nil, getRecipientErr
@@ -58,7 +58,7 @@ func (s *WiseService) UpsertRecipient(invoice *base_models.Invoice) (*models.Rec
 
 	recipient := api.FindRecipient(*recipients, func(a models.RecipientAccount) bool { return a.Name.FullName == invoice.VendorName })
 	if recipient == nil {
-		recipientInput := mapInvoiceToRecipient(invoice)
+		recipientInput := mapInvoiceToRecipient(profileId, invoice)
 
 		newRecipient, createRecipientErr := s.WiseApi.CreateRecipientAccount(*recipientInput)
 		if createRecipientErr != nil {
@@ -77,8 +77,9 @@ func (s *WiseService) UpsertRecipient(invoice *base_models.Invoice) (*models.Rec
 	return recipient, nil
 }
 
-func mapInvoiceToRecipient(invoice *base_models.Invoice) *models.RecipientAccountV1 {
+func mapInvoiceToRecipient(profileId int, invoice *base_models.Invoice) *models.RecipientAccountV1 {
 	return &models.RecipientAccountV1{
+		Profile:           profileId,
 		AccountHolderName: invoice.VendorName,
 		Currency:          invoice.Currency,
 		Type:              "hungarian",

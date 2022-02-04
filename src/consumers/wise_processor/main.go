@@ -103,7 +103,7 @@ func (d *dependencies) step1GetProfileId(step1Data wise.WiseMessageData) (*wise.
 }
 
 func (d *dependencies) step2UpsertRecipientAccount(step2Data wise.WiseMessageData) (*wise.WiseMessageData, error) {
-	recipient, upsertRecipientAccountError := d.wiseService.UpsertRecipient(&step2Data.Invoice)
+	recipient, upsertRecipientAccountError := d.wiseService.UpsertRecipient(step2Data.ProfileId, &step2Data.Invoice)
 	if upsertRecipientAccountError != nil {
 		utils.LogError("step2UpsertRecipientAccount - UpsertRecipient", upsertRecipientAccountError)
 		return nil, upsertRecipientAccountError
