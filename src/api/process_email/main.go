@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 	"pocok/src/api/process_email/parse_email"
@@ -20,22 +21,36 @@ type dependencies struct {
 }
 
 func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-	invoiceMessage, emailParseError := parse_email.ParseEmail(request.Body)
+	invoiceMessages, emailParseError := parse_email.ParseEmail(request.Body)
 	if emailParseError != nil {
-		utils.LogError("Error while parsing email", emailParseError)
+		utils.LogError("error while parsing email", emailParseError)
 		return utils.ApiResponse(http.StatusInternalServerError, ""), emailParseError
 	}
 
-	invoiceMessageByteArr, _ := json.Marshal(invoiceMessage)
-	invoiceMessageString := string(invoiceMessageByteArr)
+	invoiceErrors := ""
+	for _, invoiceMessage := range invoiceMessages {
+		invoiceMessageByteArr, jsonError := json.Marshal(invoiceMessage)
+		if jsonError != nil {
+			utils.LogError("error while parsing json", jsonError)
+			invoiceErrors += jsonError.Error()
+			continue
+		}
+		invoiceMessageString := string(invoiceMessageByteArr)
 
-	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-		MessageBody: &invoiceMessageString,
-		QueueUrl:    &d.queueUrl,
-	})
-	if sqsError != nil {
-		utils.LogError("Error while sending message to SQS", emailParseError)
-		return utils.ApiResponse(http.StatusInternalServerError, ""), sqsError
+		_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+			MessageBody: &invoiceMessageString,
+			QueueUrl:    &d.queueUrl,
+		})
+		if sqsError != nil {
+			utils.LogError("error while sending message to SQS", sqsError)
+			invoiceErrors += sqsError.Error()
+		}
+	}
+
+	if len(invoiceErrors) != 0 {
+		requestError := errors.New(invoiceErrors)
+		utils.LogError("error while handling request", requestError)
+		return utils.ApiResponse(http.StatusInternalServerError, ""), requestError
 	}
 
 	return utils.ApiResponse(http.StatusOK, ""), nil

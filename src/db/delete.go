@@ -11,10 +11,10 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 )
 
-func DeleteInvoice(dbClient *dynamodb.Client, tableName string, s3Client s3.Client, bucketName string, orgId string, invoiceId string) error {
+func DeleteInvoice(dbClient *dynamodb.Client, tableName string, s3Client s3.Client, bucketName string, orgId string, invoiceId string, filename string) error {
 	_, s3Error := s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
 		Bucket: &bucketName,
-		Key:    &invoiceId,
+		Key:    &filename,
 	})
 	if s3Error != nil {
 		utils.LogError("Error while removing object from s3 bucket", s3Error)

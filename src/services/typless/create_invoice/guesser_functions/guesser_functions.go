@@ -2,20 +2,21 @@ package guesser_functions
 
 import (
 	"pocok/src/services/typless"
+	"pocok/src/utils"
 	"pocok/src/utils/currency"
+	"pocok/src/utils/models"
 	"regexp"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/almerlucke/go-iban/iban"
 	"github.com/araddon/dateparse"
 )
 
 func cutPrefix(str string) string {
 	// Example: Payment due date: 2021.09.23.  =>  2021.09.23.
-	r, _ := regexp.Compile("^[A-Za-z ]*:")
+	r := regexp.MustCompile("^[A-Za-z ]*:")
 	match := r.FindString(str)
 	if match != "" {
 		strWithoutPrefix := strings.Replace(str, match, "", 1)
@@ -26,8 +27,8 @@ func cutPrefix(str string) string {
 
 func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextBlock) string {
 	// Gets first value which is included in filename and doesnt contain " " and less then 17 chars
-	bankAccountRegex, _ := regexp.Compile(`^[_\d\w-]{3,17}$`)
-	containsNumberRegex, _ := regexp.Compile(`[\d+]`)
+	bankAccountRegex := regexp.MustCompile(`^[_\d\w-]{3,17}$`)
+	containsNumberRegex := regexp.MustCompile(`[\d+]`)
 	for _, block := range *textBlocks {
 		v := block.Value
 		isMatching := bankAccountRegex.MatchString(v)
@@ -45,9 +46,9 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
 		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
-		iban, _ := iban.NewIBAN(formattedBlock)
-		if iban != nil {
-			return iban.Code
+		iban, _ := utils.GetValidIban(formattedBlock)
+		if iban != "" {
+			return iban
 		}
 	}
 	return ""
@@ -56,14 +57,8 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
-		r, _ := regexp.Compile("[0-9]{8}-[0-9]{8}-[0-9]{8}")
+		r := regexp.MustCompile(models.HUN_BANK_ACC)
 		match := r.FindString(v)
-
-		if match != "" {
-			return match
-		}
-		r, _ = regexp.Compile("^[0-9]{8}-[0-9]{8}$")
-		match = r.FindString(v)
 
 		if match != "" {
 			return match
@@ -73,21 +68,19 @@ func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 }
 
 func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
-	//  Gest highest price mentioned in texblocks
-	highestPrice := ""
+	//  Gets highest price mentioned in texblocks
+	highestPrice := "0"
 	for _, block := range *textBlocks {
 		v := block.Value
-		if currency.GetCurrencyFromString(v) != "" {
+		if currency.GetCurrencyFromString(v) == "" {
 			continue
 		}
 
 		price := currency.GetValueFromPrice(v)
 
-		highestPriceInt, convertHighestPriceError := strconv.Atoi(highestPrice)
-		if convertHighestPriceError != nil {
-			continue
-		}
-		priceInt, convertPriceError := strconv.Atoi(price)
+		highestPriceInt, _ := currency.ConvertPriceToFloat(highestPrice)
+		priceInt, convertPriceError := currency.ConvertPriceToFloat(price)
+
 		if convertPriceError != nil {
 			continue
 		}
@@ -100,19 +93,32 @@ func GuessGrossPrice(textBlocks *[]typless.TextBlock) string {
 }
 
 func GuessVendorName(textBlocks *[]typless.TextBlock) string {
-	// Gets first "Title Cased" value, which must include atleast one " " in it
+	// Gets first "Title Cased" value, which must include atleast one " " in it and no invoice indicator
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
-		if !strings.Contains(v, " ") {
+		containsSpace := strings.Contains(v, " ")
+		if !containsSpace || containsInvoiceIndicator(v) {
 			continue
 		}
-		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰ-]*)*$")
+		// todo: match for names with known pre- and suffixes eg.: dr. Test Zoltán ev.
+		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰüÜ-]*)*$")
 		match := r.FindString(v)
 		if match != "" {
 			return v
 		}
 	}
 	return ""
+}
+
+func containsInvoiceIndicator(v string) bool {
+	invoiceIndicators := []string{"invoice", "szamla", "számla"}
+	contains := false
+	for _, indicator := range invoiceIndicators {
+		if strings.Contains(strings.ToLower(v), indicator) {
+			contains = true
+		}
+	}
+	return contains
 }
 
 func GuessCurrency(textBlocks *[]typless.TextBlock) string {

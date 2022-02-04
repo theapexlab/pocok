@@ -57,9 +57,12 @@ export class ApiStack extends Stack {
               ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
+              bucketName: additionalStackProps?.storageStack.invoiceBucket
+                .bucketName as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
+              additionalStackProps?.storageStack.invoiceBucket as Bucket,
             ],
           },
         },
@@ -96,8 +99,9 @@ export class ApiStack extends Stack {
         },
         "POST /api/demo/invoice_summary": {
           function: {
-            handler: "src/cron/invoice_summary/main.go",
+            handler: "src/api/demo_cron/main.go",
             environment: {
+              demoToken: process.env.DEMO_TOKEN as string,
               queueUrl: additionalStackProps?.queueStack.emailSenderQueue
                 .sqsQueue.queueUrl as string,
             },

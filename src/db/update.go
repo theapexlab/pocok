@@ -14,6 +14,7 @@ import (
 type StatusUpdate struct {
 	InvoiceId string
 	Status    string
+	Filename  string
 }
 type GenericUpdate struct {
 	InvoiceId string
@@ -26,19 +27,22 @@ type VendorUpdate struct {
 	VendorEmail string
 }
 
-func CreateStatusUpdate(data map[string]string) (StatusUpdate, error) {
-	var patch StatusUpdate
-	mapError := utils.MapToStruct(data, &patch)
+func CreateStatusUpdate(data map[string]string) (*StatusUpdate, error) {
+	var update StatusUpdate
+	mapError := utils.MapToStruct(data, &update)
 	if mapError != nil {
-		return patch, errors.New("invalid input")
+		return nil, errors.New("invalid input")
 	}
-	if patch.InvoiceId == "" {
-		return patch, errors.New("invalid invoiceId")
+	if update.InvoiceId == "" {
+		return nil, errors.New("invalid invoiceId")
 	}
-	if patch.Status != models.ACCEPTED && patch.Status != models.REJECTED {
-		return patch, errors.New("invalid status")
+	if update.Status != models.ACCEPTED && update.Status != models.REJECTED {
+		return nil, errors.New("invalid status")
 	}
-	return patch, nil
+	if update.Status == models.REJECTED && update.Filename == "" {
+		return nil, errors.New("invalid update, filename must be present on reject")
+	}
+	return &update, nil
 }
 
 func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string, update StatusUpdate) error {

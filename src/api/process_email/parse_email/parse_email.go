@@ -12,7 +12,7 @@ import (
 var ErrNoPdfAttachmentFound = errors.New("no pdf attachment found")
 var ErrEmailFromSenderAddress = errors.New("email sent from mailgun sender address")
 
-func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
+func ParseEmail(body string) ([]models.UploadInvoiceMessage, error) {
 	var jsonBody models.EmailWebhookBody
 
 	if unmarshalError := json.Unmarshal([]byte(body), &jsonBody); unmarshalError != nil {
@@ -24,18 +24,26 @@ func ParseEmail(body string) (*models.UploadInvoiceMessage, error) {
 	}
 
 	if hasPdfAttachment(jsonBody.Attachments) {
-		return &models.UploadInvoiceMessage{
-			Type:     "base64",
-			Body:     jsonBody.Attachments[0].Content_b64,
-			Filename: jsonBody.Attachments[0].Filename,
-		}, nil
+		messages := []models.UploadInvoiceMessage{}
+		for _, attachment := range jsonBody.Attachments {
+			message := models.UploadInvoiceMessage{
+				Type:     "base64",
+				Body:     attachment.Content_b64,
+				Filename: attachment.Filename,
+			}
+
+			messages = append(messages, message)
+		}
+
+		return messages, nil
 	}
 
 	if ok, url := hasPdfUrl(&jsonBody); ok {
-		return &models.UploadInvoiceMessage{
+		messages := []models.UploadInvoiceMessage{{
 			Type: "url",
 			Body: url,
-		}, nil
+		}}
+		return messages, nil
 	}
 
 	return nil, ErrNoPdfAttachmentFound
