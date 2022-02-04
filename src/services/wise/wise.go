@@ -5,12 +5,17 @@ import (
 	"pocok/src/services/wise/api/models"
 	"pocok/src/utils"
 	base_models "pocok/src/utils/models"
-
-	"github.com/google/uuid"
 )
 
 type WiseService struct {
 	wise *api.WiseClient
+}
+
+func CreateWiseService(apiToken string) *WiseService {
+	wise := api.CreateWiseClient(apiToken)
+	return &WiseService{
+		wise,
+	}
 }
 
 func (s *WiseService) GetBusinessProfile() (*models.Profile, error) {
@@ -69,15 +74,8 @@ func mapInvoiceToRecipient(invoice *base_models.Invoice) *models.RecipientAccoun
 	}
 }
 
-func (s *WiseService) CreateQuote(profileID int) (*models.Quote, error) {
-	var createQuoteInput = models.Quote{
-		Profile:        profileID,
-		SourceCurrency: "EUR",
-		TargetCurrency: "HUF",
-		TargetAmount:   200,
-	}
-
-	quote, createQuoteErr := s.wise.CreateQuote(createQuoteInput)
+func (s *WiseService) CreateQuote(input models.Quote) (*models.Quote, error) {
+	quote, createQuoteErr := s.wise.CreateQuote(input)
 	if createQuoteErr != nil {
 		utils.LogError("Error creating quote", createQuoteErr)
 		return nil, createQuoteErr
@@ -86,17 +84,8 @@ func (s *WiseService) CreateQuote(profileID int) (*models.Quote, error) {
 	return quote, nil
 }
 
-func (s *WiseService) CreateTransfer(quoteID string, recipientID int) (*models.Transfer, error) {
-	transferData := models.Transfer{
-		TargetAccount: recipientID,
-		QuoteUUID:     quoteID,
-		Details: struct {
-			Reference string `json:"reference"`
-		}{Reference: "my ref"},
-		CustomerTransactionID: string(uuid.NewString()),
-	}
-
-	transfer, createTransferErr := s.wise.CreateTransfer(transferData)
+func (s *WiseService) CreateTransfer(input models.Transfer) (*models.Transfer, error) {
+	transfer, createTransferErr := s.wise.CreateTransfer(input)
 	if createTransferErr != nil {
 		utils.LogError("Error creating transfer", createTransferErr)
 		return nil, createTransferErr

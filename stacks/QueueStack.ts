@@ -125,4 +125,20 @@ export class QueueStack extends Stack {
       },
     });
   }
+
+  createWiseQueue(additionaliStackProps?: AdditionalStackProps) {
+    return new Queue(this, "Wise", {
+      consumer: {
+        function: {
+          handler: "src/consumers/wise_processor/main.go",
+          environment: {
+            wiseApiToken: process.env.WISE_API_TOKEN as string
+          }
+        },
+        consumerProps: {
+          batchSize: 1,
+        },
+      }
+    })
+  }
 }
