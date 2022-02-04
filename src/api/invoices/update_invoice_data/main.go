@@ -44,7 +44,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	update, validationErr := db.CreateValidDataUpdate(data)
+	update, validationErr := db.GetValidDataUpdate(data)
 	if validationErr != nil {
 		utils.LogError("Invalid update payload", validationErr)
 		response := models.ValidationErrorResponse{

@@ -9,7 +9,9 @@ import (
 func ApiResponse(status int, body string) *events.APIGatewayProxyResponse {
 	resp := events.APIGatewayProxyResponse{}
 	resp.StatusCode = status
-	resp.Body = body
+	if resp.Body == "" {
+		resp.Body = "{}"
+	}
 	return &resp
 }
 

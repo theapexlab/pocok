@@ -14,11 +14,13 @@ import (
 
 func GetValidAccountNumber(accNr string) (string, error) {
 	v := strings.TrimSpace(accNr)
-	r := regexp.MustCompile(models.HUN_BANK_ACC)
+	r := regexp.MustCompile(models.VALIDATE_HUN_BANK_ACC)
 	match := r.FindString(v)
 
 	if match != "" {
-		return match, nil
+		reg := regexp.MustCompile("[^0-9]+")
+		accNrWithOnlyNumbers := reg.ReplaceAllString(match, "")
+		return accNrWithOnlyNumbers, nil
 	}
 
 	return "", errors.New("invalid account number")

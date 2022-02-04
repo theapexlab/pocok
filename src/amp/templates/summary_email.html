@@ -359,7 +359,7 @@
                       <input
                         type="text"
                         name="accountNumber"
-                        pattern="^[0-9]{8}-[0-9]{8}(-[0-9]{8})?$"
+                        pattern="^[0-9]{8}[\D]*[0-9]{8}([\D]*[0-9]{8})?$"
                         value="{{invoice.accountNumber}}"
                       />
                     </label>
@@ -530,11 +530,7 @@
             on="submit-success:invoiceList.refresh"
           >
             {{#items}}
-            <input
-              type="hidden"
-              name="{{invoice.invoiceId}}"
-              value="accept"
-            />
+            <input type="hidden" name="{{invoice.invoiceId}}" value="accept" />
             {{/items}}
             <input type="submit" value="Accept all" />
           </form>

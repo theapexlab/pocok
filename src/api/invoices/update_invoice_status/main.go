@@ -53,7 +53,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	update, validationError := db.CreateStatusUpdate(data)
+	update, validationError := db.GetValidStatusUpdate(data)
 	if validationError != nil {
 		utils.LogError("Invalid while validating update", validationError)
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), nil

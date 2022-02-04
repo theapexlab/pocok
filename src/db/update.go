@@ -25,7 +25,7 @@ type VendorUpdate struct {
 	VendorEmail string
 }
 
-func CreateStatusUpdate(data map[string]string) (*StatusUpdate, error) {
+func GetValidStatusUpdate(data map[string]string) (*StatusUpdate, error) {
 	var update StatusUpdate
 	mapError := utils.MapToStruct(data, &update)
 	if mapError != nil {
@@ -63,7 +63,7 @@ func UpdateInvoiceStatus(client *dynamodb.Client, tableName string, orgId string
 	return updateError
 }
 
-func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
+func GetValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	update, updateError := utils.MapUpdateDataToInvoice(data)
 
 	if updateError != nil {
@@ -90,10 +90,11 @@ func CreateValidDataUpdate(data map[string]string) (models.Invoice, error) {
 	}
 
 	if update.AccountNumber != "" {
-		_, accountNumberError := utils.GetValidAccountNumber(update.AccountNumber)
+		validAccountNumber, accountNumberError := utils.GetValidAccountNumber(update.AccountNumber)
 		if accountNumberError != nil {
 			return update, accountNumberError
 		}
+		update.AccountNumber = validAccountNumber
 	}
 
 	_, priceError := utils.GetValidPrice(update.GrossPrice)
