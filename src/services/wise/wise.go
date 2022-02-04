@@ -7,8 +7,24 @@ import (
 	base_models "pocok/src/utils/models"
 )
 
+const (
+	WiseStep1 = "step1:get_profile_id"
+	WiseStep2 = "step2:upsert_recipient_account"
+	WiseStep3 = "step3:create_quote"
+	WiseStep4 = "step4:create_transfer"
+)
+
+type WiseMessageData struct {
+	RequestType        string              `json:"requestType"`
+	ProfileId          int                 `json:"profileId"`
+	RecipientAccountId int                 `json:"recipientAccountId"`
+	QuoteId            string              `json:"quoteId"`
+	TransactionId      string              `json:"transactionId"`
+	Invoice            base_models.Invoice `json:"invoice"`
+}
+
 type WiseService struct {
-	wise *api.WiseClient
+	WiseApi *api.WiseClient
 }
 
 func CreateWiseService(apiToken string) *WiseService {
@@ -19,7 +35,7 @@ func CreateWiseService(apiToken string) *WiseService {
 }
 
 func (s *WiseService) GetBusinessProfile() (*models.Profile, error) {
-	profiles, getProfilesErr := s.wise.GetProfiles()
+	profiles, getProfilesErr := s.WiseApi.GetProfiles()
 	if getProfilesErr != nil {
 		utils.LogError("Error getting profiles", getProfilesErr)
 		return nil, getProfilesErr
@@ -35,7 +51,7 @@ func (s *WiseService) GetBusinessProfile() (*models.Profile, error) {
 }
 
 func (s *WiseService) UpsertRecipient(invoice *base_models.Invoice) (*models.RecipientAccount, error) {
-	recipients, getRecipientErr := s.wise.GetRecipientAccounts()
+	recipients, getRecipientErr := s.WiseApi.GetRecipientAccounts()
 	if getRecipientErr != nil {
 		return nil, getRecipientErr
 	}
@@ -44,13 +60,13 @@ func (s *WiseService) UpsertRecipient(invoice *base_models.Invoice) (*models.Rec
 	if recipient == nil {
 		recipientInput := mapInvoiceToRecipient(invoice)
 
-		newRecipient, createRecipientErr := s.wise.CreateRecipientAccount(*recipientInput)
+		newRecipient, createRecipientErr := s.WiseApi.CreateRecipientAccount(*recipientInput)
 		if createRecipientErr != nil {
 			utils.LogError("Error creating recipient", createRecipientErr)
 			return nil, createRecipientErr
 		}
 
-		recipientById, getRecipientByIdErr := s.wise.GetRecipientAccountById(newRecipient.ID)
+		recipientById, getRecipientByIdErr := s.WiseApi.GetRecipientAccountById(newRecipient.ID)
 		if getRecipientByIdErr != nil {
 			utils.LogError("Error getting recipient by id", getRecipientByIdErr)
 			return nil, getRecipientByIdErr
@@ -72,23 +88,4 @@ func mapInvoiceToRecipient(invoice *base_models.Invoice) *models.RecipientAccoun
 			Email:         invoice.VendorEmail,
 		},
 	}
-}
-
-func (s *WiseService) CreateQuote(input models.Quote) (*models.Quote, error) {
-	quote, createQuoteErr := s.wise.CreateQuote(input)
-	if createQuoteErr != nil {
-		utils.LogError("Error creating quote", createQuoteErr)
-		return nil, createQuoteErr
-	}
-
-	return quote, nil
-}
-
-func (s *WiseService) CreateTransfer(input models.Transfer) (*models.Transfer, error) {
-	transfer, createTransferErr := s.wise.CreateTransfer(input)
-	if createTransferErr != nil {
-		utils.LogError("Error creating transfer", createTransferErr)
-		return nil, createTransferErr
-	}
-	return transfer, nil
 }

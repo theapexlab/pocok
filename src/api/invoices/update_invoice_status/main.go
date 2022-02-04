@@ -1,11 +1,14 @@
 package main
 
 import (
+	"context"
+	"encoding/json"
 	"net/http"
 	"os"
 	"pocok/src/db"
 	"pocok/src/services/typless"
 	"pocok/src/services/typless/create_training_data"
+	"pocok/src/services/wise"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
@@ -16,6 +19,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
 type dependencies struct {
@@ -25,6 +29,8 @@ type dependencies struct {
 	bucketName     string
 	typlessToken   string
 	typlessDocType string
+	wiseQueueUrl   string
+	sqsClient      *sqs.Client
 }
 
 func main() {
@@ -35,6 +41,8 @@ func main() {
 		bucketName:     os.Getenv("bucketName"),
 		typlessToken:   os.Getenv("typlessToken"),
 		typlessDocType: os.Getenv("typlessDocType"),
+		wiseQueueUrl:   os.Getenv("wiseQueueUrl"),
+		sqsClient:      aws_clients.GetSQSClient(),
 	}
 	lambda.Start(d.handler)
 }
@@ -78,6 +86,19 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		if feedbackError != nil {
 			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}
+		messageBody := wise.WiseMessageData{
+			RequestType: wise.WiseStep1,
+		}
+		messageByteArray, marshalError := json.Marshal(messageBody)
+		if marshalError != nil {
+			utils.LogError("sendMessage - Marshal", marshalError)
+			return nil, marshalError
+		}
+		messageString := string(messageByteArray)
+		d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+			QueueUrl:    &d.wiseQueueUrl,
+			MessageBody: &messageString,
+		})
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 

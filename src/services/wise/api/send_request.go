@@ -22,6 +22,10 @@ func (wise *WiseClient) sendRequest(req *http.Request, data interface{}) error {
 		return err
 	}
 
+	fmt.Printf("----- Response status : %s ----- \n", res.Status)
+	fmt.Printf("%s \n ", body)
+	fmt.Println("------------------------------------")
+
 	if err = json.Unmarshal(body, data); err != nil {
 		return err
 	}

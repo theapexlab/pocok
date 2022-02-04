@@ -77,10 +77,12 @@ export class ApiStack extends Stack {
               typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
               bucketName: additionalStackProps?.storageStack.invoiceBucket
                 .bucketName as string,
+              wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue.queueUrl as string
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
               additionalStackProps?.storageStack.invoiceBucket as Bucket,
+              additionalStackProps?.queueStack.wiseQueue as Queue,
             ],
           },
         },

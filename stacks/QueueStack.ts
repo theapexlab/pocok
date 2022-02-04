@@ -130,7 +130,10 @@ export class QueueStack extends Stack {
         environment: {
           queueUrl: wiseQueue.sqsQueue.queueUrl,
           wiseApiToken: process.env.WISE_API_TOKEN as string
-        }
+        },
+        permissions: [
+          wiseQueue
+        ]
       },
       consumerProps: {
         batchSize: 1,
