@@ -6,7 +6,7 @@ type Quote struct {
 	TargetAccount  int     `json:"targetAccount"`
 	SourceCurrency string  `json:"sourceCurrency"`
 	TargetCurrency string  `json:"targetCurrency"`
-	TargetAmount   int     `json:"targetAmount,omitempty"`
+	TargetAmount   float64 `json:"targetAmount,omitempty"`
 	SourceAmount   float64 `json:"sourceAmount,omitempty"`
 	PayOut         string  `json:"payOut"`
 }

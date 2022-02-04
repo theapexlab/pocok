@@ -86,8 +86,13 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		if feedbackError != nil {
 			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}
+		invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, statusUpdate.InvoiceId)
+		if getInvoiceError != nil {
+			utils.LogError("Error while getting invoice", getInvoiceError)
+		}
 		messageBody := wise.WiseMessageData{
 			RequestType: wise.WiseStep1,
+			Invoice:     *invoice,
 		}
 		messageByteArray, marshalError := json.Marshal(messageBody)
 		if marshalError != nil {

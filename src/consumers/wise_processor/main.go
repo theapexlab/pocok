@@ -10,6 +10,7 @@ import (
 	apiModels "pocok/src/services/wise/api/models"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/currency"
 	"strconv"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -114,10 +115,11 @@ func (d *dependencies) step2UpsertRecipientAccount(step2Data wise.WiseMessageDat
 }
 
 func (d *dependencies) step3CreateQuote(step3Data wise.WiseMessageData) (*wise.WiseMessageData, error) {
-	grossPrice, atoiError := strconv.Atoi(step3Data.Invoice.GrossPrice)
-	if atoiError != nil {
-		utils.LogError("step3CreateQuote - Atoi", atoiError)
-		return nil, atoiError
+	grossPriceString := currency.GetValueFromPrice(step3Data.Invoice.GrossPrice)
+	grossPrice, parseFloatError := strconv.ParseFloat(grossPriceString, 32)
+	if parseFloatError != nil {
+		utils.LogError("step3CreateQuote - Parse float", parseFloatError)
+		return nil, parseFloatError
 	}
 	quoteInput := apiModels.Quote{
 		Profile:        step3Data.ProfileId,
