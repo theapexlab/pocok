@@ -16,6 +16,7 @@ export class QueueStack extends Stack {
   invoiceQueue: Queue;
   processInvoiceQueue: Queue;
   emailSenderQueue: Queue;
+  wiseQueue: Queue
 
   constructor(
     scope: Construct,
@@ -29,6 +30,7 @@ export class QueueStack extends Stack {
       this.createProcessInvoiceQueue(additionalStackProps);
     this.invoiceQueue = this.createPreprocessInvoiceQueue(additionalStackProps);
     this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
+    this.wiseQueue = this.createWiseQueue(additionalStackProps)
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -126,19 +128,21 @@ export class QueueStack extends Stack {
     });
   }
 
-  createWiseQueue(additionaliStackProps?: AdditionalStackProps) {
-    return new Queue(this, "Wise", {
-      consumer: {
-        function: {
-          handler: "src/consumers/wise_processor/main.go",
-          environment: {
-            wiseApiToken: process.env.WISE_API_TOKEN as string
-          }
-        },
-        consumerProps: {
-          batchSize: 1,
-        },
-      }
+  createWiseQueue(_additionalStackProps?: AdditionalStackProps) {
+    const wiseQueue = new Queue(this, "Wise")
+    wiseQueue.addConsumer(this, {
+      function: {
+        handler: "src/consumers/wise_processor/main.go",
+        environment: {
+          queueUrl: wiseQueue.sqsQueue.queueUrl,
+          wiseApiToken: process.env.WISE_API_TOKEN as string
+        }
+      },
+      consumerProps: {
+        batchSize: 1,
+      },
     })
+
+    return wiseQueue
   }
 }

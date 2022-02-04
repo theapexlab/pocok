@@ -43,7 +43,7 @@ type dependencies struct {
 
 func main() {
 	d := &dependencies{
-		wiseQueueUrl: os.Getenv("wiseQueueUrl"),
+		wiseQueueUrl: os.Getenv("queueUrl"),
 		sqsClient:    aws_clients.GetSQSClient(),
 		wiseService:  wise.CreateWiseService(os.Getenv("")),
 	}
