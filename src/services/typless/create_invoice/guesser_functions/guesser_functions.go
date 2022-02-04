@@ -45,8 +45,7 @@ func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextB
 func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
-		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
-		iban, _ := utils.GetValidIban(formattedBlock)
+		iban, _ := utils.GetValidIban(valueWithoutPrefix)
 		if iban != "" {
 			return iban
 		}

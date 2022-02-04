@@ -27,7 +27,8 @@ func GetValidAccountNumber(accNr string) (string, error) {
 }
 
 func GetValidIban(accNr string) (string, error) {
-	validIban, ibanError := iban.NewIBAN(accNr)
+	formattedAccNr := strings.ReplaceAll(accNr, "-", "")
+	validIban, ibanError := iban.NewIBAN(formattedAccNr)
 	if validIban != nil {
 		return validIban.Code, nil
 	}

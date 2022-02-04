@@ -50,7 +50,7 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 		return nil, getPendingInvoicesError
 	}
 
-	response, responseError := getInvoiceResponse(d, invoices)
+	response, responseError := d.getInvoiceResponse(invoices)
 	if responseError != nil {
 		utils.LogError(responseError.Error(), responseError)
 		return nil, responseError
@@ -66,7 +66,7 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	return utils.MailApiResponse(http.StatusOK, invoiceStr), nil
 }
 
-func getInvoiceResponse(d *dependencies, invoices []models.Invoice) (*models.InvoiceResponse, error) {
+func (d *dependencies) getInvoiceResponse(invoices []models.Invoice) (*models.InvoiceResponse, error) {
 	psClient := s3.NewPresignClient(d.s3Client)
 
 	items := make([]models.InvoiceResponseItem, len(invoices))

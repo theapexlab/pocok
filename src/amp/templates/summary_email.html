@@ -40,7 +40,7 @@
 
       .item-wrapper {
         padding: 8px;
-        max-width: 400px;
+        max-width: 700px;
       }
 
       .item {
@@ -350,7 +350,7 @@
                         type="text"
                         name="iban"
                         value="{{invoice.iban}}"
-                        pattern="\b[A-Z]{2}[0-9]{2}(?:[ ]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
+                        pattern="\b[A-Z]{2}[0-9]{2}(?:[- ]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
                       />
                     </label>
 
@@ -452,7 +452,6 @@
                           >Unit Net Price:
                           <input
                             type="number"
-                            min="0"
                             step="any"
                             name="service_unitNetPrice_{{index}}"
                             value="{{unitNetPrice}}"
@@ -461,7 +460,6 @@
                           >Net price:
                           <input
                             type="number"
-                            min="0"
                             step="any"
                             name="service_netPrice_{{index}}"
                             value="{{netPrice}}"
@@ -470,7 +468,6 @@
                           >Gross Price:
                           <input
                             type="number"
-                            min="0"
                             step="any"
                             name="service_grossPrice_{{index}}"
                             value="{{grossPrice}}"
