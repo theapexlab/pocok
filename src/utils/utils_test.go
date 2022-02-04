@@ -109,17 +109,30 @@ var _ = Describe("Utils", func() {
 	Describe("Validation test", func() {
 		When("GetValidAccountNumber receives a valid 16 or 24 character long account number", func() {
 			It("returns Bank account number and recieves no error", func() {
-				mockBankAccNumbers := []string{
+				testBankAccNumbers := []string{
 					"12345678-12345678-12345678",
 					"12345678 12345678 12345678",
 					"12345678 12345678-12345678",
+					"123456781234567812345678",
 					"12345678-12345678",
 					"12345678 12345678",
+					"12345678 adfads 12345678",
+					"1234567812345678",
 				}
-				for i, accNr := range mockBankAccNumbers {
+				validBankAccNumbers := []string{
+					"123456781234567812345678",
+					"123456781234567812345678",
+					"123456781234567812345678",
+					"123456781234567812345678",
+					"1234567812345678",
+					"1234567812345678",
+					"1234567812345678",
+					"1234567812345678",
+				}
+				for i, accNr := range testBankAccNumbers {
 					result, err := utils.GetValidAccountNumber(accNr)
 					Expect(err).To(BeNil())
-					Expect(result).To(Equal(mockBankAccNumbers[i]))
+					Expect(result).To(Equal(validBankAccNumbers[i]))
 				}
 			})
 		})
@@ -128,11 +141,10 @@ var _ = Describe("Utils", func() {
 			It("returns an error", func() {
 				invalidAcountNumbers := []string{
 					"12345678-12345678-1234567a",
-					"12345678 12345678/12345678",
-					"12345678123456781234567",
+					"12345678 1  12345678 1234567",
 					"12345678-1234567a",
-					"12345678/12345678",
-					"123456781234567",
+					"12345678-1-12345678",
+					"HU35123456781234567",
 				}
 				for _, accNr := range invalidAcountNumbers {
 					_, err := utils.GetValidAccountNumber(accNr)
@@ -198,14 +210,6 @@ var _ = Describe("Utils", func() {
 				result, err := utils.GetValidDueDate(mockDate)
 				Expect(result).To(Equal(mockDate))
 				Expect(err).To(BeNil())
-			})
-		})
-
-		When("GetValidDueDate recieves a past date ", func() {
-			It("throws error", func() {
-				mockDate := "2000-01-01"
-				_, err := utils.GetValidDueDate(mockDate)
-				Expect(err).To(MatchError("invalid date"))
 			})
 		})
 

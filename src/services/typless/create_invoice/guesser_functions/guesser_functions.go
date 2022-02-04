@@ -45,8 +45,7 @@ func GuessInvoiceNumberFromFilename(filename string, textBlocks *[]typless.TextB
 func GuessIban(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		valueWithoutPrefix := cutPrefix(block.Value)
-		formattedBlock := strings.ReplaceAll(valueWithoutPrefix, "-", "")
-		iban, _ := utils.GetValidIban(formattedBlock)
+		iban, _ := utils.GetValidIban(valueWithoutPrefix)
 		if iban != "" {
 			return iban
 		}
@@ -57,7 +56,7 @@ func GuessIban(textBlocks *[]typless.TextBlock) string {
 func GuessHunBankAccountNumber(textBlocks *[]typless.TextBlock) string {
 	for _, block := range *textBlocks {
 		v := strings.TrimSpace(block.Value)
-		r := regexp.MustCompile(models.HUN_BANK_ACC)
+		r := regexp.MustCompile(models.GUESS_HUN_BANK_ACC)
 		match := r.FindString(v)
 
 		if match != "" {
@@ -100,7 +99,6 @@ func GuessVendorName(textBlocks *[]typless.TextBlock) string {
 		if !containsSpace || containsInvoiceIndicator(v) {
 			continue
 		}
-		// todo: match for names with known pre- and suffixes eg.: dr. Test Zoltán ev.
 		r, _ := regexp.Compile("^[A-ZÉÁÓÚŐÖŰÜ](([ -][A-ZÉÁÓÚŐÖŰÜ(])?[a-zA-Z)éÉáÁóÓúÚőŐöÖűŰüÜ-]*)*$")
 		match := r.FindString(v)
 		if match != "" {

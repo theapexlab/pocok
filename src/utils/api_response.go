@@ -15,6 +15,9 @@ func ApiResponse(status int, body string) *events.APIGatewayProxyResponse {
 
 func MailApiResponse(status int, body string) *events.APIGatewayProxyResponse {
 	resp := ApiResponse(status, body)
+	if resp.Body == "" {
+		resp.Body = "{}"
+	}
 	resp.Headers = map[string]string{
 		"Content-Type":           "application/json",
 		"AMP-Email-Allow-Sender": os.Getenv("mailgunSender"),

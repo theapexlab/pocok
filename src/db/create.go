@@ -36,6 +36,7 @@ func PutInvoice(client *dynamodb.Client, tableName string, invoiceData *models.I
 		DueDate:         invoiceData.DueDate,
 		Services:        invoiceData.Services,
 		TyplessObjectId: invoiceData.TyplessObjectId,
+		InvoiceNumber:   invoiceData.InvoiceNumber,
 	}
 
 	item, itemError := attributevalue.MarshalMap(invoice)

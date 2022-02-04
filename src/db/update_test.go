@@ -14,7 +14,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("status is accept and valid", func() {
 		BeforeEach(func() {
-			update, updateError = db.CreateStatusUpdate(map[string]string{
+			update, updateError = db.GetValidStatusUpdate(map[string]string{
 				"invoiceId": "ID1",
 				"status":    models.ACCEPTED,
 			})
@@ -32,7 +32,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("id is missing", func() {
 		BeforeEach(func() {
-			_, updateError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.GetValidStatusUpdate(map[string]string{
 				"status": models.ACCEPTED,
 			})
 		})
@@ -44,7 +44,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("status is missing", func() {
 		BeforeEach(func() {
-			_, updateError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.GetValidStatusUpdate(map[string]string{
 				"invoiceId": "asd",
 			})
 		})
@@ -56,7 +56,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("status is pending", func() {
 		BeforeEach(func() {
-			_, updateError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.GetValidStatusUpdate(map[string]string{
 				"status":    models.PENDING,
 				"invoiceId": "ID1",
 			})
@@ -69,7 +69,7 @@ var _ = Describe("Status update validation", func() {
 
 	When("status is reject, but there is no filename", func() {
 		BeforeEach(func() {
-			_, updateError = db.CreateStatusUpdate(map[string]string{
+			_, updateError = db.GetValidStatusUpdate(map[string]string{
 				"status":    models.REJECTED,
 				"invoiceId": "ID1",
 			})
