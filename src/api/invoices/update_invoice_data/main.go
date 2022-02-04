@@ -30,7 +30,6 @@ func main() {
 }
 
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
-
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
 	if parseTokenError != nil {
@@ -44,7 +43,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	update, validationErr := db.GetValidDataUpdate(data)
+	dataUpdate, validationErr := db.GetValidDataUpdate(data)
 	if validationErr != nil {
 		utils.LogError("Invalid update payload", validationErr)
 		response := models.ValidationErrorResponse{
@@ -60,12 +59,11 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, messageStr), nil
 	}
 
-	updateErr := db.UpdateInvoiceData(d.dbClient, d.tableName, claims.OrgId, update)
+	updateErr := db.UpdateInvoiceData(d.dbClient, d.tableName, claims.OrgId, dataUpdate)
 	if updateErr != nil {
 		utils.LogError("Error updating dynamo db", updateErr)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
 
 	return utils.MailApiResponse(http.StatusOK, ""), nil
-
 }

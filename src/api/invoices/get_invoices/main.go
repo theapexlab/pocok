@@ -26,7 +26,6 @@ type dependencies struct {
 }
 
 func main() {
-
 	d := &dependencies{
 		tableName:  os.Getenv("tableName"),
 		dbClient:   aws_clients.GetDbClient(),
