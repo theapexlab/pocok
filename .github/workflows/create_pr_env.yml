@@ -1,16 +1,15 @@
-name: Production release
+name: Create PR Env
 
 on:
-  push:
-    branches: ['master']
+  pull_request:
+    types: [reopened, opened]
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -30,14 +29,20 @@ jobs:
       run: yarn
 
     - name: Deploy stack
-      run: yarn sst deploy --stage production
+      run: yarn sst deploy --stage ${GITHUB_REF##*/}
       env:
-        DOMAIN_NAME: api.pocok.biz
-        API_URL: https://api.pocok.biz
+        DOMAIN_NAME: ${GITHUB_REF##*/}.pocok.biz
+        API_URL: https://${GITHUB_REF##*/}.pocok.biz
         MAILGUN_DOMAIN: mg.pocok.biz
-        MAILGUN_SENDER: apex@mg.pocok.biz
-        EMAIL_RECIPIENT: ${{ secrets.PROD_EMAIL_RECIPIENT }}
+        MAILGUN_SENDER: ${GITHUB_REF##*/}@mg.pocok.biz
+        EMAIL_RECIPIENT: mate.donka@apexlab.io
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
         PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
+    
+    - name: Comment
+      uses: thollander/actions-comment-pull-request@v1
+      with:
+        message: 'Deployed to ${GITHUB_REF##*/}.pocok.biz'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
