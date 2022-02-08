@@ -10,7 +10,7 @@ import (
 )
 
 func (wise *WiseClient) CreateQuote(body models.Quote) (*models.Quote, error) {
-	url := fmt.Sprintf("%s/%s/quotes", wise.baseUrl, v2)
+	url := fmt.Sprintf("%s/%s/quotes", wise.baseUrl, V2)
 
 	jsonBody, jsonErr := json.Marshal(body)
 	if jsonErr != nil {

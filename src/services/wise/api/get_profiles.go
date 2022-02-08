@@ -8,7 +8,7 @@ import (
 )
 
 func (wise *WiseClient) GetProfiles() (*[]models.Profile, error) {
-	url := fmt.Sprintf("%s/%s/profiles", wise.baseUrl, v1)
+	url := fmt.Sprintf("%s/%s/profiles", wise.baseUrl, V1)
 
 	req, newReqErr := http.NewRequest("GET", url, nil)
 	if newReqErr != nil {

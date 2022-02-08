@@ -13,7 +13,7 @@ type WiseClient struct {
 
 func CreateWiseClient(apiToken string) *WiseClient {
 	return &WiseClient{
-		baseUrl:  base_url,
+		baseUrl:  BASE_URL,
 		apiToken: apiToken,
 		httpClient: &http.Client{
 			Timeout: time.Minute,

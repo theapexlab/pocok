@@ -77,7 +77,8 @@ export class ApiStack extends Stack {
               typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
               bucketName: additionalStackProps?.storageStack.invoiceBucket
                 .bucketName as string,
-              wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue.queueUrl as string
+              wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue
+                .queueUrl as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
@@ -106,9 +107,14 @@ export class ApiStack extends Stack {
               ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
+              typlessToken: process.env.TYPLESS_TOKEN as string,
+              typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
+              wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue
+                .queueUrl as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
+              additionalStackProps?.queueStack.wiseQueue as Queue,
             ],
           },
         },

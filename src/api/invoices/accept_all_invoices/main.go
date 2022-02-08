@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
+	"pocok/src/api/invoices/invoice_utils"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
@@ -13,11 +14,16 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
 type dependencies struct {
-	dbClient  *dynamodb.Client
-	tableName string
+	dbClient       *dynamodb.Client
+	tableName      string
+	typlessToken   string
+	typlessDocType string
+	wiseQueueUrl   string
+	sqsClient      *sqs.Client
 }
 
 func main() {
@@ -52,5 +58,24 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		utils.LogError("Error updating dynamo db", updateError)
 		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
 	}
+
+	for invoiceId := range data {
+		invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, invoiceId)
+		if getInvoiceError != nil {
+			utils.LogError("Error while getting invoice", getInvoiceError)
+			continue
+		}
+
+		feedbackError := invoice_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+		if feedbackError != nil {
+			utils.LogError("Error while submitting typless feedback", feedbackError)
+		}
+
+		wiseError := invoice_utils.UpdateWise(*d.sqsClient, d.wiseQueueUrl, *invoice)
+		if wiseError != nil {
+			utils.LogError("Error while creating wise request", wiseError)
+		}
+	}
+
 	return utils.MailApiResponse(http.StatusOK, "{}"), nil
 }

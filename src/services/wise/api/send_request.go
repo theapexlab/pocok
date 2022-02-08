@@ -2,9 +2,11 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 func (wise *WiseClient) sendRequest(req *http.Request, data interface{}) error {
@@ -20,6 +22,9 @@ func (wise *WiseClient) sendRequest(req *http.Request, data interface{}) error {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
+	}
+	if !strings.HasPrefix(res.Status, "2") {
+		return errors.New("http wise request error: " + res.Status)
 	}
 
 	fmt.Printf("----- Response status : %s ----- \n", res.Status)

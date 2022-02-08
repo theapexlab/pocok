@@ -10,7 +10,7 @@ import (
 )
 
 func (wise *WiseClient) GetRecipientAccounts() (*[]models.RecipientAccount, error) {
-	url := fmt.Sprintf("%s/%s/accounts", wise.baseUrl, v2)
+	url := fmt.Sprintf("%s/%s/accounts", wise.baseUrl, V2)
 
 	req, newReqErr := http.NewRequest("GET", url, nil)
 	if newReqErr != nil {
@@ -28,7 +28,7 @@ func (wise *WiseClient) GetRecipientAccounts() (*[]models.RecipientAccount, erro
 }
 
 func (wise *WiseClient) GetRecipientAccountById(id int) (*models.RecipientAccount, error) {
-	url := fmt.Sprintf("%s/%s/accounts/%d", wise.baseUrl, v2, id)
+	url := fmt.Sprintf("%s/%s/accounts/%d", wise.baseUrl, V2, id)
 
 	req, newReqErr := http.NewRequest("GET", url, nil)
 	if newReqErr != nil {
@@ -46,7 +46,7 @@ func (wise *WiseClient) GetRecipientAccountById(id int) (*models.RecipientAccoun
 }
 
 func (wise *WiseClient) CreateRecipientAccount(body models.RecipientAccountV1) (*models.RecipientAccountV1, error) {
-	url := fmt.Sprintf("%s/%s/accounts", wise.baseUrl, v1)
+	url := fmt.Sprintf("%s/%s/accounts", wise.baseUrl, V1)
 
 	jsonBody, jsonErr := json.Marshal(body)
 	if jsonErr != nil {

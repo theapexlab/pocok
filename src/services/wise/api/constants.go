@@ -1,8 +1,8 @@
 package api
 
-const base_url = "https://api.sandbox.transferwise.tech"
+const BASE_URL = "https://api.sandbox.transferwise.tech"
 
 const (
-	v1 string = "v1"
-	v2 string = "v2"
+	V1 string = "v1"
+	V2 string = "v2"
 )

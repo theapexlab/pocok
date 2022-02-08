@@ -1,14 +1,10 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"net/http"
 	"os"
+	"pocok/src/api/invoices/invoice_utils"
 	"pocok/src/db"
-	"pocok/src/services/typless"
-	"pocok/src/services/typless/create_training_data"
-	"pocok/src/services/wise"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
@@ -68,65 +64,44 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	if statusUpdate.Status == models.REJECTED {
-		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, statusUpdate.InvoiceId, statusUpdate.Filename)
-		if deleteError != nil {
-			utils.LogError("Error while removing invoice", deleteError)
-			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-		}
-		return utils.MailApiResponse(http.StatusOK, ""), nil
+		return RejectInvoice(d, *claims, *statusUpdate)
 	}
-
 	if statusUpdate.Status == models.ACCEPTED {
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *statusUpdate)
-		if updateError != nil {
-			utils.LogError("Error while updating invoice", updateError)
-			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-		}
-		feedbackError := updateFeedback(d, claims.OrgId, statusUpdate.InvoiceId)
-		if feedbackError != nil {
-			utils.LogError("Error while submitting typless feedback", feedbackError)
-		}
-		invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, statusUpdate.InvoiceId)
-		if getInvoiceError != nil {
-			utils.LogError("Error while getting invoice", getInvoiceError)
-		}
-		messageBody := wise.WiseMessageData{
-			RequestType: wise.WiseStep1,
-			Invoice:     *invoice,
-		}
-		messageByteArray, marshalError := json.Marshal(messageBody)
-		if marshalError != nil {
-			utils.LogError("sendMessage - Marshal", marshalError)
-			return nil, marshalError
-		}
-		messageString := string(messageByteArray)
-		d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
-			QueueUrl:    &d.wiseQueueUrl,
-			MessageBody: &messageString,
-		})
-		return utils.MailApiResponse(http.StatusOK, ""), nil
+		return AcceptInvoice(d, *claims, *statusUpdate)
 	}
 
 	return utils.MailApiResponse(http.StatusTeapot, ""), nil
 }
 
-func updateFeedback(d *dependencies, orgId string, invoiceId string) error {
-	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, orgId, invoiceId)
+func RejectInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+	deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
+	if deleteError != nil {
+		utils.LogError("Error while removing invoice", deleteError)
+		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	}
+	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func AcceptInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
+	if updateError != nil {
+		utils.LogError("Error while updating invoice", updateError)
+		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	}
+	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, update.InvoiceId)
 	if getInvoiceError != nil {
-		utils.LogError("Error getting invoice from db", getInvoiceError)
-		return getInvoiceError
+		utils.LogError("Error while getting invoice", getInvoiceError)
+		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
-	typlessError := typless.AddDocumentFeedback(
-		&typless.Config{
-			Token:   d.typlessToken,
-			DocType: d.typlessDocType,
-		},
-		*create_training_data.CreateTrainingData(invoice),
-	)
-	if typlessError != nil {
-		utils.LogError("Error adding document feedback to typless", typlessError)
+	feedbackError := invoice_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+	if feedbackError != nil {
+		utils.LogError("Error while submitting typless feedback", feedbackError)
 	}
 
-	return nil
+	wiseError := invoice_utils.UpdateWise(*d.sqsClient, d.wiseQueueUrl, *invoice)
+	if wiseError != nil {
+		utils.LogError("Error while creating wise request", wiseError)
+	}
+	return utils.MailApiResponse(http.StatusOK, ""), nil
 }

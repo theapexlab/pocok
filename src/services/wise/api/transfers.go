@@ -10,7 +10,7 @@ import (
 )
 
 func (wise *WiseClient) CreateTransfer(body models.Transfer) (*models.Transfer, error) {
-	url := fmt.Sprintf("%s/%s/transfers", wise.baseUrl, v1)
+	url := fmt.Sprintf("%s/%s/transfers", wise.baseUrl, V1)
 
 	jsonBody, jsonErr := json.Marshal(body)
 	if jsonErr != nil {
