@@ -18,7 +18,6 @@ jobs:
     - run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
     - run: echo "DOMAIN_NAME=${{ env.STAGE }}.pocok.biz" >> $GITHUB_ENV
     - run: echo "API_URL=https://${{ env.DOMAIN_NAME }}" >> $GITHUB_ENV
-    - run: echo "EMAIL_RECIPIENT=${{ github.actor }}@users.noreply.github.com" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -47,7 +46,7 @@ jobs:
         API_URL: ${{ env.API_URL }}
         MAILGUN_DOMAIN: mg.pocok.biz
         MAILGUN_SENDER: apex@mg.pocok.biz
-        EMAIL_RECIPIENT: ${{ env.EMAIL_RECIPIENT }}
+        EMAIL_RECIPIENT: ${{ secrets.PR_EMAIL_RECIPIENT }}
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
