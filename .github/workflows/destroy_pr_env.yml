@@ -37,3 +37,6 @@ jobs:
 
     - name: Destroy stack
       run: yarn sst remove --stage ${STAGE}
+      env:
+        DOMAIN_NAME: ${{STAGE}}.pocok.biz
+        PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
