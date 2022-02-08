@@ -38,10 +38,10 @@ jobs:
     - name: Deploy stack
       run: yarn sst deploy --stage ${STAGE}
       env:
-        DOMAIN_NAME: ${STAGE}.pocok.biz
-        API_URL: https://${STAGE}.pocok.biz
+        DOMAIN_NAME: ${{STAGE}}.pocok.biz
+        API_URL: https://${{STAGE}}.pocok.biz
         MAILGUN_DOMAIN: mg.pocok.biz
-        MAILGUN_SENDER: ${STAGE}@mg.pocok.biz
+        MAILGUN_SENDER: ${{STAGE}}@mg.pocok.biz
         EMAIL_RECIPIENT: mate.donka@apexlab.io
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
