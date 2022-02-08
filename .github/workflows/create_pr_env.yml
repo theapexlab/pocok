@@ -2,7 +2,7 @@ name: Create PR Env
 
 on:
   pull_request:
-    types: [reopened, opened]
+    types: [reopened, opened, synchronize, edited]
 
 jobs:
   deploy:
