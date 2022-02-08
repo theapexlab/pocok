@@ -62,7 +62,11 @@ func (c *CreateInvoiceService) getFieldValue(field typless.ExtractedField) strin
 func (c *CreateInvoiceService) getFieldFallbackValue(fieldName string) string {
 	switch fieldName {
 	case typless.INVOICE_NUMBER:
-		return guesser_functions.GuessInvoiceNumberFromFilename(c.OriginalFilename, &c.ExtractedData.TextBlocks)
+		guessedNumber := guesser_functions.GuessInvoiceNumberFromFilename(c.OriginalFilename, &c.ExtractedData.TextBlocks)
+		if guessedNumber == "" {
+			guessedNumber = guesser_functions.GuessInvoiceNumber(&c.ExtractedData.TextBlocks)
+		}
+		return guessedNumber
 	case typless.VENDOR_NAME:
 		return guesser_functions.GuessVendorName(&c.ExtractedData.TextBlocks)
 	case typless.ACCOUNT_NUMBER:
