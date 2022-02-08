@@ -47,7 +47,7 @@ jobs:
         API_URL: ${{ env.API_URL }}
         MAILGUN_DOMAIN: mg.pocok.biz
         MAILGUN_SENDER: ${{ env.MAILGUN_SENDER }}
-        EMAIL_RECIPIENT: mate.donka@apexlab.io
+        EMAIL_RECIPIENT: matedonka@apexlab.io
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
@@ -56,5 +56,5 @@ jobs:
     - name: Comment
       uses: thollander/actions-comment-pull-request@v1
       with:
-        message: 'Deployed to ${{ env.STAGE }}.pocok.biz'
+        message: 'Deployed to ${{ env.API_URL }}'
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
