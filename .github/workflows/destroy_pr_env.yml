@@ -9,6 +9,8 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+    - run: echo "BRANCH_NAME=${GITHUB_REF_NAME,,}" >>${GITHUB_ENV}
+
     - uses: actions/checkout@v2
 
     - name: Configure AWS Credentials
@@ -29,4 +31,4 @@ jobs:
       run: yarn
 
     - name: Destroy stack
-      run: yarn sst remove --stage ${GITHUB_REF##*/}
+      run: yarn sst remove --stage ${BRANCH_NAME}
