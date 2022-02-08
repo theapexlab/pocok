@@ -3,17 +3,25 @@ package open_ai
 import (
 	"context"
 	"fmt"
+	"pocok/src/services/typless"
 	"pocok/src/utils"
 
 	"github.com/PullRequestInc/go-gpt3"
 )
 
-func GetPredictedInvoiceData(textBlocks []string) (string, error) {
-	apiKey := "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"
+func GetPredictedInvoiceData(textBlocks []typless.TextBlock) (string, error) {
+	apiKey := ""
 	client := gpt3.NewClient(apiKey)
 
+	Prompt := []string{"Raw data from an invoice.\n" + fmt.Sprintln(textBlocks) + ".\n InvoiceNumber | VendorName | AccountNumber | Iban | Currency | GrossPrice | DueDate."}
+	Temperature := float32(0.0)
+	MaxTokens := 64
+
 	resp, err := client.Completion(context.TODO(), gpt3.CompletionRequest{
-		Prompt: []string{"Raw data from an invoice.\n", fmt.Sprintln(textBlocks), "\nInvoiceNumber | VendorName | AccountNumber | Iban | Currency | GrossPrice | DueDate ."},
+		Prompt:      Prompt,
+		Stop:        []string{"."},
+		Temperature: &Temperature,
+		MaxTokens:   &MaxTokens,
 	})
 	if err != nil {
 		utils.LogError("error getting prediction from openai", err)
