@@ -2,10 +2,13 @@ name: Destroy PR Env
 
 on:
   pull_request:
-    types: [closed]
+    types: [unlabeled, closed]
 
 jobs:
   deploy:
+    if: |
+      (github.event.action == 'unlabeled' && github.event.label.name == ':rocket: deploy') ||
+      (github.event.action == 'closed' && contains(github.event.pull_request.labels.*.name, ':rocket: deploy'))
     name: Deploy
     runs-on: ubuntu-latest
     steps:
