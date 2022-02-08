@@ -9,9 +9,14 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-    - run: echo "BRANCH_NAME=${GITHUB_REF_NAME,,}" >>${GITHUB_ENV}
+    - name: Inject slug variables
+      uses: rlespinasse/github-slug-action@v4
 
-    - uses: actions/checkout@v2
+    - name: Set STAGE variable in environment for next steps
+      run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -31,4 +36,4 @@ jobs:
       run: yarn
 
     - name: Destroy stack
-      run: yarn sst remove --stage ${BRANCH_NAME}
+      run: yarn sst remove --stage ${STAGE}
