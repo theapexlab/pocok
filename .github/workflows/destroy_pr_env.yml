@@ -39,7 +39,7 @@ jobs:
       run: yarn
 
     - name: Destroy stack
-      run: yarn sst remove --stage ${STAGE}
+      run: yarn sst remove --stage ${{ env.STAGE }}
       env:
-        DOMAIN_NAME: ${{DOMAIN_NAME}}
+        DOMAIN_NAME: ${{ env.DOMAIN_NAME }}
         PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
