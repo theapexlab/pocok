@@ -3,6 +3,12 @@ name: Create PR Env
 on:
   pull_request:
     types: [labeled, opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      emailRecipient:
+        description: 'The email address to send the reports to'     
+        default: 'zoliendrodi@apexlab.io'
+        required: false
 
 jobs:
   deploy:
@@ -18,7 +24,6 @@ jobs:
     - run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
     - run: echo "DOMAIN_NAME=${{ env.STAGE }}.pocok.biz" >> $GITHUB_ENV
     - run: echo "API_URL=https://${{ env.DOMAIN_NAME }}" >> $GITHUB_ENV
-    - run: echo "MAILGUN_SENDER=${{ env.STAGE }}@mg.pocok.biz" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -46,8 +51,8 @@ jobs:
         DOMAIN_NAME: ${{ env.DOMAIN_NAME }}
         API_URL: ${{ env.API_URL }}
         MAILGUN_DOMAIN: mg.pocok.biz
-        MAILGUN_SENDER: ${{ env.MAILGUN_SENDER }}
-        EMAIL_RECIPIENT: matedonka@apexlab.io
+        MAILGUN_SENDER: apex@mg.pocok.biz
+        EMAIL_RECIPIENT: ${{ github.event.inputs.emailRecipient }}
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
