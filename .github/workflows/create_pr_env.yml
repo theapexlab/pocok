@@ -15,12 +15,10 @@ jobs:
     - name: Inject slug variables
       uses: rlespinasse/github-slug-action@v4
 
-    - name: Set envs
-      run: |
-        echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
-        echo "DOMAIN_NAME=${{STAGE}}.pocok.biz" >> $GITHUB_ENV
-        echo "API_URL=https://${{DOMAIN_NAME}}" >> $GITHUB_ENV
-        echo "MAILGUN_SENDER=${{STAGE}}@mg.pocok.biz" >> $GITHUB_ENV
+    - run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+    - run: echo "DOMAIN_NAME=${{ env.STAGE }}.pocok.biz" >> $GITHUB_ENV
+    - run: echo "API_URL=https://${{ env.DOMAIN_NAME }}" >> $GITHUB_ENV
+    - run: echo "MAILGUN_SENDER=${{ env.STAGE }}@mg.pocok.biz" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -45,10 +43,10 @@ jobs:
     - name: Deploy stack
       run: yarn sst deploy --stage ${STAGE}
       env:
-        DOMAIN_NAME: ${{DOMAIN_NAME}}
-        API_URL: ${{API_URL}}
+        DOMAIN_NAME: ${{ DOMAIN_NAME }}
+        API_URL: ${{ API_URL }}
         MAILGUN_DOMAIN: mg.pocok.biz
-        MAILGUN_SENDER: ${{MAILGUN_SENDER}}
+        MAILGUN_SENDER: ${{ MAILGUN_SENDER }}
         EMAIL_RECIPIENT: mate.donka@apexlab.io
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}

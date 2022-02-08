@@ -15,10 +15,8 @@ jobs:
     - name: Inject slug variables
       uses: rlespinasse/github-slug-action@v4
 
-    - name: Set envs
-      run: |
-        echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
-        echo "DOMAIN_NAME=${{STAGE}}.pocok.biz" >> $GITHUB_ENV
+    - run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+    - run: echo "DOMAIN_NAME=${{env.STAGE}}.pocok.biz" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v2
