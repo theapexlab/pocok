@@ -15,8 +15,10 @@ jobs:
     - name: Inject slug variables
       uses: rlespinasse/github-slug-action@v4
 
-    - name: Set STAGE variable in environment for next steps
-      run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+    - name: Set envs
+      run: |
+        echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+        echo "DOMAIN_NAME=${{STAGE}}.pocok.biz" >> $GITHUB_ENV
 
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -41,5 +43,5 @@ jobs:
     - name: Destroy stack
       run: yarn sst remove --stage ${STAGE}
       env:
-        DOMAIN_NAME: ${{STAGE}}.pocok.biz
+        DOMAIN_NAME: ${{DOMAIN_NAME}}
         PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
