@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
-	"pocok/src/api/invoices/invoice_utils"
+	"pocok/src/api/invoices/update_utils"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
@@ -46,6 +46,7 @@ func main() {
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
+
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
@@ -64,16 +65,16 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	if statusUpdate.Status == models.REJECTED {
-		return RejectInvoice(d, *claims, *statusUpdate)
+		return d.rejectInvoice(*claims, *statusUpdate)
 	}
 	if statusUpdate.Status == models.ACCEPTED {
-		return AcceptInvoice(d, *claims, *statusUpdate)
+		return d.acceptInvoice(*claims, *statusUpdate)
 	}
 
 	return utils.MailApiResponse(http.StatusTeapot, ""), nil
 }
 
-func RejectInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+func (d *dependencies) rejectInvoice(claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
 	deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
 	if deleteError != nil {
 		utils.LogError("Error while removing invoice", deleteError)
@@ -82,7 +83,7 @@ func RejectInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpd
 	return utils.MailApiResponse(http.StatusOK, ""), nil
 }
 
-func AcceptInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+func (d *dependencies) acceptInvoice(claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
 	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
 	if updateError != nil {
 		utils.LogError("Error while updating invoice", updateError)
@@ -94,12 +95,12 @@ func AcceptInvoice(d *dependencies, claims models.JWTClaims, update db.StatusUpd
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
-	feedbackError := invoice_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+	feedbackError := update_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
 	if feedbackError != nil {
 		utils.LogError("Error while submitting typless feedback", feedbackError)
 	}
 
-	wiseError := invoice_utils.UpdateWise(*d.sqsClient, d.wiseQueueUrl, *invoice)
+	wiseError := update_utils.SendWiseMessage(*d.sqsClient, d.wiseQueueUrl, *invoice)
 	if wiseError != nil {
 		utils.LogError("Error while creating wise request", wiseError)
 	}

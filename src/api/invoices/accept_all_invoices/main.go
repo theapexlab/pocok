@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 	"os"
-	"pocok/src/api/invoices/invoice_utils"
+	"pocok/src/api/invoices/update_utils"
 	"pocok/src/db"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
@@ -66,12 +66,12 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 			continue
 		}
 
-		feedbackError := invoice_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+		feedbackError := update_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
 		if feedbackError != nil {
 			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}
 
-		wiseError := invoice_utils.UpdateWise(*d.sqsClient, d.wiseQueueUrl, *invoice)
+		wiseError := update_utils.SendWiseMessage(*d.sqsClient, d.wiseQueueUrl, *invoice)
 		if wiseError != nil {
 			utils.LogError("Error while creating wise request", wiseError)
 		}

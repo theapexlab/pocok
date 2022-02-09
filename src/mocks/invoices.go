@@ -17,13 +17,13 @@ var MockInvoice = models.Invoice{
 
 	InvoiceNumber: "500000",
 	VendorName:    "Csipkés Zoltán",
-	AccountNumber: "10001000-10001000-10001000",
+	AccountNumber: "11111111-22222222-00000000",
 	Iban:          "HU69119800810030005009212644",
 	NetPrice:      "10000",
 	GrossPrice:    "20000",
 	VatRate:       "27%",
 	VatAmount:     "2700",
-	Currency:      "huf",
+	Currency:      "EUR",
 	DueDate:       "2050.01.01.",
 	Services: []models.Service{
 		{
@@ -66,12 +66,12 @@ var MockInvoice2 = models.Invoice{
 	VatRate:       "AAM",
 	VatAmount:     "0",
 	InvoiceNumber: "1",
-	VendorName:    "Wojak",
-	AccountNumber: "10001000-10001000-10001000",
+	VendorName:    "Wojak Polak",
+	AccountNumber: "11111111-11111112-00000000",
 	Iban:          "PL69119800810030005009212644",
 	NetPrice:      "1",
 	GrossPrice:    "2",
-	Currency:      "zł",
+	Currency:      "EUR",
 	DueDate:       "2050.01.01.",
 	Services:      []models.Service{},
 

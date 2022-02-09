@@ -1,4 +1,4 @@
-package invoice_utils
+package update_utils
 
 import (
 	"pocok/src/services/typless"

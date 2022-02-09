@@ -1,4 +1,4 @@
-package invoice_utils
+package update_utils
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
-func UpdateWise(sqsClient sqs.Client, wiseQueueUrl string, invoice models.Invoice) error {
+func SendWiseMessage(sqsClient sqs.Client, wiseQueueUrl string, invoice models.Invoice) error {
 	messageBody := wise.WiseMessageData{
 		RequestType: wise.WiseStep1,
 		Invoice:     invoice,
