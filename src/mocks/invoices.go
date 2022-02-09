@@ -13,7 +13,7 @@ var MockInvoice = models.Invoice{
 	ReceivedAt: "2022.01.18",
 	Filename:   "filename1",
 
-	VendorEmail: "wojak@example.com",
+	VendorEmail: "csipkes@example.com",
 
 	InvoiceNumber: "500000",
 	VendorName:    "Csipkés Zoltán",
@@ -23,7 +23,7 @@ var MockInvoice = models.Invoice{
 	GrossPrice:    "20000",
 	VatRate:       "27%",
 	VatAmount:     "2700",
-	Currency:      "EUR",
+	Currency:      "HUF",
 	DueDate:       "2050.01.01.",
 	Services: []models.Service{
 		{
