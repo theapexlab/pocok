@@ -7,7 +7,7 @@ import (
 	"pocok/src/utils/models"
 )
 
-func UpdateTypeless(typlessToken string, typlessDocType string, invoice models.Invoice) error {
+func UpdateTypless(typlessToken string, typlessDocType string, invoice models.Invoice) error {
 	typlessError := typless.AddDocumentFeedback(
 		&typless.Config{
 			Token:   typlessToken,

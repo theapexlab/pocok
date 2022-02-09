@@ -66,7 +66,7 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 			continue
 		}
 
-		feedbackError := update_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+		feedbackError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
 		if feedbackError != nil {
 			utils.LogError("Error while submitting typless feedback", feedbackError)
 		}

@@ -95,7 +95,7 @@ func (d *dependencies) acceptInvoice(claims models.JWTClaims, update db.StatusUp
 		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
-	feedbackError := update_utils.UpdateTypeless(d.typlessToken, d.typlessDocType, *invoice)
+	feedbackError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
 	if feedbackError != nil {
 		utils.LogError("Error while submitting typless feedback", feedbackError)
 	}
