@@ -1,5 +1,6 @@
-import { Construct, Duration } from "@aws-cdk/core";
+import { Duration } from "@aws-cdk/core";
 import {
+  App,
   Bucket,
   Queue,
   Stack,
@@ -16,10 +17,10 @@ export class QueueStack extends Stack {
   invoiceQueue: Queue;
   processInvoiceQueue: Queue;
   emailSenderQueue: Queue;
-  wiseQueue: Queue
+  wiseQueue: Queue;
 
   constructor(
-    scope: Construct,
+    scope: App,
     id: string,
     props?: StackProps,
     additionalStackProps?: AdditionalStackProps
@@ -29,8 +30,11 @@ export class QueueStack extends Stack {
     this.processInvoiceQueue =
       this.createProcessInvoiceQueue(additionalStackProps);
     this.invoiceQueue = this.createPreprocessInvoiceQueue(additionalStackProps);
-    this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
-    this.wiseQueue = this.createWiseQueue(additionalStackProps)
+    this.emailSenderQueue = this.createEmailSenderQueue({
+      scope,
+      additionalStackProps,
+    });
+    this.wiseQueue = this.createWiseQueue();
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -89,7 +93,13 @@ export class QueueStack extends Stack {
     });
   }
 
-  createEmailSenderQueue(additionalStackProps?: AdditionalStackProps) {
+  createEmailSenderQueue({
+    scope,
+    additionalStackProps,
+  }: {
+    additionalStackProps?: AdditionalStackProps;
+    scope: App;
+  }) {
     return new Queue(this, "EmailSender", {
       consumer: {
         function: {
@@ -103,10 +113,7 @@ export class QueueStack extends Stack {
             jwtKey: process.env.JWT_KEY as string,
             assetBucketName: additionalStackProps?.storageStack.assetBucket
               .bucketName as string,
-            stage:
-              process.env.NODE_ENV === "development"
-                ? "development"
-                : "production",
+            stage: scope.local ? "development" : "production",
           },
           permissions: [
             additionalStackProps?.storageStack.assetBucket as Bucket,
@@ -122,24 +129,22 @@ export class QueueStack extends Stack {
     });
   }
 
-  createWiseQueue(_additionalStackProps?: AdditionalStackProps) {
-    const wiseQueue = new Queue(this, "Wise")
+  createWiseQueue() {
+    const wiseQueue = new Queue(this, "Wise");
     wiseQueue.addConsumer(this, {
       function: {
         handler: "src/consumers/wise_processor/main.go",
         environment: {
           queueUrl: wiseQueue.sqsQueue.queueUrl,
-          wiseApiToken: process.env.WISE_API_TOKEN as string
+          wiseApiToken: process.env.WISE_API_TOKEN as string,
         },
-        permissions: [
-          wiseQueue
-        ]
+        permissions: [wiseQueue],
       },
       consumerProps: {
         batchSize: 1,
       },
-    })
+    });
 
-    return wiseQueue
+    return wiseQueue;
   }
 }
