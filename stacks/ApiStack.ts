@@ -30,13 +30,12 @@ export class ApiStack extends Stack {
     };
 
     const api = new Api(this, "Api", {
-      customDomain:
-        process.env.NODE_ENV === "development"
-          ? undefined
-          : {
-              domainName: "api.pocok.biz",
-              hostedZone: "pocok.biz",
-            },
+      customDomain: scope.local
+        ? undefined
+        : {
+            domainName: process.env.DOMAIN_NAME as string,
+            hostedZone: "pocok.biz",
+          },
       routes: {
         "POST /webhooks/pipedream": {
           function: {
@@ -124,12 +123,11 @@ export class ApiStack extends Stack {
           },
         },
       },
-      cors:
-        process.env.NODE_ENV === "development"
-          ? {
-              allowOrigins: ["https://playground.amp.dev"],
-            }
-          : undefined,
+      cors: scope.local
+        ? {
+            allowOrigins: ["https://playground.amp.dev"],
+          }
+        : undefined,
     });
 
     this.addOutputs({

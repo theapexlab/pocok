@@ -1,5 +1,6 @@
-import { Construct, Duration } from "@aws-cdk/core";
+import { Duration } from "@aws-cdk/core";
 import {
+  App,
   Bucket,
   Queue,
   Stack,
@@ -18,7 +19,7 @@ export class QueueStack extends Stack {
   emailSenderQueue: Queue;
 
   constructor(
-    scope: Construct,
+    scope: App,
     id: string,
     props?: StackProps,
     additionalStackProps?: AdditionalStackProps
@@ -28,7 +29,10 @@ export class QueueStack extends Stack {
     this.processInvoiceQueue =
       this.createProcessInvoiceQueue(additionalStackProps);
     this.invoiceQueue = this.createPreprocessInvoiceQueue(additionalStackProps);
-    this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
+    this.emailSenderQueue = this.createEmailSenderQueue({
+      scope,
+      additionalStackProps,
+    });
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -87,7 +91,13 @@ export class QueueStack extends Stack {
     });
   }
 
-  createEmailSenderQueue(additionalStackProps?: AdditionalStackProps) {
+  createEmailSenderQueue({
+    scope,
+    additionalStackProps,
+  }: {
+    additionalStackProps?: AdditionalStackProps;
+    scope: App;
+  }) {
     return new Queue(this, "EmailSender", {
       consumer: {
         function: {
@@ -101,10 +111,7 @@ export class QueueStack extends Stack {
             jwtKey: process.env.JWT_KEY as string,
             assetBucketName: additionalStackProps?.storageStack.assetBucket
               .bucketName as string,
-            stage:
-              process.env.NODE_ENV === "development"
-                ? "development"
-                : "production",
+            stage: scope.local ? "development" : "production",
           },
           permissions: [
             additionalStackProps?.storageStack.assetBucket as Bucket,

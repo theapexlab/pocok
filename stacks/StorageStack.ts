@@ -1,5 +1,6 @@
-import { Construct, RemovalPolicy } from "@aws-cdk/core";
+import { RemovalPolicy } from "@aws-cdk/core";
 import {
+  App,
   Stack,
   Table,
   StackProps,
@@ -12,7 +13,7 @@ export class StorageStack extends Stack {
   invoiceBucket: Bucket;
   assetBucket: Bucket;
 
-  constructor(scope: Construct, id: string, props?: StackProps) {
+  constructor(scope: App, id: string, props?: StackProps) {
     super(scope, id, props);
 
     this.invoiceTable = new Table(this, "Invoices", {
@@ -27,21 +28,19 @@ export class StorageStack extends Stack {
         localSecondaryIndex1: { sortKey: "lsi1sk" },
       },
       dynamodbTable: {
-        removalPolicy:
-          process.env.NODE_ENV === "development"
-            ? RemovalPolicy.DESTROY
-            : RemovalPolicy.RETAIN,
+        removalPolicy: scope.local
+          ? RemovalPolicy.DESTROY
+          : RemovalPolicy.RETAIN,
       },
     });
 
     this.assetBucket = new Bucket(this, "AssetBucket");
-    
+
     this.invoiceBucket = new Bucket(this, "InvoiceBucket", {
       s3Bucket: {
-        removalPolicy:
-          process.env.NODE_ENV === "development"
-            ? RemovalPolicy.DESTROY
-            : RemovalPolicy.RETAIN,
+        removalPolicy: scope.local
+          ? RemovalPolicy.DESTROY
+          : RemovalPolicy.RETAIN,
       },
     });
   }
