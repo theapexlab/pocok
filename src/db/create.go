@@ -39,6 +39,10 @@ func PutInvoice(client *dynamodb.Client, tableName string, invoiceData *models.I
 		InvoiceNumber:   invoiceData.InvoiceNumber,
 	}
 
+	vendor, _ := GetVendor(client, tableName, models.APEX_ID, invoice.VendorName)
+	if vendor != nil {
+		invoice.VendorEmail = vendor.VendorEmail
+	}
 	item, itemError := attributevalue.MarshalMap(invoice)
 	if itemError != nil {
 		return nil, itemError

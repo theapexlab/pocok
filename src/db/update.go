@@ -159,6 +159,13 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			":v12": &types.AttributeValueMemberS{Value: update.InvoiceNumber},
 		},
 	})
+	if update.VendorName != "" && update.VendorEmail != "" {
+		UpdateVendor(client, tableName, models.APEX_ID, VendorUpdate{
+			VendorName:  update.VendorName,
+			VendorEmail: update.VendorEmail,
+		})
+	}
+
 	return updateError
 }
 
