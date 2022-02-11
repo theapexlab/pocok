@@ -13,22 +13,22 @@ const BillingoAddress = "noreply@billingo.hu"
 type Billingo struct{}
 
 func (b *Billingo) Parse(jsonBody *models.EmailWebhookBody) (string, error) {
-	awsTrackUrl, parseError := parseAwsTrackUrl(jsonBody.Html)
+	awsTrackUrl, parseError := b.parseAwsTrackUrl(jsonBody.Html)
 	if parseError != nil {
 		return "", errors.New("can't parse aws track url")
 	}
 
-	invoiceSummaryUrl, getRedirectUrlError := getFinalRedirectUrl(awsTrackUrl)
+	invoiceSummaryUrl, getRedirectUrlError := b.getFinalRedirectUrl(awsTrackUrl)
 	if getRedirectUrlError != nil {
 		return "", errors.New("can't get billingo url from aws track url")
 	}
 
-	pdfUrl := getPdfUrl(invoiceSummaryUrl)
+	pdfUrl := b.getPdfUrl(invoiceSummaryUrl)
 
 	return pdfUrl, nil
 }
 
-func parseAwsTrackUrl(html string) (string, error) {
+func (b *Billingo) parseAwsTrackUrl(html string) (string, error) {
 	r, regexpError := regexp.Compile(`title="SZÁMLA LETÖLTÉSE" href="(.*)" style`)
 	if regexpError != nil {
 		return "", regexpError
@@ -43,7 +43,7 @@ func parseAwsTrackUrl(html string) (string, error) {
 }
 
 // returns the final url after a serious of redirects
-func getFinalRedirectUrl(url string) (string, error) {
+func (b *Billingo) getFinalRedirectUrl(url string) (string, error) {
 	resp, httpGetError := http.Get(url)
 	if httpGetError != nil {
 		return "", httpGetError
@@ -59,6 +59,6 @@ the pdf url can be constructed from the invoice summary url
 example invoice summary url: https://app.billingo.hu/document-access/default/K90RVdAvQ7gNoq62XvLWJeXq2lDny6aO
 example pdf url: https://app.billingo.hu/document-access/K90RVdAvQ7gNoq62XvLWJeXq2lDny6aO/download
 */
-func getPdfUrl(invoiceSummaryUrl string) string {
+func (b *Billingo) getPdfUrl(invoiceSummaryUrl string) string {
 	return strings.Replace(invoiceSummaryUrl, "default/", "", 1) + "/download"
 }
