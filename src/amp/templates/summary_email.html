@@ -160,7 +160,7 @@
                   <div>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/accept?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input
@@ -179,7 +179,7 @@
                     </form>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/reject?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input

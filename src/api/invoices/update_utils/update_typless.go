@@ -17,6 +17,7 @@ func UpdateTypless(typlessToken string, typlessDocType string, invoice models.In
 	)
 	if typlessError != nil {
 		utils.LogError("Error adding document feedback to typless", typlessError)
+		return typlessError
 	}
 
 	return nil

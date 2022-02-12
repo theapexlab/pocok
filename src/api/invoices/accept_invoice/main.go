@@ -23,9 +23,9 @@ type dependencies struct {
 	tableName      string
 	typlessToken   string
 	typlessDocType string
-	wiseService    *wise.WiseService
 	wiseQueueUrl   string
 	sqsClient      *sqs.Client
+	wiseService    *wise.WiseService
 }
 
 func main() {
@@ -44,6 +44,7 @@ func main() {
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
+
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
@@ -55,25 +56,19 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	var invoiceIds []string
-	for invoiceId := range data {
-		invoiceIds = append(invoiceIds, invoiceId)
+	update, validationError := db.GetValidStatusUpdate(data)
+	if validationError != nil {
+		utils.LogError("Invalid while validating update", validationError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), validationError
 	}
 
-	updateError := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, invoiceIds, models.ACCEPTED)
-	if updateError != nil {
-		utils.LogError("Error updating dynamo db", updateError)
-		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	acceptError := d.AcceptInvoice(*claims, *update)
+	if acceptError != nil {
+		utils.LogError("Invoice accept failed", validationError)
+		return utils.MailApiResponse(http.StatusInternalServerError, acceptError.Error()), acceptError
 	}
 
-	for invoiceId := range data {
-		d.AcceptInvoice(*claims, db.StatusUpdate{
-			InvoiceId: invoiceId,
-			Status:    models.ACCEPTED,
-		})
-	}
-
-	return utils.MailApiResponse(http.StatusOK, "{}"), nil
+	return utils.MailApiResponse(http.StatusOK, ""), nil
 }
 
 func (d *dependencies) AcceptInvoice(claims models.JWTClaims, updateInput db.StatusUpdate) error {

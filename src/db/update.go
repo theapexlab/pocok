@@ -12,6 +12,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+type AcceptModel struct {
+	InvoiceId string
+}
+
+type RejectModel struct {
+	InvoiceId string
+}
+
 type StatusUpdate struct {
 	InvoiceId string
 	Status    string

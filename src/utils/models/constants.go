@@ -7,9 +7,11 @@ const (
 
 // InvoiceStatus Options
 const (
-	PENDING  string = "pending"
-	ACCEPTED string = "accepted"
-	REJECTED string = "rejected"
+	PENDING         string = "pending"
+	ON_TRANSFER     string = "onTransfer"
+	TRANSFER_FAILED string = "transferFailed"
+	ACCEPTED        string = "accepted"
+	REJECTED        string = "rejected"
 )
 
 // Dynamo Key Constants
