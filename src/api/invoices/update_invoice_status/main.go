@@ -3,9 +3,8 @@ package main
 import (
 	"net/http"
 	"os"
+	"pocok/src/api/invoices/update_utils"
 	"pocok/src/db"
-	"pocok/src/services/typless"
-	"pocok/src/services/typless/create_training_data"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
@@ -16,6 +15,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 )
 
 type dependencies struct {
@@ -25,6 +25,8 @@ type dependencies struct {
 	bucketName     string
 	typlessToken   string
 	typlessDocType string
+	wiseQueueUrl   string
+	sqsClient      *sqs.Client
 }
 
 func main() {
@@ -35,6 +37,8 @@ func main() {
 		bucketName:     os.Getenv("bucketName"),
 		typlessToken:   os.Getenv("typlessToken"),
 		typlessDocType: os.Getenv("typlessDocType"),
+		wiseQueueUrl:   os.Getenv("wiseQueueUrl"),
+		sqsClient:      aws_clients.GetSQSClient(),
 	}
 	lambda.Start(d.handler)
 }
@@ -42,6 +46,7 @@ func main() {
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
+
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
 		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
@@ -60,47 +65,44 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 
 	if statusUpdate.Status == models.REJECTED {
-		deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, statusUpdate.InvoiceId, statusUpdate.Filename)
-		if deleteError != nil {
-			utils.LogError("Error while removing invoice", deleteError)
-			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-		}
-		return utils.MailApiResponse(http.StatusOK, ""), nil
+		return d.rejectInvoice(*claims, *statusUpdate)
 	}
-
 	if statusUpdate.Status == models.ACCEPTED {
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, *statusUpdate)
-		if updateError != nil {
-			utils.LogError("Error while updating invoice", updateError)
-			return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-		}
-		feedbackError := updateFeedback(d, claims.OrgId, statusUpdate.InvoiceId)
-		if feedbackError != nil {
-			utils.LogError("Error while submitting typless feedback", feedbackError)
-		}
-		return utils.MailApiResponse(http.StatusOK, ""), nil
+		return d.acceptInvoice(*claims, *statusUpdate)
 	}
 
 	return utils.MailApiResponse(http.StatusTeapot, ""), nil
 }
 
-func updateFeedback(d *dependencies, orgId string, invoiceId string) error {
-	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, orgId, invoiceId)
+func (d *dependencies) rejectInvoice(claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+	deleteError := db.DeleteInvoice(d.dbClient, d.tableName, *d.s3Client, d.bucketName, claims.OrgId, update.InvoiceId, update.Filename)
+	if deleteError != nil {
+		utils.LogError("Error while removing invoice", deleteError)
+		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	}
+	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func (d *dependencies) acceptInvoice(claims models.JWTClaims, update db.StatusUpdate) (*events.APIGatewayProxyResponse, error) {
+	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, update)
+	if updateError != nil {
+		utils.LogError("Error while updating invoice", updateError)
+		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+	}
+	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, update.InvoiceId)
 	if getInvoiceError != nil {
-		utils.LogError("Error getting invoice from db", getInvoiceError)
-		return getInvoiceError
+		utils.LogError("Error while getting invoice", getInvoiceError)
+		return utils.MailApiResponse(http.StatusOK, ""), nil
 	}
 
-	typlessError := typless.AddDocumentFeedback(
-		&typless.Config{
-			Token:   d.typlessToken,
-			DocType: d.typlessDocType,
-		},
-		*create_training_data.CreateTrainingData(invoice),
-	)
-	if typlessError != nil {
-		utils.LogError("Error adding document feedback to typless", typlessError)
+	feedbackError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
+	if feedbackError != nil {
+		utils.LogError("Error while submitting typless feedback", feedbackError)
 	}
 
-	return nil
+	wiseError := update_utils.SendWiseMessage(*d.sqsClient, d.wiseQueueUrl, *invoice)
+	if wiseError != nil {
+		utils.LogError("Error while creating wise request", wiseError)
+	}
+	return utils.MailApiResponse(http.StatusOK, ""), nil
 }

@@ -34,10 +34,10 @@ var _ = Describe("CreateTrainingData", func() {
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.GROSS_PRICE)).To(Equal("20000"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.NET_PRICE)).To(Equal("10000"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.VENDOR_NAME)).To(Equal("Csipkés Zoltán"))
-			Expect(getLearningFieldValue(trainingData.LearningFields, typless.ACCOUNT_NUMBER)).To(Equal("10001000-10001000-10001000"))
+			Expect(getLearningFieldValue(trainingData.LearningFields, typless.ACCOUNT_NUMBER)).To(Equal("11111111-22222222-00000000"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.IBAN)).To(Equal("HU69119800810030005009212644"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.DUE_DATE)).To(Equal("2050.01.01."))
-			Expect(getLearningFieldValue(trainingData.LearningFields, typless.CURRENCY)).To(Equal("huf"))
+			Expect(getLearningFieldValue(trainingData.LearningFields, typless.CURRENCY)).To(Equal("HUF"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.VAT_RATE)).To(Equal("27%"))
 			Expect(getLearningFieldValue(trainingData.LearningFields, typless.VAT_AMOUNT)).To(Equal("2700"))
 

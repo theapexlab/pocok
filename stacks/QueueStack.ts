@@ -17,6 +17,7 @@ export class QueueStack extends Stack {
   invoiceQueue: Queue;
   processInvoiceQueue: Queue;
   emailSenderQueue: Queue;
+  wiseQueue: Queue;
 
   constructor(
     scope: App,
@@ -33,6 +34,7 @@ export class QueueStack extends Stack {
       scope,
       additionalStackProps,
     });
+    this.wiseQueue = this.createWiseQueue();
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -125,5 +127,24 @@ export class QueueStack extends Stack {
         },
       },
     });
+  }
+
+  createWiseQueue() {
+    const wiseQueue = new Queue(this, "Wise");
+    wiseQueue.addConsumer(this, {
+      function: {
+        handler: "src/consumers/wise_processor/main.go",
+        environment: {
+          queueUrl: wiseQueue.sqsQueue.queueUrl,
+          wiseApiToken: process.env.WISE_API_TOKEN as string,
+        },
+        permissions: [wiseQueue],
+      },
+      consumerProps: {
+        batchSize: 1,
+      },
+    });
+
+    return wiseQueue;
   }
 }
