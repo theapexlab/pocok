@@ -16,7 +16,8 @@ export class QueueStack extends Stack {
   invoiceQueue: Queue;
   processInvoiceQueue: Queue;
   emailSenderQueue: Queue;
-  wiseQueue: Queue
+  wiseQueue: Queue;
+  wiseErrorQueue: Queue;
 
   constructor(
     scope: Construct,
@@ -30,7 +31,8 @@ export class QueueStack extends Stack {
       this.createProcessInvoiceQueue(additionalStackProps);
     this.invoiceQueue = this.createPreprocessInvoiceQueue(additionalStackProps);
     this.emailSenderQueue = this.createEmailSenderQueue(additionalStackProps);
-    this.wiseQueue = this.createWiseQueue(additionalStackProps)
+    this.wiseErrorQueue = this.createWiseErrorQueue(additionalStackProps);
+    this.wiseQueue = this.createWiseQueue(additionalStackProps);
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -122,24 +124,48 @@ export class QueueStack extends Stack {
     });
   }
 
-  createWiseQueue(_additionalStackProps?: AdditionalStackProps) {
-    const wiseQueue = new Queue(this, "Wise")
+  createWiseQueue(additionalStackProps?: AdditionalStackProps) {
+    const wiseQueue = new Queue(this, "Wise");
     wiseQueue.addConsumer(this, {
       function: {
         handler: "src/consumers/wise_processor/main.go",
         environment: {
           queueUrl: wiseQueue.sqsQueue.queueUrl,
-          wiseApiToken: process.env.WISE_API_TOKEN as string
+          wiseApiToken: process.env.WISE_API_TOKEN as string,
+          tableName: additionalStackProps?.storageStack.invoiceTable
+            .tableName as string,
         },
         permissions: [
-          wiseQueue
-        ]
+          wiseQueue,
+          additionalStackProps?.storageStack.invoiceTable as Table,
+        ],
       },
       consumerProps: {
         batchSize: 1,
       },
-    })
+      deadLetterQueue: this.wiseErrorQueue.sqsQueue,
+      deadLetterQueueEnabled: true,
+    });
 
-    return wiseQueue
+    return wiseQueue;
+  }
+
+  createWiseErrorQueue(additionalStackProps?: AdditionalStackProps) {
+    const wiseErrorQueue = new Queue(this, "WiseError");
+    wiseErrorQueue.addConsumer(this, {
+      function: {
+        handler: "src/consumers/wise_error_processor/main.go",
+        environment: {
+          tableName: additionalStackProps?.storageStack.invoiceTable
+            .tableName as string,
+        },
+        permissions: [additionalStackProps?.storageStack.invoiceTable as Table],
+      },
+      consumerProps: {
+        batchSize: 1,
+      },
+    });
+
+    return wiseErrorQueue;
   }
 }

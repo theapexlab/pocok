@@ -94,7 +94,7 @@ func (d *dependencies) AcceptInvoice(claims models.JWTClaims, updateInput db.Sta
 	}
 	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, db.StatusUpdate{
 		InvoiceId: updateInput.InvoiceId,
-		Status:    models.ON_TRANSFER,
+		Status:    models.TRANSFER_LOADING,
 	})
 	if updateError != nil {
 		utils.LogError("Update error", updateError)

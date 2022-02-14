@@ -15,14 +15,14 @@ func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string)
 	resp, dbError := client.Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              &tableName,
 		IndexName:              aws.String(models.LOCAL_SECONDARY_INDEX_1),
-		KeyConditionExpression: aws.String("#PK = :PK and #SK = :SK"),
+		KeyConditionExpression: aws.String("#PK = :PK and begins_with(#SK, :SK)"),
 		ExpressionAttributeNames: map[string]string{
 			"#PK": "pk",
 			"#SK": "lsi1sk",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":PK": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
-			":SK": &types.AttributeValueMemberS{Value: models.STATUS + "#pending"},
+			":SK": &types.AttributeValueMemberS{Value: models.STATUS + "#" + models.PENDING},
 		},
 	})
 	if dbError != nil {

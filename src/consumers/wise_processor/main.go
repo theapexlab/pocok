@@ -49,12 +49,14 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			utils.LogError("handler - step4", step4Error)
 			return step4Error
 		}
-		// TODO dead letter queue
 
-		db.UpdateInvoiceStatus(d.dbClient, d.tableName, models.APEX_ID, db.StatusUpdate{
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, models.APEX_ID, db.StatusUpdate{
 			InvoiceId: messageData.Invoice.InvoiceId,
 			Status:    models.ACCEPTED,
 		})
+		if updateError != nil {
+			utils.LogError("error while updating invoice", updateError)
+		}
 	}
 	return nil
 }
