@@ -11,18 +11,18 @@ import (
 	"pocok/src/utils/models"
 )
 
-var _ = BeforeSuite(func() {
-	httpmock.Activate()
-})
-
-var _ = AfterSuite(func() {
-	httpmock.DeactivateAndReset()
-})
-
 var _ = Describe("Billingo", func() {
 	billingo := url_parsing_strategies.Billingo{}
 	var url string
 	var testError error
+
+	BeforeEach(func() {
+		httpmock.Activate()
+	})
+
+	AfterEach(func() {
+		httpmock.DeactivateAndReset()
+	})
 
 	When("sender is billingo with valid html body", func() {
 		awsTrackUrl := "https://2g2zw50k.r.eu-central-1.awstrack.me/L0/https:%2F%2Fapp.billingo.hu%2Fdocument-access%2FK90RVdAvQ7gNoq62XvLWJeXq2lDny6aO/1/0107017dfb72c633-ff7877cf-fac2-415e-bb98-6f1709ae7470-000000/OHClr1vWQbzCIWXrIxHWiBDQDHg=30"
