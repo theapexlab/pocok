@@ -160,10 +160,13 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 		},
 	})
 	if update.VendorName != "" && update.VendorEmail != "" {
-		UpdateVendor(client, tableName, models.APEX_ID, VendorUpdate{
+		updateVendorError := UpdateVendor(client, tableName, models.APEX_ID, VendorUpdate{
 			VendorName:  update.VendorName,
 			VendorEmail: update.VendorEmail,
 		})
+		if updateVendorError != nil {
+			utils.LogError("Coult not update vendor", updateVendorError)
+		}
 	}
 
 	return updateError
