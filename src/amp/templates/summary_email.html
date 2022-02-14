@@ -118,6 +118,9 @@
       .save-error {
         color: red;
       }
+      .pendingTransferLoading {
+        background-color: #6e6b11;
+      }
     </style>
   </head>
 
@@ -141,7 +144,10 @@
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div class="item item-view" id="{{invoice.invoiceId}}-item-view">
+            <div
+              class="item item-view {{invoice.status}}"
+              id="{{invoice.invoiceId}}-item-view"
+            >
               <div class="item-header">
                 <div>
                   <div>ID: {{invoice.invoiceId}}</div>
