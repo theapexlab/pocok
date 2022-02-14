@@ -3,9 +3,11 @@ package main
 import (
 	"bytes"
 	"context"
+	"crypto/sha256"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
@@ -16,9 +18,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/cavaliergopher/grab/v3"
-	"github.com/segmentio/ksuid"
 )
 
 type dependencies struct {
@@ -51,7 +53,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		}
 
 		uploadPDFError := uploadPDF(d, uploadInvoiceMessage)
-		// if the original file doesn't exists, no need to retry the message
+		// if the original file doesn't exist, no need to retry the message
 		if uploadPDFError != nil && uploadPDFError != grab.StatusCodeError(403) {
 			return uploadPDFError
 		}
@@ -72,23 +74,42 @@ func parseBody(body string) (*models.UploadInvoiceMessage, error) {
 
 func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessage) error {
 	var data []byte
-	var upoloadError error
+	var uploadError error
 
 	switch uploadInvoiceMessage.Type {
 	case "url":
-		data, upoloadError = downloadFile(uploadInvoiceMessage.Body)
+		data, uploadError = downloadFile(uploadInvoiceMessage.Body)
 	case "base64":
-		data, upoloadError = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
+		data, uploadError = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
 	default:
-		upoloadError = errors.New("invalid uploadInvoiceMessage type: " + uploadInvoiceMessage.Type)
+		uploadError = errors.New("invalid uploadInvoiceMessage type: " + uploadInvoiceMessage.Type)
 	}
 
-	if upoloadError != nil {
-		utils.LogError("", upoloadError)
-		return upoloadError
+	if uploadError != nil {
+		utils.LogError("", uploadError)
+		return uploadError
 	}
 
-	filename := ksuid.New().String() + ".pdf"
+	checksum := sha256.Sum256(data)
+	checksumString := fmt.Sprintf("%x", checksum)
+	filename := checksumString + ".pdf"
+	fmt.Println(filename)
+
+	s3Response, s3LoadError := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
+		Bucket: &d.bucketName,
+		Key:    &filename,
+	})
+
+	// if the file already exists, no need to continue
+	if s3Response != nil {
+		utils.Log("invoice already exists!")
+		return nil
+	}
+
+	if s3LoadError != nil && !errors.Is(s3LoadError, &types.NoSuchKey{}) {
+		utils.LogError("s3 network error!", s3LoadError)
+		return s3LoadError
+	}
 
 	_, s3UploadError := d.s3Client.PutObject(context.TODO(), &s3.PutObjectInput{
 		Bucket:      &d.bucketName,
