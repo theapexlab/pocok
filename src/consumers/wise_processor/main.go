@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
 	"pocok/src/db"
 	"pocok/src/services/wise"
