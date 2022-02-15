@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"pocok/src/db"
+	"pocok/src/services/slack_service"
 	"pocok/src/services/wise"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
@@ -15,13 +16,19 @@ import (
 )
 
 type dependencies struct {
-	dbClient  *dynamodb.Client
-	tableName string
+	dbClient    *dynamodb.Client
+	slackClient slack_service.SlackClient
+	tableName   string
 }
 
 func main() {
 	d := &dependencies{
-		dbClient:  aws_clients.GetDbClient(),
+		dbClient: aws_clients.GetDbClient(),
+		slackClient: slack_service.SlackClient{
+			Url:      os.Getenv("slackWebhookUrl"),
+			Username: os.Getenv("slackUsername"),
+			Channel:  os.Getenv("slackChannel"),
+		},
 		tableName: os.Getenv("tableName"),
 	}
 
@@ -29,12 +36,16 @@ func main() {
 }
 
 func (d *dependencies) handler(event events.SQSEvent) error {
+	slackMessage := "Wise transfer error.\n"
 	for _, record := range event.Records {
 		var messageData wise.WiseMessageData
 		if unmarshalError := json.Unmarshal([]byte(record.Body), &messageData); unmarshalError != nil {
 			utils.LogError("handler - Unmarshal", unmarshalError)
-			return unmarshalError
+			slackMessage += unmarshalError.Error()
+			continue
 		}
+
+		slackMessage += "InvoiceId: " + messageData.Invoice.InvoiceId + "\n"
 
 		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, models.APEX_ID, db.StatusUpdate{
 			InvoiceId: messageData.Invoice.InvoiceId,
@@ -42,8 +53,14 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		})
 		if updateError != nil {
 			utils.LogError("error while updating invoice", updateError)
-			return updateError
+			slackMessage += updateError.Error()
 		}
+	}
+	slackMessage += "\nFor further information, see the logs in AWS"
+
+	_, slackError := d.slackClient.SendMessage(slackMessage)
+	if slackError != nil {
+		utils.LogError("error while seding slack message", slackError)
 	}
 	return nil
 }

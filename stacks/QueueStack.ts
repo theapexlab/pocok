@@ -125,7 +125,15 @@ export class QueueStack extends Stack {
   }
 
   createWiseQueue(additionalStackProps?: AdditionalStackProps) {
-    const wiseQueue = new Queue(this, "Wise");
+    const wiseQueue = new Queue(this, "Wise", {
+      sqsQueue: {
+        visibilityTimeout: Duration.minutes(1),
+        deadLetterQueue: {
+          maxReceiveCount: 2,
+          queue: this.wiseErrorQueue.sqsQueue,
+        },
+      },
+    });
     wiseQueue.addConsumer(this, {
       function: {
         handler: "src/consumers/wise_processor/main.go",
@@ -140,11 +148,10 @@ export class QueueStack extends Stack {
           additionalStackProps?.storageStack.invoiceTable as Table,
         ],
       },
+
       consumerProps: {
         batchSize: 1,
       },
-      deadLetterQueue: this.wiseErrorQueue.sqsQueue,
-      deadLetterQueueEnabled: true,
     });
 
     return wiseQueue;
@@ -158,6 +165,9 @@ export class QueueStack extends Stack {
         environment: {
           tableName: additionalStackProps?.storageStack.invoiceTable
             .tableName as string,
+          slackWebhookUrl: process.env.SLACK_WEBHOOK_URL as string,
+          slackChannel: process.env.SLACK_CHANNEL as string,
+          slackUsername: process.env.SLACK_USERNAME as string,
         },
         permissions: [additionalStackProps?.storageStack.invoiceTable as Table],
       },
