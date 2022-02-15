@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"pocok/src/services/wise"
 	apiModels "pocok/src/services/wise/api/models"
@@ -166,14 +165,10 @@ func (d *dependencies) sendMessage(wiseMessage *wise.WiseMessageData) error {
 		utils.LogError("sendMessage - Marshal", marshalError)
 		return marshalError
 	}
-	fmt.Println(d.wiseQueueUrl)
-	fmt.Println(wiseMessage)
 	messageString := string(messageByteArray)
-	sqsResponse, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+	_, sqsError := d.sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
 		MessageBody: &messageString,
 		QueueUrl:    &d.wiseQueueUrl,
 	})
-	fmt.Println(sqsResponse)
-	fmt.Println(sqsError)
 	return sqsError
 }

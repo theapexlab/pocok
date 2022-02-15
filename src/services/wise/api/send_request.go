@@ -24,12 +24,8 @@ func (wise *WiseClient) sendRequest(req *http.Request, data interface{}) error {
 		return err
 	}
 
-	// fmt.Printf("----- Response status : %s ----- \n", res.Status)
-	// fmt.Printf("%s \n ", body)
-	// fmt.Println("------------------------------------")
-
 	if !strings.HasPrefix(res.Status, "2") {
-		return errors.New("http wise request error: " + res.Status)
+		return errors.New("http wise request error: " + res.Status + " " + string(body))
 	}
 
 	if err = json.Unmarshal(body, data); err != nil {

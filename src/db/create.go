@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"pocok/src/utils"
 	"pocok/src/utils/models"
 	"time"
 
@@ -39,14 +40,26 @@ func PutInvoice(client *dynamodb.Client, tableName string, invoiceData *models.I
 		InvoiceNumber:   invoiceData.InvoiceNumber,
 	}
 
+	vendor, vendorError := GetVendor(client, tableName, models.APEX_ID, invoice.VendorName)
+	if vendorError != nil {
+		utils.Log("no vendor with the same name found")
+	}
+	if vendor != nil {
+		invoice.VendorEmail = vendor.VendorEmail
+	}
 	item, itemError := attributevalue.MarshalMap(invoice)
 	if itemError != nil {
+		utils.LogError("error while marshaling invoice", itemError)
 		return nil, itemError
 	}
-
 	dbResp, dbError := client.PutItem(context.TODO(), &dynamodb.PutItemInput{
 		TableName: &tableName,
 		Item:      item,
 	})
-	return dbResp, dbError
+	if dbError != nil {
+		utils.LogError("error creating item", dbError)
+		return nil, dbError
+	}
+
+	return dbResp, nil
 }

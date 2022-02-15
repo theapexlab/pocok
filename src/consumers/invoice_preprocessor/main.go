@@ -93,7 +93,6 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 	checksum := sha256.Sum256(data)
 	checksumString := fmt.Sprintf("%x", checksum)
 	filename := checksumString + ".pdf"
-	fmt.Println(filename)
 
 	s3Response, s3LoadError := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: &d.bucketName,
@@ -106,7 +105,9 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return nil
 	}
 
-	if s3LoadError != nil && !errors.Is(s3LoadError, &types.NoSuchKey{}) {
+	var nck *types.NoSuchKey
+
+	if s3LoadError != nil && !errors.As(s3LoadError, &nck) {
 		utils.LogError("s3 network error!", s3LoadError)
 		return s3LoadError
 	}
