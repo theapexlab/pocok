@@ -223,15 +223,11 @@ func UpdateVendor(client *dynamodb.Client, tableName string, orgId string, updat
 			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
 			"sk": &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
 		},
-		UpdateExpression: aws.String("set #pk = :pk, #sk = :sk, #vendorEmail = :vendorEmail"),
+		UpdateExpression: aws.String("set #vendorEmail = :vendorEmail"),
 		ExpressionAttributeNames: map[string]string{
-			"#pk":          "pk",
-			"#sk":          "sk",
 			"#vendorEmail": "vendorEmail",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
-			":pk":          &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
-			":sk":          &types.AttributeValueMemberS{Value: models.VENDOR + "#" + update.VendorName},
 			":vendorEmail": &types.AttributeValueMemberS{Value: update.VendorEmail},
 		},
 	})
