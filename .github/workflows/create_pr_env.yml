@@ -1,0 +1,59 @@
+name: Create PR Env
+
+on:
+  pull_request:
+    types: [labeled, opened, synchronize]
+
+jobs:
+  deploy:
+    if: |
+      (github.event.action == 'labeled' && github.event.label.name == ':rocket: deploy') ||
+      (github.event.action != 'labeled' && contains(github.event.pull_request.labels.*.name, ':rocket: deploy'))
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Inject slug variables
+      uses: rlespinasse/github-slug-action@v4
+
+    - run: echo "STAGE=pr-${{ github.event.number }}-${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+    - run: echo "DOMAIN_NAME=${{ env.STAGE }}.pocok.biz" >> $GITHUB_ENV
+    - run: echo "API_URL=https://${{ env.DOMAIN_NAME }}" >> $GITHUB_ENV
+
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-central-1
+
+    - uses: actions/setup-node@v2
+      with:
+        node-version: "14"
+    - uses: actions/setup-go@v2
+      with:
+        go-version: "1.17"
+
+    - name: Install dependencies
+      run: yarn
+
+    - name: Deploy stack
+      run: yarn sst deploy --stage ${{ env.STAGE }}
+      env:
+        DOMAIN_NAME: ${{ env.DOMAIN_NAME }}
+        API_URL: ${{ env.API_URL }}
+        MAILGUN_DOMAIN: mg.pocok.biz
+        MAILGUN_SENDER: apex@mg.pocok.biz
+        EMAIL_RECIPIENT: ${{ secrets.PR_EMAIL_RECIPIENT }}
+        MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
+        TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
+        TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
+        PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
+    
+    - name: Comment
+      uses: thollander/actions-comment-pull-request@v1
+      with:
+        message: '🚀 Deployed to ${{ env.API_URL }}'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -77,5 +77,24 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	if len(acceptErrors) != 0 {
 		return utils.MailApiResponse(http.StatusInternalServerError, "{}"), errors.New(acceptErrors)
 	}
+
+	for invoiceId := range data {
+		invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, invoiceId)
+		if getInvoiceError != nil {
+			utils.LogError("Error while getting invoice", getInvoiceError)
+			continue
+		}
+
+		feedbackError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
+		if feedbackError != nil {
+			utils.LogError("Error while submitting typless feedback", feedbackError)
+		}
+
+		wiseError := update_utils.SendWiseMessage(*d.sqsClient, d.wiseQueueUrl, *invoice)
+		if wiseError != nil {
+			utils.LogError("Error while creating wise request", wiseError)
+		}
+	}
+
 	return utils.MailApiResponse(http.StatusOK, "{}"), nil
 }

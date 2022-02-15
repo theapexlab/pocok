@@ -32,11 +32,12 @@ jobs:
     - name: Deploy stack
       run: yarn sst deploy --stage production
       env:
+        DOMAIN_NAME: api.pocok.biz
+        API_URL: https://api.pocok.biz
         MAILGUN_DOMAIN: mg.pocok.biz
         MAILGUN_SENDER: apex@mg.pocok.biz
         EMAIL_RECIPIENT: ${{ secrets.PROD_EMAIL_RECIPIENT }}
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
-        API_URL: ${{ secrets.PROD_API_URL }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
         PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
