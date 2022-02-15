@@ -165,7 +165,7 @@ func UpdateInvoiceData(client *dynamodb.Client, tableName string, orgId string, 
 			VendorEmail: update.VendorEmail,
 		})
 		if updateVendorError != nil {
-			utils.LogError("Coult not update vendor", updateVendorError)
+			utils.LogError("error while updating vendor", updateVendorError)
 		}
 	}
 

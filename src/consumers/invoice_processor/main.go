@@ -10,6 +10,7 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"strconv"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -82,6 +83,19 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return extractError
 		}
 
+		if !isInvoiceWithWireTransfer(extractedData) {
+			utils.Log("Not an invoice with wire transfer, skipping")
+			_, deleteErr := d.s3Client.DeleteObject(context.TODO(), &s3.DeleteObjectInput{
+				Bucket: &d.bucketName,
+				Key:    &filename,
+			})
+			if deleteErr != nil {
+				utils.LogError("Failed to delete s3 object", deleteErr)
+				return deleteErr
+			}
+			return nil
+		}
+
 		createInvoiceService := create_invoice.CreateInvoiceService{
 			OriginalFilename: originalFilename,
 			ExtractedData:    extractedData,
@@ -95,7 +109,6 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			utils.LogError("Failed to save invoice to db", saveInvoiceError)
 			return saveInvoiceError
 		}
-
 	}
 
 	return nil
@@ -112,4 +125,21 @@ func (d *dependencies) getS3Invoice(filename string) (*s3.GetObjectOutput, error
 	}
 
 	return invoice, s3GetError
+}
+
+func isInvoiceWithWireTransfer(extractedData *typless.ExtractDataFromFileOutput) bool {
+	isWireTransfer := false
+	indicators := []string{"átutalás", "wire transfer"}
+
+textBlockLoop:
+	for _, textBlock := range extractedData.TextBlocks {
+		for _, indicator := range indicators {
+			if strings.Contains(strings.ToLower(textBlock.Value), indicator) {
+				isWireTransfer = true
+				break textBlockLoop
+			}
+		}
+	}
+
+	return isWireTransfer
 }
