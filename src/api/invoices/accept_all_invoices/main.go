@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"net/http"
 	"os"
 	"pocok/src/api/invoices/update_utils"
@@ -9,7 +10,6 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
-	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -55,54 +55,27 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
 	}
 
-	var invoiceIds []string
-	for invoiceId := range data {
-		invoiceIds = append(invoiceIds, invoiceId)
+	deps := update_utils.AcceptDependencies{
+		DbClient:       d.dbClient,
+		TableName:      d.tableName,
+		TyplessToken:   d.typlessToken,
+		TyplessDocType: d.typlessDocType,
+		WiseService:    d.wiseService,
+		WiseQueueUrl:   d.wiseQueueUrl,
+		SqsClient:      d.sqsClient,
 	}
-
-	updateError := db.UpdateInvoiceStatuses(d.dbClient, d.tableName, claims.OrgId, invoiceIds, models.ACCEPTED)
-	if updateError != nil {
-		utils.LogError("Error updating dynamo db", updateError)
-		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
-	}
-
+	acceptErrors := ""
 	for invoiceId := range data {
-		d.AcceptInvoice(*claims, db.StatusUpdate{
+		acceptError := deps.AcceptInvoice(*claims, db.StatusUpdate{
 			InvoiceId: invoiceId,
-			Status:    models.ACCEPTED,
 		})
+		if acceptError != nil {
+			acceptErrors += acceptError.Error()
+		}
 	}
 
+	if len(acceptErrors) != 0 {
+		return utils.MailApiResponse(http.StatusInternalServerError, "{}"), errors.New(acceptErrors)
+	}
 	return utils.MailApiResponse(http.StatusOK, "{}"), nil
-}
-
-func (d *dependencies) AcceptInvoice(claims models.JWTClaims, updateInput db.StatusUpdate) error {
-	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, updateInput.InvoiceId)
-	if getInvoiceError != nil {
-		utils.LogError("Invoice query error", getInvoiceError)
-		return getInvoiceError
-	}
-	wiseDeps := update_utils.WiseDependencies{
-		WiseService:  d.wiseService,
-		SqsClient:    d.sqsClient,
-		WiseQueueUrl: d.wiseQueueUrl,
-	}
-	wiseError := wiseDeps.WiseSteps(*invoice)
-	if wiseError != nil {
-		utils.LogError("Wise error", wiseError)
-		return wiseError
-	}
-	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, db.StatusUpdate{
-		InvoiceId: updateInput.InvoiceId,
-		Status:    models.TRANSFER_LOADING,
-	})
-	if updateError != nil {
-		utils.LogError("Update error", updateError)
-		return updateError
-	}
-	typlessError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
-	if typlessError != nil {
-		utils.LogError("Error while submitting typless feedback", typlessError)
-	}
-	return nil
 }

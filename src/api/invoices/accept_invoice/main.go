@@ -9,7 +9,6 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
 	"pocok/src/utils/aws_clients"
-	"pocok/src/utils/models"
 	"pocok/src/utils/request_parser"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -62,42 +61,23 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		return utils.MailApiResponse(http.StatusUnprocessableEntity, validationError.Error()), validationError
 	}
 
-	acceptError := d.AcceptInvoice(*claims, *update)
+	deps := update_utils.AcceptDependencies{
+		DbClient:       d.dbClient,
+		TableName:      d.tableName,
+		TyplessToken:   d.typlessToken,
+		TyplessDocType: d.typlessDocType,
+		WiseService:    d.wiseService,
+		WiseQueueUrl:   d.wiseQueueUrl,
+		SqsClient:      d.sqsClient,
+	}
+	acceptError := deps.AcceptInvoice(*claims, db.StatusUpdate{
+		InvoiceId: update.InvoiceId,
+	})
+
 	if acceptError != nil {
 		utils.LogError("Invoice accept failed", validationError)
 		return utils.MailApiResponse(http.StatusInternalServerError, acceptError.Error()), acceptError
 	}
 
 	return utils.MailApiResponse(http.StatusOK, ""), nil
-}
-
-func (d *dependencies) AcceptInvoice(claims models.JWTClaims, updateInput db.StatusUpdate) error {
-	invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, updateInput.InvoiceId)
-	if getInvoiceError != nil {
-		utils.LogError("Invoice query error", getInvoiceError)
-		return getInvoiceError
-	}
-	wiseDeps := update_utils.WiseDependencies{
-		WiseService:  d.wiseService,
-		SqsClient:    d.sqsClient,
-		WiseQueueUrl: d.wiseQueueUrl,
-	}
-	wiseError := wiseDeps.WiseSteps(*invoice)
-	if wiseError != nil {
-		utils.LogError("Wise error", wiseError)
-		return wiseError
-	}
-	updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, claims.OrgId, db.StatusUpdate{
-		InvoiceId: updateInput.InvoiceId,
-		Status:    models.TRANSFER_LOADING,
-	})
-	if updateError != nil {
-		utils.LogError("Update error", updateError)
-		return updateError
-	}
-	typlessError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
-	if typlessError != nil {
-		utils.LogError("Error while submitting typless feedback", typlessError)
-	}
-	return nil
 }
