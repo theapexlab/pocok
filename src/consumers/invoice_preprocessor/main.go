@@ -12,13 +12,13 @@ import (
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
-	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/cavaliergopher/grab/v3"
 )
@@ -93,7 +93,6 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 	checksum := sha256.Sum256(data)
 	checksumString := fmt.Sprintf("%x", checksum)
 	filename := checksumString + ".pdf"
-	fmt.Println(filename)
 
 	s3Response, s3LoadError := d.s3Client.GetObject(context.TODO(), &s3.GetObjectInput{
 		Bucket: &d.bucketName,
@@ -106,7 +105,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 		return nil
 	}
 
-	if s3LoadError != nil && !errors.Is(s3LoadError, &types.NoSuchKey{}) {
+	if s3LoadError != nil && !strings.Contains(s3LoadError.Error(), "404") {
 		utils.LogError("s3 network error!", s3LoadError)
 		return s3LoadError
 	}
