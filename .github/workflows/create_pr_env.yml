@@ -50,6 +50,7 @@ jobs:
         MAILGUN_API_KEY: ${{ secrets.PROD_MAILGUN_API_KEY }}
         TYPLESS_TOKEN: ${{ secrets.PROD_TYPLESS_TOKEN }}
         TYPLESS_DOC_TYPE: ${{ secrets.PROD_TYPLESS_DOC_TYPE }}
+        WISE_API_TOKEN: ${{ secrets.PROD_WISE_API_TOKEN }}
         PROCESS_INVOICE_LAMBDA_TIMEOUT_SEC: 30
     
     - name: Comment
