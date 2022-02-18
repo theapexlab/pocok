@@ -46,7 +46,11 @@ func ParseEmail(body string) ([]models.UploadInvoiceMessage, error) {
 		for _, attachment := range email.Attachments {
 			if attachment.ContentType == "application/pdf" {
 				buffer := new(bytes.Buffer)
-				buffer.ReadFrom(attachment.Data)
+				_, readFromErr := buffer.ReadFrom(attachment.Data)
+				if readFromErr != nil {
+					utils.LogError("error while reading attachment data", readFromErr)
+					return nil, readFromErr
+				}
 				base64Data := base64.StdEncoding.EncodeToString(buffer.Bytes())
 
 				message := models.UploadInvoiceMessage{
