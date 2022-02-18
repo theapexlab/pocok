@@ -1,12 +1,14 @@
 package url_parsing_strategies_test
 
 import (
+	"net/mail"
+
+	"github.com/DusanKasan/parsemail"
 	"github.com/jarcoal/httpmock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"pocok/src/api/process_email/url_parsing_strategies"
-	"pocok/src/utils/models"
 )
 
 var _ = Describe("Szamlazz", func() {
@@ -44,13 +46,13 @@ var _ = Describe("Szamlazz", func() {
 				</a>
 			</div>`))
 
-			url, testError = szamlazz.Parse(&models.EmailWebhookBody{
-				From: []*models.EmailFrom{
+			url, testError = szamlazz.Parse(&parsemail.Email{
+				From: []*mail.Address{
 					{
 						Address: url_parsing_strategies.SzamlazzAddress,
 					},
 				},
-				Html: `
+				HTMLBody: `
 				<td align="center" valign="top">
 					<a href="` + invoiceSummaryUrl + `" style="background-color:#ff6630;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:14px;font-weight:bold;line-height:42px;text-align:center;text-decoration:none;width:300px;text-transform:uppercase" alt="Letöltöm a számlát" target="_blank">Letöltöm a számlát</a>
 				</td>`,

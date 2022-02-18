@@ -3,17 +3,18 @@ package url_parsing_strategies
 import (
 	"errors"
 	"net/http"
-	"pocok/src/utils/models"
 	"regexp"
 	"strings"
+
+	"github.com/DusanKasan/parsemail"
 )
 
 const BillingoAddress = "noreply@billingo.hu"
 
 type Billingo struct{}
 
-func (b *Billingo) Parse(jsonBody *models.EmailWebhookBody) (string, error) {
-	awsTrackUrl, parseError := b.parseAwsTrackUrl(jsonBody.Html)
+func (b *Billingo) Parse(email *parsemail.Email) (string, error) {
+	awsTrackUrl, parseError := b.parseAwsTrackUrl(email.HTMLBody)
 	if parseError != nil {
 		return "", errors.New("can't parse aws track url")
 	}

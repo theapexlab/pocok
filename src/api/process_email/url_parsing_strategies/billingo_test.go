@@ -2,13 +2,14 @@ package url_parsing_strategies_test
 
 import (
 	"net/http"
+	"net/mail"
 
+	"github.com/DusanKasan/parsemail"
 	"github.com/jarcoal/httpmock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"pocok/src/api/process_email/url_parsing_strategies"
-	"pocok/src/utils/models"
 )
 
 var _ = Describe("Billingo", func() {
@@ -40,13 +41,13 @@ var _ = Describe("Billingo", func() {
 				})
 			httpmock.RegisterResponder("GET", invoiceSummaryUrl, httpmock.NewStringResponder(200, ""))
 
-			url, testError = billingo.Parse(&models.EmailWebhookBody{
-				From: []*models.EmailFrom{
+			url, testError = billingo.Parse(&parsemail.Email{
+				From: []*mail.Address{
 					{
 						Address: url_parsing_strategies.BillingoAddress,
 					},
 				},
-				Html: `
+				HTMLBody: `
 				<td align="right" valign="middle" style="font-family:Arial,&#39;Helvetica Neue&#39;,Helvetica,sans-serif;font-size:14px;padding:17px;border-collapse:separate!important;border:2px none #707070;border-radius:5px;background-color:#78d230">
 					<a title="SZÁMLA LETÖLTÉSE" href="` + awsTrackUrl + `" style="font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:#ffffff" target="_blank">SZÁMLA LETÖLTÉSE</a>
 				</td>`,
