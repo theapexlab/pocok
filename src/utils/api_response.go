@@ -3,7 +3,6 @@ package utils
 import (
 	"encoding/json"
 	"os"
-	"pocok/src/utils"
 	"pocok/src/utils/models"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -22,7 +21,7 @@ func ApiErrorBody(message string) string {
 	}
 	jsonBytes, jsonError := json.Marshal(response)
 	if jsonError != nil {
-		utils.LogError("error while marshaling message", jsonError)
+		LogError("error while marshaling message", jsonError)
 		return ""
 	}
 	return string(jsonBytes)
