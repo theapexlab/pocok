@@ -41,7 +41,7 @@ func ValidateDeleteInvoiceInput(input DeleteInvoiceInput) error {
 }
 
 func DeleteInvoice(dbClient *dynamodb.Client, tableName string, s3Client s3.Client, bucketName string, input DeleteInvoiceInput) error {
-	invoice, invoiceError := GetInvoice(dbClient, tableName, GetInvoiceInput{OrgId: input.OrgId, InvoiceId: input.InvoiceId})
+	invoice, invoiceError := GetInvoice(dbClient, tableName, GetInvoiceInput(input))
 	fmt.Println(invoice.InvoiceId)
 	fmt.Println(invoice.Filename)
 	if invoiceError != nil {
