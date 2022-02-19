@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"errors"
 	"net/http"
 	"os"
 	"pocok/src/db"
@@ -34,36 +34,35 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	claims, parseTokenError := auth.ParseToken(token)
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
+		return utils.MailApiResponse(http.StatusUnauthorized, utils.ApiErrorBody(parseTokenError.Error())), nil
 	}
 
-	data, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
-	if parseFormDataError != nil {
-		utils.LogError("Form body parse failed", parseFormDataError)
-		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
+	invoice, parseError := getRequestData(r)
+	if parseError != nil {
+		utils.LogError("Form body parse failed", parseError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, utils.ApiErrorBody(parseError.Error())), nil
 	}
 
-	dataUpdate, validationErr := db.GetValidDataUpdate(data)
-	if validationErr != nil {
-		utils.LogError("Invalid update payload", validationErr)
-		response := models.ValidationErrorResponse{
-			Message: validationErr.Error(),
-		}
-		messageBytes, marshalError := json.Marshal(response)
-		if marshalError != nil {
-			utils.LogError("Error while parsing validation error response", marshalError)
-			return nil, marshalError
-		}
-
-		messageStr := string(messageBytes)
-		return utils.MailApiResponse(http.StatusUnprocessableEntity, messageStr), nil
-	}
-
-	updateErr := db.UpdateInvoiceData(d.dbClient, d.tableName, claims.OrgId, dataUpdate)
+	updateErr := db.UpdateInvoiceData(d.dbClient, d.tableName, db.UpdateDataInput{OrgId: claims.OrgId, Invoice: *invoice})
 	if updateErr != nil {
 		utils.LogError("Error updating dynamo db", updateErr)
-		return utils.MailApiResponse(http.StatusInternalServerError, ""), nil
+		return utils.MailApiResponse(http.StatusInternalServerError, utils.ApiErrorBody(parseError.Error())), nil
 	}
 
 	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func getRequestData(r events.APIGatewayProxyRequest) (*models.Invoice, error) {
+	mapData, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
+	if parseFormDataError != nil {
+		utils.LogError("Form body parse failed", parseFormDataError)
+		return nil, parseFormDataError
+	}
+
+	var data models.Invoice
+	mapError := utils.MapToStruct(mapData, &data)
+	if mapError != nil {
+		return nil, errors.New("invalid input")
+	}
+	return &data, nil
 }

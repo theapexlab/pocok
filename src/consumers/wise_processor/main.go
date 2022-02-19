@@ -5,7 +5,6 @@ import (
 	"os"
 	"pocok/src/db"
 	"pocok/src/services/wise"
-	apiModels "pocok/src/services/wise/api/models"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
 	"pocok/src/utils/models"
@@ -44,13 +43,20 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			return unmarshalError
 		}
 
-		step4Error := d.step4CreateTransfer(messageData)
+		wiseDeps := wise.WiseDependencies{
+			WiseService:  d.wiseService,
+			SqsClient:    d.sqsClient,
+			WiseQueueUrl: d.wiseQueueUrl,
+		}
+
+		step4Error := wiseDeps.Step4CreateTransfer(messageData)
 		if step4Error != nil {
 			utils.LogError("handler - step4", step4Error)
 			return step4Error
 		}
 
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, models.APEX_ID, db.StatusUpdate{
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, db.UpdateStatusInput{
+			OrgId:     models.APEX_ID,
 			InvoiceId: messageData.Invoice.InvoiceId,
 			Status:    models.ACCEPTED,
 		})
@@ -58,23 +64,5 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 			utils.LogError("error while updating invoice", updateError)
 		}
 	}
-	return nil
-}
-
-func (d *dependencies) step4CreateTransfer(step4Data wise.WiseMessageData) error {
-	transferInput := apiModels.Transfer{
-		TargetAccount: step4Data.RecipientAccountId,
-		QuoteUUID:     step4Data.QuoteId,
-		Details: struct {
-			Reference string `json:"reference"`
-		}{Reference: step4Data.Invoice.InvoiceNumber},
-		CustomerTransactionID: step4Data.TransactionId,
-	}
-	_, createTransferError := d.wiseService.WiseApi.CreateTransfer(transferInput)
-	if createTransferError != nil {
-		utils.LogError("step4CreateTransfer - CreateTransfer", createTransferError)
-		return createTransferError
-	}
-
 	return nil
 }

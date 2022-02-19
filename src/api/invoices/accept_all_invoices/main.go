@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	"pocok/src/api/invoices/update_utils"
-	"pocok/src/db"
 	"pocok/src/services/wise"
 	"pocok/src/utils"
 	"pocok/src/utils/auth"
@@ -46,13 +45,13 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	claims, parseTokenError := auth.ParseToken(token)
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
+		return utils.MailApiResponse(http.StatusUnauthorized, utils.ApiErrorBody(parseTokenError.Error())), nil
 	}
 
 	data, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
 	if parseFormDataError != nil {
 		utils.LogError("Form body parse failed", parseFormDataError)
-		return utils.MailApiResponse(http.StatusBadRequest, ""), parseFormDataError
+		return utils.MailApiResponse(http.StatusBadRequest, utils.ApiErrorBody(parseFormDataError.Error())), nil
 	}
 
 	deps := update_utils.AcceptDependencies{
@@ -66,35 +65,20 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 	}
 	acceptErrors := ""
 	for invoiceId := range data {
-		acceptError := deps.AcceptInvoice(*claims, db.StatusUpdate{
+		acceptError := deps.AcceptInvoice(update_utils.AcceptInvoiceInput{
+			OrgId:     claims.OrgId,
 			InvoiceId: invoiceId,
 		})
 		if acceptError != nil {
+			utils.LogError("error while accepting invoice", acceptError)
 			acceptErrors += acceptError.Error()
 		}
 	}
 
 	if len(acceptErrors) != 0 {
-		return utils.MailApiResponse(http.StatusInternalServerError, "{}"), errors.New(acceptErrors)
+		acceptErrorSummary := errors.New(acceptErrors)
+		utils.LogError("error while accepting invoices", acceptErrorSummary)
+		return utils.MailApiResponse(http.StatusInternalServerError, acceptErrorSummary.Error()), nil
 	}
-
-	for invoiceId := range data {
-		invoice, getInvoiceError := db.GetInvoice(d.dbClient, d.tableName, claims.OrgId, invoiceId)
-		if getInvoiceError != nil {
-			utils.LogError("Error while getting invoice", getInvoiceError)
-			continue
-		}
-
-		feedbackError := update_utils.UpdateTypless(d.typlessToken, d.typlessDocType, *invoice)
-		if feedbackError != nil {
-			utils.LogError("Error while submitting typless feedback", feedbackError)
-		}
-
-		wiseError := update_utils.SendWiseMessage(*d.sqsClient, d.wiseQueueUrl, *invoice)
-		if wiseError != nil {
-			utils.LogError("Error while creating wise request", wiseError)
-		}
-	}
-
-	return utils.MailApiResponse(http.StatusOK, "{}"), nil
+	return utils.MailApiResponse(http.StatusOK, ""), nil
 }

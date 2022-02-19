@@ -47,7 +47,8 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 		slackMessage += "InvoiceId: " + messageData.Invoice.InvoiceId + "\n"
 
-		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, models.APEX_ID, db.StatusUpdate{
+		updateError := db.UpdateInvoiceStatus(d.dbClient, d.tableName, db.UpdateStatusInput{
+			OrgId:     models.APEX_ID,
 			InvoiceId: messageData.Invoice.InvoiceId,
 			Status:    models.TRANSFER_ERROR,
 		})

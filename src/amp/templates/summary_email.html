@@ -178,14 +178,10 @@
                         name="invoiceId"
                         value="{{invoice.invoiceId}}"
                       />
-                      <input
-                        type="hidden"
-                        name="status"
-                        value="[[.Accepted]]"
-                      />
                       <button type="submit">Accept</button>
-                      <div submit-success>Accept successful.</div>
-                      <div submit-error>Accept failed.</div>
+                      <div submitting>Accept in progress</div>
+                      <div submit-success>Accept successful</div>
+                      <div submit-error template="submit_error_template"></div>
                     </form>
                     <form
                       method="post"
@@ -196,16 +192,6 @@
                         type="hidden"
                         name="invoiceId"
                         value="{{invoice.invoiceId}}"
-                      />
-                      <input
-                        type="hidden"
-                        name="status"
-                        value="[[.Rejected]]"
-                      />
-                      <input
-                        type="hidden"
-                        name="filename"
-                        value="{{invoice.filename}}"
                       />
                       <button
                         type="button"
@@ -219,8 +205,12 @@
                         hidden
                       >
                         <div>
-                          <div submit-error>Reject failed.</div>
-                          <div submit-success>Reject successful.</div>
+                          <div submitting>Reject in progress</div>
+                          <div submit-success>Reject successful</div>
+                          <div
+                            submit-error
+                            template="submit_error_template"
+                          ></div>
                         </div>
                         <div>Are you sure about that?</div>
                         <button type="submit">Yes king</button>
@@ -401,7 +391,7 @@
                       Currency:
                       <select name="currency">
                         <option value="{{invoice.currency}}" selected>
-                          {{currency}}
+                          {{invoice.currency}}
                         </option>
                         <option value="EUR">EUR</option>
                         <option value="HUF">HUF</option>
@@ -554,7 +544,7 @@
         </template>
         <template type="amp-mustache" id="submit_error_template">
           <div class="save-error">
-            Azthittem fölöltözöl rendesen! {{message}}
+            Azthittem fölöltözöl rendesen! Error: {{message}}
           </div>
         </template>
       </amp-list>
