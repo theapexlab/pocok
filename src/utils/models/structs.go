@@ -73,7 +73,7 @@ type InvoiceResponse struct {
 	Items []InvoiceResponseItem `json:"items"`
 	Total int                   `json:"total"`
 }
-type ValidationErrorResponse struct {
+type ErrorResponse struct {
 	Message string `json:"message"`
 }
 

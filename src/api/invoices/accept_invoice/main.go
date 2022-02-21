@@ -22,9 +22,13 @@ type dependencies struct {
 	tableName      string
 	typlessToken   string
 	typlessDocType string
-	wiseService    *wise.WiseService
 	wiseQueueUrl   string
 	sqsClient      *sqs.Client
+	wiseService    *wise.WiseService
+}
+
+type formData struct {
+	InvoiceId string
 }
 
 func main() {
@@ -43,15 +47,16 @@ func main() {
 func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	token := r.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
+
 	if parseTokenError != nil {
 		utils.LogError("Token validation failed", parseTokenError)
 		return utils.MailApiResponse(http.StatusUnauthorized, utils.ApiErrorBody(parseTokenError.Error())), nil
 	}
 
-	data, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
-	if parseFormDataError != nil {
-		utils.LogError("Form body parse failed", parseFormDataError)
-		return utils.MailApiResponse(http.StatusBadRequest, utils.ApiErrorBody(parseFormDataError.Error())), nil
+	data, parseError := getRequestData(r)
+	if parseError != nil {
+		utils.LogError("Form body parse failed", parseError)
+		return utils.MailApiResponse(http.StatusUnprocessableEntity, utils.ApiErrorBody(parseError.Error())), nil
 	}
 
 	deps := update_utils.AcceptDependencies{
@@ -63,22 +68,30 @@ func (d *dependencies) handler(r events.APIGatewayProxyRequest) (*events.APIGate
 		WiseQueueUrl:   d.wiseQueueUrl,
 		SqsClient:      d.sqsClient,
 	}
-	acceptErrors := ""
-	for invoiceId := range data {
-		acceptError := deps.AcceptInvoice(update_utils.AcceptInvoiceInput{
-			OrgId:     claims.OrgId,
-			InvoiceId: invoiceId,
-		})
-		if acceptError != nil {
-			utils.LogError("error while accepting invoice", acceptError)
-			acceptErrors += acceptError.Error()
-		}
+	acceptError := deps.AcceptInvoice(update_utils.AcceptInvoiceInput{
+		OrgId:     claims.OrgId,
+		InvoiceId: data.InvoiceId,
+	})
+
+	if acceptError != nil {
+		utils.LogError("Invoice accept failed", acceptError)
+		return utils.MailApiResponse(http.StatusInternalServerError, utils.ApiErrorBody(acceptError.Error())), nil
 	}
 
-	if len(acceptErrors) != 0 {
-		acceptErrorSummary := errors.New(acceptErrors)
-		utils.LogError("error while accepting invoices", acceptErrorSummary)
-		return utils.MailApiResponse(http.StatusInternalServerError, acceptErrorSummary.Error()), nil
-	}
 	return utils.MailApiResponse(http.StatusOK, ""), nil
+}
+
+func getRequestData(r events.APIGatewayProxyRequest) (*formData, error) {
+	mapData, parseFormDataError := request_parser.ParseUrlEncodedFormData(r)
+	if parseFormDataError != nil {
+		utils.LogError("Form body parse failed", parseFormDataError)
+		return nil, parseFormDataError
+	}
+
+	var data formData
+	mapError := utils.MapToStruct(mapData, &data)
+	if mapError != nil {
+		return nil, errors.New("invalid input")
+	}
+	return &data, nil
 }

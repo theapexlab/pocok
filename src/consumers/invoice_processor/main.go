@@ -9,6 +9,7 @@ import (
 	"pocok/src/services/typless/create_invoice"
 	"pocok/src/utils"
 	"pocok/src/utils/aws_clients"
+	"pocok/src/utils/models"
 	"strconv"
 	"strings"
 
@@ -103,7 +104,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 		invoice := createInvoiceService.CreateInvoice()
 		invoice.Filename = filename
 
-		_, saveInvoiceError := db.PutInvoice(d.dbClient, d.tableName, invoice)
+		_, saveInvoiceError := db.PutInvoice(d.dbClient, d.tableName, db.PutInvoiceInput{OrgId: models.APEX_ID, Invoice: *invoice})
 
 		if saveInvoiceError != nil {
 			utils.LogError("Failed to save invoice to db", saveInvoiceError)

@@ -40,25 +40,28 @@ func (d *dependencies) handler(request events.APIGatewayProxyRequest) (*events.A
 	token := request.QueryStringParameters["token"]
 	claims, parseTokenError := auth.ParseToken(token)
 	if parseTokenError != nil {
-		return utils.MailApiResponse(http.StatusUnauthorized, ""), parseTokenError
+		return utils.MailApiResponse(http.StatusUnauthorized, utils.ApiErrorBody(parseTokenError.Error())), nil
 	}
 
 	invoices, getPendingInvoicesError := db.GetPendingInvoices(d.dbClient, d.tableName, claims.OrgId)
 	if getPendingInvoicesError != nil {
 		utils.LogError("Error while getting pending invoices from db", getPendingInvoicesError)
-		return nil, getPendingInvoicesError
+		return utils.MailApiResponse(http.StatusInternalServerError, utils.ApiErrorBody(getPendingInvoicesError.Error())), nil
+
 	}
 
 	response, responseError := d.getInvoiceResponse(invoices)
 	if responseError != nil {
 		utils.LogError(responseError.Error(), responseError)
-		return nil, responseError
+		return utils.MailApiResponse(http.StatusInternalServerError, utils.ApiErrorBody(responseError.Error())), nil
+
 	}
 
 	invoiceBytes, marshalError := json.Marshal(response)
 	if marshalError != nil {
 		utils.LogError("Error while parsing invoices from db", marshalError)
-		return nil, marshalError
+		return utils.MailApiResponse(http.StatusInternalServerError, marshalError.Error()), nil
+
 	}
 
 	invoiceStr := string(invoiceBytes)

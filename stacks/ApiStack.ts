@@ -65,15 +65,13 @@ export class ApiStack extends Stack {
             ],
           },
         },
-        "POST /api/invoices/status": {
+        "POST /api/invoices/reject": {
           function: {
-            handler: "src/api/invoices/update_invoice_status/main.go",
+            handler: "src/api/invoices/reject_invoice/main.go",
             environment: {
               ...ampSharedEnvs,
               tableName: additionalStackProps?.storageStack.invoiceTable
                 .tableName as string,
-              typlessToken: process.env.TYPLESS_TOKEN as string,
-              typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
               bucketName: additionalStackProps?.storageStack.invoiceBucket
                 .bucketName as string,
               wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue
@@ -82,6 +80,25 @@ export class ApiStack extends Stack {
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,
               additionalStackProps?.storageStack.invoiceBucket as Bucket,
+              additionalStackProps?.queueStack.wiseQueue as Queue,
+            ],
+          },
+        },
+        "POST /api/invoices/accept": {
+          function: {
+            handler: "src/api/invoices/accept_invoice/main.go",
+            environment: {
+              ...ampSharedEnvs,
+              tableName: additionalStackProps?.storageStack.invoiceTable
+                .tableName as string,
+              typlessToken: process.env.TYPLESS_TOKEN as string,
+              typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
+              wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue
+                .queueUrl as string,
+              wiseApiToken: process.env.WISE_API_TOKEN as string,
+            },
+            permissions: [
+              additionalStackProps?.storageStack.invoiceTable as Table,
               additionalStackProps?.queueStack.wiseQueue as Queue,
             ],
           },
@@ -110,6 +127,7 @@ export class ApiStack extends Stack {
               typlessDocType: process.env.TYPLESS_DOC_TYPE as string,
               wiseQueueUrl: additionalStackProps?.queueStack.wiseQueue.sqsQueue
                 .queueUrl as string,
+              wiseApiToken: process.env.WISE_API_TOKEN as string,
             },
             permissions: [
               additionalStackProps?.storageStack.invoiceTable as Table,

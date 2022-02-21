@@ -11,18 +11,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
+type GetInvoiceInput struct {
+	OrgId     string
+	InvoiceId string
+}
+
+type GetVendorInput struct {
+	OrgId      string
+	VendorName string
+}
+
 func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string) ([]models.Invoice, error) {
 	resp, dbError := client.Query(context.TODO(), &dynamodb.QueryInput{
 		TableName:              &tableName,
 		IndexName:              aws.String(models.LOCAL_SECONDARY_INDEX_1),
-		KeyConditionExpression: aws.String("#PK = :PK and #SK = :SK"),
+		KeyConditionExpression: aws.String("#PK = :PK and begins_with(#SK, :SK)"),
 		ExpressionAttributeNames: map[string]string{
 			"#PK": "pk",
 			"#SK": "lsi1sk",
 		},
 		ExpressionAttributeValues: map[string]types.AttributeValue{
 			":PK": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
-			":SK": &types.AttributeValueMemberS{Value: models.STATUS + "#pending"},
+			":SK": &types.AttributeValueMemberS{Value: models.STATUS + "#" + models.PENDING},
 		},
 	})
 	if dbError != nil {
@@ -42,12 +52,12 @@ func GetPendingInvoices(client *dynamodb.Client, tableName string, orgId string)
 	return invoices, nil
 }
 
-func GetInvoice(client *dynamodb.Client, tableName string, orgId string, invoiceId string) (*models.Invoice, error) {
+func GetInvoice(client *dynamodb.Client, tableName string, input GetInvoiceInput) (*models.Invoice, error) {
 	resp, dbError := client.GetItem(context.TODO(), &dynamodb.GetItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
-			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
-			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + invoiceId},
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + input.OrgId},
+			"sk": &types.AttributeValueMemberS{Value: models.INVOICE + "#" + input.InvoiceId},
 		},
 	})
 	if dbError != nil {
@@ -65,12 +75,12 @@ func GetInvoice(client *dynamodb.Client, tableName string, orgId string, invoice
 	return &invoice, nil
 }
 
-func GetVendor(client *dynamodb.Client, tableName string, orgId string, vendorName string) (*models.Vendor, error) {
+func GetVendor(client *dynamodb.Client, tableName string, input GetVendorInput) (*models.Vendor, error) {
 	resp, dbError := client.GetItem(context.TODO(), &dynamodb.GetItemInput{
 		TableName: &tableName,
 		Key: map[string]types.AttributeValue{
-			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + orgId},
-			"sk": &types.AttributeValueMemberS{Value: models.VENDOR + "#" + vendorName},
+			"pk": &types.AttributeValueMemberS{Value: models.ORG + "#" + input.OrgId},
+			"sk": &types.AttributeValueMemberS{Value: models.VENDOR + "#" + input.VendorName},
 		},
 	})
 	if dbError != nil {

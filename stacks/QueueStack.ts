@@ -18,6 +18,7 @@ export class QueueStack extends Stack {
   processInvoiceQueue: Queue;
   emailSenderQueue: Queue;
   wiseQueue: Queue;
+  wiseErrorQueue: Queue;
 
   constructor(
     scope: App,
@@ -34,7 +35,8 @@ export class QueueStack extends Stack {
       scope,
       additionalStackProps,
     });
-    this.wiseQueue = this.createWiseQueue();
+    this.wiseErrorQueue = this.createWiseErrorQueue(additionalStackProps);
+    this.wiseQueue = this.createWiseQueue(additionalStackProps);
   }
 
   createProcessInvoiceQueue(additionalStackProps?: AdditionalStackProps) {
@@ -129,22 +131,58 @@ export class QueueStack extends Stack {
     });
   }
 
-  createWiseQueue() {
-    const wiseQueue = new Queue(this, "Wise");
+  createWiseQueue(additionalStackProps?: AdditionalStackProps) {
+    const wiseQueue = new Queue(this, "Wise", {
+      sqsQueue: {
+        visibilityTimeout: Duration.minutes(1),
+        deadLetterQueue: {
+          maxReceiveCount: 2,
+          queue: this.wiseErrorQueue.sqsQueue,
+        },
+      },
+    });
     wiseQueue.addConsumer(this, {
       function: {
         handler: "src/consumers/wise_processor/main.go",
         environment: {
           queueUrl: wiseQueue.sqsQueue.queueUrl,
           wiseApiToken: process.env.WISE_API_TOKEN as string,
+          tableName: additionalStackProps?.storageStack.invoiceTable
+            .tableName as string,
         },
-        permissions: [wiseQueue],
+        permissions: [
+          wiseQueue,
+          additionalStackProps?.storageStack.invoiceTable as Table,
+        ],
       },
+
       consumerProps: {
         batchSize: 1,
       },
     });
 
     return wiseQueue;
+  }
+
+  createWiseErrorQueue(additionalStackProps?: AdditionalStackProps) {
+    const wiseErrorQueue = new Queue(this, "WiseError");
+    wiseErrorQueue.addConsumer(this, {
+      function: {
+        handler: "src/consumers/wise_error_processor/main.go",
+        environment: {
+          tableName: additionalStackProps?.storageStack.invoiceTable
+            .tableName as string,
+          slackWebhookUrl: process.env.SLACK_WEBHOOK_URL as string,
+          slackChannel: process.env.SLACK_CHANNEL as string,
+          slackUsername: process.env.SLACK_USERNAME as string,
+        },
+        permissions: [additionalStackProps?.storageStack.invoiceTable as Table],
+      },
+      consumerProps: {
+        batchSize: 1,
+      },
+    });
+
+    return wiseErrorQueue;
   }
 }

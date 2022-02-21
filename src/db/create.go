@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"errors"
 	"pocok/src/utils"
 	"pocok/src/utils/models"
 	"time"
@@ -11,36 +12,56 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
-func PutInvoice(client *dynamodb.Client, tableName string, invoiceData *models.Invoice) (*dynamodb.PutItemOutput, error) {
+type PutInvoiceInput struct {
+	OrgId   string
+	Invoice models.Invoice
+}
+
+func ValidatePutInvoiceInput(input PutInvoiceInput) error {
+	if input.OrgId == "" {
+		return errors.New("orgId empty")
+	}
+	if input.Invoice.Filename == "" {
+		return errors.New("invoice filename empty")
+	}
+	return nil
+}
+
+func PutInvoice(client *dynamodb.Client, tableName string, input PutInvoiceInput) (*dynamodb.PutItemOutput, error) {
+	validationErr := ValidatePutInvoiceInput(input)
+	if validationErr != nil {
+		utils.LogError("input validation error", validationErr)
+		return nil, validationErr
+	}
 
 	id := ksuid.New().String()
 	status := models.PENDING
 	reveicedAt := time.Now().Format(time.RFC3339)
 
 	invoice := &models.Invoice{
-		Pk:              models.ORG + "#" + models.APEX_ID,
+		Pk:              models.ORG + "#" + input.OrgId,
 		Sk:              models.INVOICE + "#" + id,
 		Lsi1sk:          models.STATUS + "#" + status,
 		ReceivedAt:      reveicedAt,
 		InvoiceId:       id,
 		EntityType:      models.INVOICE,
 		Status:          status,
-		Filename:        invoiceData.Filename,
-		VendorName:      invoiceData.VendorName,
-		AccountNumber:   invoiceData.AccountNumber,
-		Iban:            invoiceData.Iban,
-		NetPrice:        invoiceData.NetPrice,
-		GrossPrice:      invoiceData.GrossPrice,
-		VatAmount:       invoiceData.VatAmount,
-		VatRate:         invoiceData.VatRate,
-		Currency:        invoiceData.Currency,
-		DueDate:         invoiceData.DueDate,
-		Services:        invoiceData.Services,
-		TyplessObjectId: invoiceData.TyplessObjectId,
-		InvoiceNumber:   invoiceData.InvoiceNumber,
+		Filename:        input.Invoice.Filename,
+		VendorName:      input.Invoice.VendorName,
+		AccountNumber:   input.Invoice.AccountNumber,
+		Iban:            input.Invoice.Iban,
+		NetPrice:        input.Invoice.NetPrice,
+		GrossPrice:      input.Invoice.GrossPrice,
+		VatAmount:       input.Invoice.VatAmount,
+		VatRate:         input.Invoice.VatRate,
+		Currency:        input.Invoice.Currency,
+		DueDate:         input.Invoice.DueDate,
+		Services:        input.Invoice.Services,
+		TyplessObjectId: input.Invoice.TyplessObjectId,
+		InvoiceNumber:   input.Invoice.InvoiceNumber,
 	}
 
-	vendor, vendorError := GetVendor(client, tableName, models.APEX_ID, invoice.VendorName)
+	vendor, vendorError := GetVendor(client, tableName, GetVendorInput{OrgId: input.OrgId, VendorName: input.Invoice.VendorName})
 	if vendorError != nil {
 		utils.Log("no vendor with the same name found")
 	}

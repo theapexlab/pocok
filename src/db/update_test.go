@@ -2,6 +2,7 @@ package db_test
 
 import (
 	"pocok/src/db"
+	"pocok/src/mocks"
 	"pocok/src/utils/models"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -9,74 +10,133 @@ import (
 )
 
 var _ = Describe("Status update validation", func() {
-	var update *db.StatusUpdate
-	var updateError error
+	var updateStatusInput db.UpdateStatusInput
+	var updateStatusError error
 
-	When("status is accept and valid", func() {
+	When("status is accepted and valid", func() {
 		BeforeEach(func() {
-			update, updateError = db.GetValidStatusUpdate(map[string]string{
-				"invoiceId": "ID1",
-				"status":    models.ACCEPTED,
-			})
+			updateStatusInput = db.UpdateStatusInput{
+				OrgId:     "ORGID",
+				InvoiceId: "INVOICEID",
+				Status:    models.ACCEPTED,
+			}
+			updateStatusError = db.ValidateUpdateStatusInput(updateStatusInput)
 		})
 
 		It("does not error", func() {
-			Expect(updateError).To(BeNil())
-		})
-
-		It("contains the data", func() {
-			Expect(update.InvoiceId).To(Equal("ID1"))
-			Expect(update.Status).To(Equal(models.ACCEPTED))
+			Expect(updateStatusError).To(BeNil())
 		})
 	})
 
-	When("id is missing", func() {
+	When("ids are missing", func() {
 		BeforeEach(func() {
-			_, updateError = db.GetValidStatusUpdate(map[string]string{
-				"status": models.ACCEPTED,
-			})
+			updateStatusInput = db.UpdateStatusInput{
+				Status: models.PENDING,
+			}
+			updateStatusError = db.ValidateUpdateStatusInput(updateStatusInput)
 		})
 
 		It("errors", func() {
-			Expect(updateError).ToNot(BeNil())
+			Expect(updateStatusError).ToNot(BeNil())
 		})
 	})
 
-	When("status is missing", func() {
+	When("status is not valid", func() {
 		BeforeEach(func() {
-			_, updateError = db.GetValidStatusUpdate(map[string]string{
-				"invoiceId": "asd",
-			})
+			updateStatusInput = db.UpdateStatusInput{
+				OrgId:     "ORGID",
+				InvoiceId: "INVOICEID",
+				Status:    models.PENDING,
+			}
+			updateStatusError = db.ValidateUpdateStatusInput(updateStatusInput)
 		})
 
 		It("errors", func() {
-			Expect(updateError).ToNot(BeNil())
+			Expect(updateStatusError).ToNot(BeNil())
+		})
+	})
+})
+
+var _ = Describe("Data Update valdiation", func() {
+	var updateDataInput db.UpdateDataInput
+	var updateDataError error
+
+	When("the input is valid", func() {
+		BeforeEach(func() {
+			invoice := mocks.MockInvoice
+			updateDataInput = db.UpdateDataInput{
+				OrgId:   "ORGID",
+				Invoice: invoice,
+			}
+			updateDataError = db.ValidateUpdateDataInput(updateDataInput)
+		})
+
+		It("errors", func() {
+			Expect(updateDataError).To(BeNil())
 		})
 	})
 
-	When("status is pending", func() {
+	When("orgID is empty", func() {
 		BeforeEach(func() {
-			_, updateError = db.GetValidStatusUpdate(map[string]string{
-				"status":    models.PENDING,
-				"invoiceId": "ID1",
-			})
+			invoice := mocks.MockInvoice
+			updateDataInput = db.UpdateDataInput{
+				OrgId:   "",
+				Invoice: invoice,
+			}
+			updateDataError = db.ValidateUpdateDataInput(updateDataInput)
 		})
 
 		It("errors", func() {
-			Expect(updateError).ToNot(BeNil())
+			Expect(updateDataError).ToNot(BeNil())
 		})
 	})
 
-	When("status is reject, but there is no filename", func() {
+	When("invoice id is invalid", func() {
 		BeforeEach(func() {
-			_, updateError = db.GetValidStatusUpdate(map[string]string{
-				"status":    models.REJECTED,
-				"invoiceId": "ID1",
-			})
+			invoice := mocks.MockInvoice
+			invoice.InvoiceId = ""
+			updateDataInput = db.UpdateDataInput{
+				OrgId:   "ORGID",
+				Invoice: invoice,
+			}
+			updateDataError = db.ValidateUpdateDataInput(updateDataInput)
 		})
 
 		It("errors", func() {
-			Expect(updateError).ToNot(BeNil())
+			Expect(updateDataError).ToNot(BeNil())
+		})
+	})
+
+	When("invoice currency is invalid", func() {
+		BeforeEach(func() {
+			invoice := mocks.MockInvoice
+			invoice.Currency = "XDDDD"
+			updateDataInput = db.UpdateDataInput{
+				OrgId:   "ORGID",
+				Invoice: invoice,
+			}
+			updateDataError = db.ValidateUpdateDataInput(updateDataInput)
+		})
+
+		It("errors", func() {
+			Expect(updateDataError).ToNot(BeNil())
+		})
+	})
+
+	When("invoice iban and account numbmer is invalid", func() {
+		BeforeEach(func() {
+			invoice := mocks.MockInvoice
+			invoice.Iban = "XDDDD"
+			invoice.AccountNumber = "XDDDD"
+			updateDataInput = db.UpdateDataInput{
+				OrgId:   "ORGID",
+				Invoice: invoice,
+			}
+			updateDataError = db.ValidateUpdateDataInput(updateDataInput)
+		})
+
+		It("errors", func() {
+			Expect(updateDataError).ToNot(BeNil())
 		})
 	})
 })

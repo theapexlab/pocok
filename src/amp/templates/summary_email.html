@@ -118,6 +118,12 @@
       .save-error {
         color: red;
       }
+      .pendingTransferLoading {
+        background-color: #6e6b11;
+      }
+      .pendingTransferError {
+        background-color: red;
+      }
     </style>
   </head>
 
@@ -128,6 +134,7 @@
     </div>
 
     <div>
+      <button on="tap:invoiceList.refresh">Refresh</button>
       <amp-list
         src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
         id="invoiceList"
@@ -135,12 +142,15 @@
         layout="fixed-height"
         single-item
         items="."
-        height="10"
+        height="50"
       >
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div class="item item-view" id="{{invoice.invoiceId}}-item-view">
+            <div
+              class="item item-view {{invoice.status}}"
+              id="{{invoice.invoiceId}}-item-view"
+            >
               <div class="item-header">
                 <div>
                   <div>ID: {{invoice.invoiceId}}</div>
@@ -160,7 +170,7 @@
                   <div>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/accept?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input
@@ -168,34 +178,20 @@
                         name="invoiceId"
                         value="{{invoice.invoiceId}}"
                       />
-                      <input
-                        type="hidden"
-                        name="status"
-                        value="[[.Accepted]]"
-                      />
                       <button type="submit">Accept</button>
-                      <div submit-success>Accept successful.</div>
-                      <div submit-error>Accept failed.</div>
+                      <div submitting>Accept in progress</div>
+                      <div submit-success>Accept successful</div>
+                      <div submit-error template="submit_error_template"></div>
                     </form>
                     <form
                       method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/status?token=[[.Token]]"
+                      action-xhr="[[.ApiUrl]]/api/invoices/reject?token=[[.Token]]"
                       on="submit-success:invoiceList.refresh"
                     >
                       <input
                         type="hidden"
                         name="invoiceId"
                         value="{{invoice.invoiceId}}"
-                      />
-                      <input
-                        type="hidden"
-                        name="status"
-                        value="[[.Rejected]]"
-                      />
-                      <input
-                        type="hidden"
-                        name="filename"
-                        value="{{invoice.filename}}"
                       />
                       <button
                         type="button"
@@ -209,8 +205,12 @@
                         hidden
                       >
                         <div>
-                          <div submit-error>Reject failed.</div>
-                          <div submit-success>Reject successful.</div>
+                          <div submitting>Reject in progress</div>
+                          <div submit-success>Reject successful</div>
+                          <div
+                            submit-error
+                            template="submit_error_template"
+                          ></div>
                         </div>
                         <div>Are you sure about that?</div>
                         <button type="submit">Yes king</button>
@@ -391,7 +391,7 @@
                       Currency:
                       <select name="currency">
                         <option value="{{invoice.currency}}" selected>
-                          {{currency}}
+                          {{invoice.currency}}
                         </option>
                         <option value="EUR">EUR</option>
                         <option value="HUF">HUF</option>
@@ -544,7 +544,7 @@
         </template>
         <template type="amp-mustache" id="submit_error_template">
           <div class="save-error">
-            Azthittem fölöltözöl rendesen! {{message}}
+            Azthittem fölöltözöl rendesen! Error: {{message}}
           </div>
         </template>
       </amp-list>
