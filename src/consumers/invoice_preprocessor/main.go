@@ -20,7 +20,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
-	"github.com/cavaliergopher/grab/v3"
 )
 
 type dependencies struct {
@@ -54,7 +53,7 @@ func (d *dependencies) handler(event events.SQSEvent) error {
 
 		uploadPDFError := uploadPDF(d, uploadInvoiceMessage)
 		// if the original file doesn't exist, no need to retry the message
-		if uploadPDFError != nil && uploadPDFError != grab.StatusCodeError(403) {
+		if uploadPDFError != nil {
 			return uploadPDFError
 		}
 	}
@@ -78,7 +77,7 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 
 	switch uploadInvoiceMessage.Type {
 	case "url":
-		data, uploadError = downloadFile(uploadInvoiceMessage.Body)
+		data, uploadError = utils.DownloadFile(uploadInvoiceMessage.Body)
 	case "base64":
 		data, uploadError = base64.StdEncoding.DecodeString(uploadInvoiceMessage.Body)
 	default:
@@ -147,19 +146,4 @@ func uploadPDF(d *dependencies, uploadInvoiceMessage *models.UploadInvoiceMessag
 	}
 
 	return nil
-}
-
-func downloadFile(url string) ([]byte, error) {
-	client := grab.NewClient()
-	req, requestError := grab.NewRequest(".", url)
-	if requestError != nil {
-		return []byte(nil), requestError
-	}
-
-	// store file in memory
-	req.NoStore = true
-	resp := client.Do(req)
-	data, responseError := resp.Bytes()
-
-	return data, responseError
 }

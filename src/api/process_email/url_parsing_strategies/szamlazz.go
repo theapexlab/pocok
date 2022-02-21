@@ -3,28 +3,28 @@ package url_parsing_strategies
 import (
 	"errors"
 	HTML "html"
-	"io/ioutil"
-	"net/http"
 	"pocok/src/utils"
-	"pocok/src/utils/models"
 	"regexp"
 	"strings"
+
+	"github.com/DusanKasan/parsemail"
 )
 
 const SzamlazzAddress = "@szamlazz.hu"
 
 type Szamlazz struct{}
 
-func (sz *Szamlazz) Parse(jsonBody *models.EmailWebhookBody) (string, error) {
-	invoiceSummaryUrl, parseErr := sz.parseInvoiceSummaryUrl(jsonBody.Html)
+func (sz *Szamlazz) Parse(email *parsemail.Email) (string, error) {
+	invoiceSummaryUrl, parseErr := sz.parseInvoiceSummaryUrl(email.HTMLBody)
 	if parseErr != nil {
 		return "", parseErr
 	}
 
-	invoiceSummaryHtml, summaryHtmlErr := sz.getInvoiceSummaryHtml(invoiceSummaryUrl)
+	invoiceSummaryHtmlBytes, summaryHtmlErr := utils.DownloadFile(invoiceSummaryUrl)
 	if summaryHtmlErr != nil {
 		return "", summaryHtmlErr
 	}
+	invoiceSummaryHtml := string(invoiceSummaryHtmlBytes)
 
 	pdfUrl, parsePdfUrlError := sz.parsePdfUrl(invoiceSummaryHtml)
 	if parsePdfUrlError != nil {
@@ -46,24 +46,6 @@ func (sz *Szamlazz) parseInvoiceSummaryUrl(html string) (string, error) {
 	}
 
 	return matches[1], nil
-}
-
-func (sz *Szamlazz) getInvoiceSummaryHtml(invoiceSummaryUrl string) (string, error) {
-	resp, httpGetError := http.Get(invoiceSummaryUrl)
-	if httpGetError != nil {
-		utils.LogError("", httpGetError)
-		return "", httpGetError
-	}
-
-	defer resp.Body.Close()
-
-	html, readAllErr := ioutil.ReadAll(resp.Body)
-	if readAllErr != nil {
-		utils.LogError("", readAllErr)
-		return "", readAllErr
-	}
-
-	return string(html), nil
 }
 
 func (sz *Szamlazz) parsePdfUrl(html string) (string, error) {

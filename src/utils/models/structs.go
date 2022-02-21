@@ -77,21 +77,10 @@ type ValidationErrorResponse struct {
 	Message string `json:"message"`
 }
 
-type EmailAttachment struct {
-	ContentType string `json:"contentType"`
-	Content_b64 string `json:"content_b64"`
-	Filename    string `json:"fileName"`
-}
-
-type EmailFrom struct {
-	Address string `json:"address"`
-	Name    string `json:"name"`
-}
-
 type EmailWebhookBody struct {
-	Attachments []*EmailAttachment `json:"attachments"`
-	Html        string             `json:"html"`
-	From        []*EmailFrom       `json:"from"`
+	Mail struct {
+		ContentUrl string `json:"content_url"`
+	} `json:"mail"`
 }
 
 type JWTCustomClaims struct {

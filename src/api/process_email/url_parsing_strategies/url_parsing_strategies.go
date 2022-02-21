@@ -2,31 +2,37 @@ package url_parsing_strategies
 
 import (
 	"errors"
-	"pocok/src/utils/models"
+	"strings"
+
+	"github.com/DusanKasan/parsemail"
 )
 
 type urlParsingStrategy interface {
-	Parse(jsonBody *models.EmailWebhookBody) (string, error)
+	Parse(email *parsemail.Email) (string, error)
 }
 
 var ErrNoUrlParsingStrategyFound = errors.New("no url parsing strategy found")
 
-func GetPdfUrlFromEmail(jsonBody *models.EmailWebhookBody) (string, error) {
-	strategy, getStrategyError := getStrategy(jsonBody)
+func GetPdfUrlFromEmail(email *parsemail.Email) (string, error) {
+	strategy, getStrategyError := getStrategy(email)
 	if getStrategyError != nil {
 		return "", getStrategyError
 	}
 
-	return strategy.Parse(jsonBody)
+	return strategy.Parse(email)
 }
 
-func getStrategy(jsonBody *models.EmailWebhookBody) (urlParsingStrategy, error) {
-	if len(jsonBody.From) == 0 {
+func getStrategy(email *parsemail.Email) (urlParsingStrategy, error) {
+	if len(email.From) == 0 {
 		return nil, ErrNoUrlParsingStrategyFound
 	}
 
-	if jsonBody.From[0].Address == BillingoAddress {
+	if email.From[0].Address == BillingoAddress {
 		return &Billingo{}, nil
+	}
+
+	if strings.Contains(email.From[0].Address, SzamlazzAddress) {
+		return &Szamlazz{}, nil
 	}
 
 	return nil, ErrNoUrlParsingStrategyFound

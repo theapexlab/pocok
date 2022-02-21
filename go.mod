@@ -3,6 +3,7 @@ module pocok
 go 1.17
 
 require (
+	github.com/DusanKasan/parsemail v1.2.0
 	github.com/almerlucke/go-iban v0.0.0-20170112082528-316a6e2335b3
 	github.com/araddon/dateparse v0.0.0-20210429162001-6b43995a97de
 	github.com/aws/aws-cdk-go/awscdk v1.138.0-devpreview
@@ -16,8 +17,8 @@ require (
 	github.com/aws/constructs-go/constructs/v10 v10.0.26
 	github.com/aws/constructs-go/constructs/v3 v3.3.181
 	github.com/aws/jsii-runtime-go v1.50.0
-	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/google/uuid v1.3.0
 	github.com/jarcoal/httpmock v1.1.0
 	github.com/mailgun/mailgun-go/v4 v4.6.0
 	github.com/onsi/ginkgo/v2 v2.1.0
@@ -35,7 +36,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.7.0 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.11.0 // indirect
 	github.com/aws/smithy-go v1.10.0 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
