@@ -23,123 +23,566 @@
       custom-element="amp-bind"
       src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"
     ></script>
-
     <style amp4email-boilerplate>
       body {
         visibility: hidden;
       }
     </style>
     <style amp-custom>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.4;
+        overflow-x: hidden;
+      }
+
+      .hidden {
+        display: none;
+      }
+
       h1 {
         margin: 1rem;
       }
 
-      .list {
-        position: relative;
+      .btn {
+        appearance: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .btn--success {
+        background: #7dc142;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+        padding: 8px 24px;
+      }
+
+      .btn--secondary {
+        background: #b2b2b2;
+        border-radius: 12px;
+        color: #fff;
+        font-weight: bold;
+        padding: 8px 24px;
+      }
+
+      .btn--outline-success {
+        border: solid 1px #7dc142;
+        border-radius: 12px;
+        color: #7dc142;
+        font-weight: bold;
+        padding: 8px 24px;
+      }
+
+      .btn--ghost {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      .btn--ghost-success {
+        color: #7dc142;
+      }
+
+      .btn--ghost-danger {
+        color: #ff4f37;
+      }
+
+      .btn--ghost-secondary {
+        color: #b2b2b2;
+      }
+
+      .page-container {
+        margin: 0 auto;
+        max-width: 688px;
+        width: 100%;
+      }
+
+      .page-description {
+        padding: 24px 48px 0;
+      }
+
+      .list-header {
+        align-items: center;
+        display: flex;
+        gap: 24px;
+        justify-content: flex-end;
+        padding: 0 48px;
       }
 
       .item-wrapper {
-        padding: 8px;
-        max-width: 700px;
+        border-radius: 12px;
+        max-width: 688px;
+        padding: 24px;
       }
 
       .item {
+        border-radius: 12px;
+        box-shadow: 0 12px 24px rgba(0,0,0,.15);
+        padding: 24px;
+        position: relative;
+      }
+
+      .item__header {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 1fr auto;
+        margin: 0 0 24px;
+        padding: 0 0 24px;
+        position: relative;
+      }
+
+      .item--edit .item__header {
+        padding: 0;
+      }
+
+      .item__header-col--details {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: auto 1fr;
+      }
+
+      .item__header-divider {
+        background: #d8d8d8;
+        bottom: 0;
+        display: block;
+        height: 1px;
+        position: absolute;
+        right: 0;
+        width: calc(100% - 24px);
+      }
+
+      .item-details-row--divider {
+        margin: 0 0 10px;
+      }
+
+      .item-status-wrapper {
+        align-items: center;
+        display: flex;
+        height: 22px;
+      }
+
+      .item-status {
+        border-radius: 100%;
+        display: block;
+        height: 12px;
+        width: 12px;
+      }
+
+      .item-status.pending {
+        background-color: #ffdd22;
+      }
+
+      .item-status.pendingTransferError {
+        background-color: #ff4f37;
+      }
+
+      .item-details-list {
         display: flex;
         flex-direction: column;
-        padding: 8px;
-        border-radius: 16px;
-        border: 1px solid black;
+        gap: 2px;
       }
 
-      .item div {
-        padding-right: 10px;
+      .item-details-row {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 108px 1fr;
       }
 
-      .item-header {
-        display: flex;
-        min-height: 7rem;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        padding: 8px;
-        border: 1px solid black;
-        border-radius: 4px;
+      .item-detail-value {
+        font-weight: bold;
       }
-      .item-header-actions {
+
+      .item-actions {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
-      }
-      .item-header-actions button {
-        margin: 4px;
-        width: 60px;
+        gap: 12px;
       }
 
-      .edit-actions {
-        display: flex;
-        flex-direction: row-reverse;
-        padding: 8px;
-      }
-      .edit-actions button {
-        margin: 8px;
+      .item-actions__row {
+        align-items: center;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 1fr 1fr;
       }
 
-      .service-edit-actions {
-        display: flex;
-        flex-direction: row-reverse;
-        padding: 8px;
-      }
-      .service-edit-actions button {
-        margin: 8px;
+      .item-actions__row + .item-actions__row {
+        border-top: solid 1px #d8d8d8;
+        padding: 12px 0 0 0;
       }
 
-      label {
+      .item-actions__row-col {
+        align-items: center;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
       }
-      input,
-      select {
-        min-width: 8ch;
-        width: 28ch;
+
+      .item-actions .btn {
+        min-height: 22px;
+        min-width: 22px;
+      }
+
+      .item__content {
+        padding: 0 0 0 24px;
+      }
+
+      .form-fieldset {
+        border: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .form-fieldset + .form-fieldset {
+        margin: 24px 0 0;
+      }
+
+      .form-legend {
+        align-items: center;
+        display: grid;
+        font-weight: bold;
+        gap: 12px;
+        grid-template-columns: auto 1fr;
+        margin: 0 0 12px;
+        width: 100%;
+      }
+
+      .form-legend__divider {
+        background: #d8d8d8;
+        display: block;
+        height: 1px;
+        width: 100%;
+      }
+
+      .form-row {
+        align-items: center;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 120px 1fr;
+      }
+
+      .form-row + .form-row {
+        margin: 12px 0 0;
+      }
+
+      .form-title {
+        margin: 48px 0 24px;
+      }
+
+      .form-input {
+        border: solid 1px #979797;
+        border-radius: 8px;
+        min-height: 32px;
+        padding: 0 12px;
+      }
+
+      .form-select {
+        border: solid 1px #979797;
+        border-radius: 8px;
+        min-height: 32px;
+        padding: 0 12px;
+      }
+
+      .form-footer {
+        border-top: solid 1px #d8d8d8;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 24px 0 0;
+        padding: 24px 0 0;
       }
 
       .modal {
-        position: absolute;
-        width: 128px;
-        left: 20%;
-
         background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 12px 24px rgba(0,0,0,.3);
+        left: 50%;
+        max-width: 480px;
         padding: 32px;
-        border: 1px solid black;
-        border-radius: 16px;
+        position: absolute;
+        text-align: center;
+        top: 24px;
+        transform: translate(-50%,0);
+        width: 100%;
+        z-index: 10;
       }
-      .hidden {
-        display: none;
+
+      .modal__footer {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin: 24px 0;
       }
-      .save-error {
-        color: red;
+
+      .notification {
+        border-radius: 12px;
+        left: 50%;
+        margin: 0 0 24px;
+        max-width: 380px;
+        padding: 12px 24px;
+        position: fixed;
+        top: 24px;
+        transform: translate(-50%,0);
+        width: 100%;
+        z-index: 10;
       }
-      .pendingTransferLoading {
-        background-color: #6e6b11;
+
+      .notification--success {
+        background: #7dc142;
+        box-shadow: 0 12px 24px rgba(125,193,66,.3);
+        color: #fff;
       }
-      .pendingTransferError {
-        background-color: red;
+
+      .notification--error {
+        background: #ff4f37;
+        box-shadow: 0 12px 24px rgba(255,79,55,.3);
+        color: #fff;
+      }
+
+      .notification--info {
+        background: #1684FF;
+        box-shadow: 0 12px 24px rgba(22,132,255,.3);
+        color: #fff;
+      }
+
+      .notification__close {
+        color: #fff;
+        position: absolute;
+        right: 12px;
+        top: 12px;
+      }
+
+      .list-footer {
+        display: flex;
+        justify-content: center;
+        padding: 24px 0;
+      }
+
+      /* ICONS */
+      .gg-sync {
+        border: 2px solid;
+        border-left-color: transparent;
+        border-radius: 40px;
+        border-right-color: transparent;
+        box-sizing: border-box;
+        display: block;
+        height: 18px;
+        margin: 1px;
+        position: relative;
+        transform: scale(1,1);
+        width: 18px;
+      }
+
+      .gg-sync span {
+        border-bottom: 4px solid transparent;
+        border-top: 4px solid transparent;
+        box-sizing: border-box;
+        display: block;
+        height: 0;
+        position: absolute;
+        transform: rotate(-45deg);
+        width: 0;
+      }
+
+      .gg-sync span:first-child {
+        border-left: 6px solid;
+        bottom: -1px;
+        right: -3px
+      }
+
+      .gg-sync span:last-child {
+        border-right: 6px solid;
+        left: -3px;
+        top: -1px;
+      }
+
+      .gg-check-o {
+        border-radius: 100px;
+        border: 2px solid;
+        box-sizing: border-box;
+        display: block;
+        height: 22px;
+        position: relative;
+        transform: scale(1,1);
+        width: 22px;
+      }
+
+      .gg-check-o span {
+        border-color: currentColor;
+        border-style: solid;
+        border-width: 0 2px 2px 0;
+        box-sizing: border-box;
+        display: block;
+        height: 10px;
+        left: 3px;
+        position: absolute;
+        top: -1px;
+        transform-origin: bottom left;
+        transform: rotate(45deg);
+        width: 6px;
+      }
+
+      .gg-close-o {
+        border-radius: 40px;
+        border: 2px solid;
+        box-sizing: border-box;
+        display: block;
+        height: 22px;
+        position: relative;
+        transform: scale(1,1);
+        width: 22px;
+      }
+
+      .gg-close-o span {
+        background: currentColor;
+        border-radius: 5px;
+        box-sizing: border-box;
+        display: block;
+        height: 2px;
+        left: 3px;
+        position: absolute;
+        top: 8px;
+        transform: rotate(45deg);
+        width: 12px;
+      }
+
+      .gg-close-o span:first-child {
+        transform: rotate(-45deg);
+      }
+
+      .gg-file-document {
+        border: 2px solid transparent;
+        border-radius: 1px;
+        border-right: 0;
+        border-top-right-radius: 4px;
+        border-top: 0;
+        box-shadow: 0 0 0 2px;
+        box-sizing: border-box;
+        display: block;
+        height: 16px;
+        overflow: hidden;
+        position: relative;
+        transform: scale(1,1);
+        width: 14px;
+      }
+
+      .gg-file-document span {
+        box-sizing: border-box;
+        display: block;
+        position: absolute
+      }
+
+      .gg-file-document span:first-child {
+        border-bottom: 2px solid;
+        border-left: 2px solid;
+        height: 6px;
+        right: -1px;
+        top: -1px;
+        width: 6px;
+      }
+
+      .gg-file-document span:last-child {
+        background: currentColor;
+        box-shadow: 0 4px 0, -6px -4px 0;
+        height: 2px;
+        left: 0;
+        top: 8px;
+        width: 10px;
+      }
+
+      .gg-pen {
+        border-bottom-right-radius: 1px;
+        border-right: 2px solid transparent;
+        border-top-right-radius: 1px;
+        box-shadow: 0 0 0 2px, inset -2px 0 0;
+        box-sizing: border-box;
+        display: block;
+        height: 4px;
+        margin-right: -2px;
+        position: relative;
+        transform: rotate(-45deg) scale(1,1);
+        width: 14px;
+      }
+
+      .gg-pen span {
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+      }
+
+      .gg-pen span:first-child {
+        border-bottom: 4px solid transparent;
+        border-right: 7px solid;
+        border-top: 4px solid transparent;
+        height: 7px;
+        left: -11px;
+        top: -2px;
+        width: 8px;
+      }
+
+      .gg-pen span:last-child {
+        background: currentColor;
+        border-left: 0;
+        border-radius: 1px;
+        height: 4px;
+        right: -6px;
+        top: 0;
+        width: 3px;
+      }
+
+      .gg-close {
+        box-sizing: border-box;
+        position: relative;
+        display: block;
+        transform: scale(1,1);
+        width: 22px;
+        height: 22px;
+        border: 2px solid transparent;
+        border-radius: 40px
+      }
+
+      .gg-close span {
+        display: block;
+        box-sizing: border-box;
+        position: absolute;
+        width: 16px;
+        height: 2px;
+        background: currentColor;
+        transform: rotate(45deg);
+        border-radius: 5px;
+        top: 8px;
+        left: 1px
+      }
+
+      .gg-close span:last-child {
+        transform: rotate(-45deg)
       }
     </style>
   </head>
-
   <body>
-    <div>
-      <h3>Szia Lajos!</h3>
-      <p>Számláidat sétáltatod? Hát bazmeg!</p>
-    </div>
+    <div class="page-container">
+      <div class="page-description">
+        <h3>Szia Lajos!</h3>
+        <p>Számláidat sétáltatod? Hát bazmeg!</p>
+        <div class="img"></div>
+      </div>
 
-    <div>
-      <button on="tap:invoiceList.refresh">Refresh</button>
+      <div class="list-header">
+        <button class="btn btn--ghost btn--ghost-secondary" on="tap:invoiceList.refresh" title="Refresh List">
+          <span class="gg-sync">
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+      </div>
+
       <amp-list
         src="[[.ApiUrl]]/api/invoices?token=[[.Token]]"
         id="invoiceList"
         binding="no"
-        layout="fixed-height"
         single-item
         items="."
         height="50"
@@ -147,154 +590,256 @@
         <template type="amp-mustache">
           {{#items}}
           <div class="item-wrapper">
-            <div
-              class="item item-view {{invoice.status}}"
-              id="{{invoice.invoiceId}}-item-view"
-            >
-              <div class="item-header">
-                <div>
-                  <div>ID: {{invoice.invoiceId}}</div>
-                  <div>Status: {{invoice.status}}</div>
-                  <div>Received at: {{invoice.receivedAt}}</div>
-                  <br />
-                  <div>Vendor Name: {{invoice.vendorName}}</div>
-                  <div>Vendor Email: {{invoice.vendorEmail}}</div>
-                  <div>Iban: {{invoice.iban}}</div>
-                  <div>Bank account: {{invoice.accountNumber}}</div>
-                  <br />
-                  <div>
-                    Gross Price: {{invoice.grossPrice}} {{invoice.currency}}
+            <div class="item item-view" id="{{invoice.invoiceId}}-item-view">
+              <div class="item__header">
+                <div class="item__header-col item__header-col--details">
+                  <div class="item-status-wrapper">
+                    <div class="item-status {{invoice.status}}"></div>
+                  </div>
+                  <div class="item-details-list">
+                    <div class="item-details-row">
+                      <div>ID:</div>
+                      <div class="item-detail-value">{{invoice.invoiceId}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Received At:</div>
+                      <div>{{invoice.receivedAt}}</div>
+                    </div>
+                    <div class="item-details-row">
+                      <div>Vendor Name:</div>
+                      <div class="item-detail-value">{{invoice.vendorName}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Vendor Email:</div>
+                      <div class="item-detail-value">{{invoice.vendorEmail}}</div>
+                    </div>
+                    <div class="item-details-row">
+                      <div>IBAN:</div>
+                      <div class="item-detail-value">{{invoice.iban}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Bank Account:</div>
+                      <div class="item-detail-value">{{invoice.accountNumber}}</div>
+                    </div>
+                    <div class="item-details-row">
+                      <div>Gross Price:</div>
+                      <div class="item-detail-value">{{invoice.grossPrice}} {{invoice.currency}}</div>
+                    </div>
                   </div>
                 </div>
-                <div class="item-header-actions">
-                  <div>
-                    <form
-                      method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/accept?token=[[.Token]]"
-                      on="submit-success:invoiceList.refresh"
-                    >
-                      <input
-                        type="hidden"
-                        name="invoiceId"
-                        value="{{invoice.invoiceId}}"
-                      />
-                      <button type="submit">Accept</button>
-                      <div submitting>Accept in progress</div>
-                      <div submit-success>Accept successful</div>
-                      <div submit-error template="submit_error_template"></div>
-                    </form>
-                    <form
-                      method="post"
-                      action-xhr="[[.ApiUrl]]/api/invoices/reject?token=[[.Token]]"
-                      on="submit-success:invoiceList.refresh"
-                    >
-                      <input
-                        type="hidden"
-                        name="invoiceId"
-                        value="{{invoice.invoiceId}}"
-                      />
-                      <button
-                        type="button"
-                        on="tap:{{invoice.invoiceId}}-reject-modal.show"
+                <div class="item__header-col">
+                  <div class="item-actions">
+                    <div class="item-actions__row">
+                      <div class="item-actions__row-col">
+                        <form
+                          id="submit-invoice-{{invoice.invoiceId}}"
+                          method="post"
+                          action-xhr="[[.ApiUrl]]/api/invoices/accept?token=[[.Token]]"
+                          on="submit-success:invoiceList.refresh"
                       >
-                        Reject
-                      </button>
-                      <div
-                        class="modal"
-                        id="{{invoice.invoiceId}}-reject-modal"
-                        hidden
-                      >
-                        <div>
-                          <div submitting>Reject in progress</div>
-                          <div submit-success>Reject successful</div>
-                          <div
-                            submit-error
-                            template="submit_error_template"
-                          ></div>
+                        <input
+                          type="hidden"
+                          name="invoiceId"
+                          value="{{invoice.invoiceId}}"
+                        />
+                        <button class="btn btn--ghost btn--ghost-success" type="submit" title="Accept Invoice">
+                          <span class="gg-check-o">
+                            <span></span>
+                          </span>
+                        </button>
+                        <div submitting>
+                          <div class="notification notification--info">
+                            <p>Accept in progress</p>
+                          </div>
                         </div>
-                        <div>Are you sure about that?</div>
-                        <button type="submit">Yes king</button>
+                        <div submit-success>
+                          <div class="notification notification--success">
+                            <p>Accept successful</p>
+                          </div>
+                        </div>
+                        <div submit-error>
+                          <div class="notification notification--error">
+                            <p>Azthittem fölöltözöl rendesen! Error: {{message}}</p>
+                            <button type="button" class="notification__close btn btn--ghost" on="tap:submit-invoice-{{invoice.invoiceId}}.clear">
+                              <span class="gg-close">
+                                <span></span>
+                                <span></span>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                        </form>
+                      </div>
+                      <div class="item-actions__row-col">
+                        <form
+                        method="post"
+                        action-xhr="[[.ApiUrl]]/api/invoices/reject?token=[[.Token]]"
+                        on="submit-success:invoiceList.refresh"
+                      >
+                        <input
+                          type="hidden"
+                          name="invoiceId"
+                          value="{{invoice.invoiceId}}"
+                        />
                         <button
+                          class="btn btn--ghost btn--ghost-danger"
                           type="button"
-                          on="tap:{{invoice.invoiceId}}-reject-modal.hide"
+                          on="tap:{{invoice.invoiceId}}-reject-modal.show"
+                          title="Reject Invoice"
                         >
-                          No, please I enjoy this invoice so much
+                          <span class="gg-close-o">
+                            <span></span>
+                            <span></span>
+                          </span>
+                        </button>
+                        <div
+                          class="modal"
+                          id="{{invoice.invoiceId}}-reject-modal"
+                          hidden
+                        >
+                          <div>
+                            <div submitting>Reject in progress</div>
+                            <div submit-success>Reject successful</div>
+                            <div submit-error template="submit_error_template"></div>
+                          </div>
+                          <h2>Are you sure about that?</h2>
+                          <div class="modal__footer">
+                            <button class="btn btn--success" type="submit">Yes king</button>
+                            <button
+                              class="btn btn--secondary"
+                              type="button"
+                              on="tap:{{invoice.invoiceId}}-reject-modal.hide"
+                            >
+                              No, please I enjoy this invoice so much
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                      </div>
+                    </div>
+
+                    <div class="item-actions__row">
+                      <div class="item-actions__row-col">
+                        <button
+                          class="btn btn--ghost btn--ghost-secondary"
+                          title="Edit Invoice"
+                          on="tap:{{invoice.invoiceId}}-item-edit.show,{{invoice.invoiceId}}-item-view.hide"
+                        >
+                          <span class="gg-pen">
+                            <span></span>
+                            <span></span>
+                          </span>
                         </button>
                       </div>
-                    </form>
-                  </div>
-
-                  <button
-                    on="tap:{{invoice.invoiceId}}-item-edit.show,{{invoice.invoiceId}}-item-view.hide"
-                  >
-                    Edit
-                  </button>
+                      <div class="item-actions__row-col">
+                        <a class="btn btn--ghost btn--ghost-secondary" href="{{link}}" title="Download PDF">
+                          <span class="gg-file-document">
+                            <span></span>
+                            <span></span>
+                          </span>
+                        </a>
+                      </div>
+                    </div>
+                 </div>
                 </div>
+                <div class="item__header-divider"></div>
               </div>
 
-              <div class="item-content">
-                <div>
-                  <div>Invoice Number: {{invoice.invoiceNumber}}</div>
-                  <div>
-                    Net Price: {{invoice.netPrice}} {{invoice.currency}}
+              <div class="item__content">
+                <div class="item-details-list">
+                  <div class="item-details-row item-details-row--divider">
+                    <div>Invoice Number:</div>
+                    <div class="item-detail-value">{{invoice.invoiceNumber}}</div>
                   </div>
-                  <div>
-                    Gross Price: {{invoice.grossPrice}} {{invoice.currency}}
+                  <div class="item-details-row">
+                    <div>Net Price:</div>
+                    <div class="item-detail-value">{{invoice.netPrice}} {{invoice.currency}}</div>
                   </div>
-                  <div>
-                    Vat Amount: {{invoice.vatAmount}} {{invoice.currency}}
+                  <div class="item-details-row item-details-row--divider">
+                    <div>Gross Price:</div>
+                    <div class="item-detail-value">{{invoice.grossPrice}} {{invoice.currency}}</div>
                   </div>
-                  <div>Vat Rate: {{invoice.vatRate}}</div>
-                  <br />
-                  <div>Due: {{invoice.dueDate}}</div>
-                  <div>
-                    <div>
-                      <p>Services:</p>
-                    </div>
-                    {{#invoice.services}}
-                    <div>
-                      <div>Name: {{name}}</div>
-                      <div>Amount: {{amount}}</div>
-                      <div>Unit: {{unit}}</div>
-                      <div>Unit Net Price: {{unitNetPrice}}</div>
-                      <div>Net price: {{netPrice}}</div>
-                      <div>Gross Price: {{grossPrice}}</div>
-                      <div>Currency: {{currency}}</div>
-                      <div>Vat Amount: {{vatAmount}}</div>
-                      <div>Vat Rate:{{vatRate}}</div>
-                    </div>
-                    {{/invoice.services}}
+                  <div class="item-details-row">
+                    <div>Vat Amount:</div>
+                    <div class="item-detail-value">{{invoice.vatAmount}} {{invoice.currency}}</div>
+                  </div>
+                  <div class="item-details-row item-details-row--divider">
+                    <div>Vat Rate:</div>
+                    <div class="item-detail-value">{{invoice.vatRate}}</div>
+                  </div>
+                  <div class="item-details-row item-details-row--divider">
+                    <div>Due:</div>
+                    <div class="item-detail-value">{{invoice.dueDate}}</div>
                   </div>
                 </div>
-                <a href="{{link}}">PDF link</a>
+
+                <h3>Services</h3>
+                {{#invoice.services}}
+                  <div class="item-details-list">
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Name:</div>
+                      <div class="item-detail-value">{{name}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Amount:</div>
+                      <div class="item-detail-value">{{amount}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Unit:</div>
+                      <div class="item-detail-value">{{unit}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Unit Net Price:</div>
+                      <div class="item-detail-value">{{unitNetPrice}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Net price:</div>
+                      <div class="item-detail-value">{{netPrice}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Gross Price:</div>
+                      <div class="item-detail-value">{{grossPrice}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Currency:</div>
+                      <div class="item-detail-value">{{currency}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Vat Amount:</div>
+                      <div class="item-detail-value">{{vatAmount}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Vat Rate:</div>
+                      <div class="item-detail-value">{{vatRate}}</div>
+                    </div>
+                  </div>
+                {{/invoice.services}}
+
               </div>
             </div>
 
-            <div
-              class="item item-edit"
-              id="{{invoice.invoiceId}}-item-edit"
-              hidden
-            >
-              <div class="item-header">
-                <div>
-                  <div>{{invoice.invoiceId}} {{invoice.status}}</div>
-                  <div>Received at: {{invoice.receivedAt}}</div>
-                </div>
-                <div class="item-header-actions">
-                  <div>
-                    <form>
-                      <button disabled>Accept</button>
-                    </form>
-                    <form>
-                      <button disabled>Reject</button>
-                    </form>
+            <div class="item item--edit" id="{{invoice.invoiceId}}-item-edit" hidden>
+              <div class="item__header">
+                <div class="item__header-col item__header-col--details">
+                  <div class="item-status-wrapper">
+                    <div class="item-status {{invoice.status}}"></div>
                   </div>
-                  <button disabled>Edit</button>
+                  <div class="item-details-list">
+                    <div class="item-details-row">
+                      <div>ID:</div>
+                      <div class="item-detail-value">{{invoice.invoiceId}}</div>
+                    </div>
+                    <div class="item-details-row item-details-row--divider">
+                      <div>Received At:</div>
+                      <div>{{invoice.receivedAt}}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="item-content">
+              <div class="item__content">
                 <form
+                  id="edit-invoice-{{invoice.invoiceId}}"
                   method="post"
                   action-xhr="[[.ApiUrl]]/api/invoices/data?token=[[.Token]]"
                   on="submit-success:invoiceList.refresh"
@@ -304,177 +849,259 @@
                     name="invoiceId"
                     value="{{invoice.invoiceId}}"
                   />
-                  <fieldset>
-                    <legend>Invoice details</legend>
-                    <label>
-                      Invoice Number:
-                      <input
-                        type="text"
-                        name="invoiceNumber"
-                        value="{{invoice.invoiceNumber}}"
-                      />
-                    </label>
-                    <label>
-                      Due Date:
-                      <input
-                        type="date"
-                        name="dueDate"
-                        value="{{invoice.dueDate}}"
-                      />
-                    </label>
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">
+                      Invoice details
+                      <span class="form-legend__divider"></span>
+                    </legend>
+
+                    <div class="form-row">
+                      <label class="form-label" for="invoiceNumber-{{invoice.invoiceId}}">Invoice Number:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="text"
+                          id="invoiceNumber-{{invoice.invoiceId}}"
+                          name="invoiceNumber"
+                          value="{{invoice.invoiceNumber}}"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label class="form-label" for="dueDate-{{invoice.invoiceId}}">Due Date:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="date"
+                          id="dueDate-{{invoice.invoiceId}}"
+                          name="dueDate"
+                          value="{{invoice.dueDate}}"
+                        />
+                      </div>
+                    </div>
                   </fieldset>
 
-                  <fieldset>
-                    <legend>Vendor details</legend>
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">
+                      Vendor details
+                      <span class="form-legend__divider"></span>
+                    </legend>
 
-                    <label>
-                      Vendor Name:
-                      <input
-                        type="text"
-                        name="vendorName"
-                        value="{{invoice.vendorName}}"
-                      />
-                    </label>
-                    <label>
-                      Vendor Email:
-                      <input
-                        type="email"
-                        name="vendorEmail"
-                        value="{{invoice.vendorEmail}}"
-                      />
-                    </label>
+                    <div class="form-row">
+                      <label for="vendorName-{{invoice.invoiceId}}">Vendor Name:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="text"
+                          id="vendorName-{{invoice.invoiceId}}"
+                          name="vendorName"
+                          value="{{invoice.vendorName}}"
+                        />
+                      </div>
+                    </div>
 
-                    <label>
-                      Iban:
-                      <input
-                        type="text"
-                        name="iban"
-                        value="{{invoice.iban}}"
-                        pattern="\b[A-Z]{2}[0-9]{2}(?:[- ]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
-                      />
-                    </label>
+                    <div class="form-row">
+                      <label for="vendorEmail-{{invoice.invoiceId}}">Vendor Email:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          id="vendorEmail-{{invoice.invoiceId}}"
+                          type="email"
+                          name="vendorEmail"
+                          value="{{invoice.vendorEmail}}"
+                        />
+                      </div>
+                    </div>
 
-                    <label>
-                      Account Number:
-                      <input
-                        type="text"
-                        name="accountNumber"
-                        pattern="^[0-9]{8}[\D]*[0-9]{8}([\D]*[0-9]{8})?$"
-                        value="{{invoice.accountNumber}}"
-                      />
-                    </label>
+                    <div class="form-row">
+                      <label for="iban-{{invoice.invoiceId}}">IBAN:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="text"
+                          id="iban-{{invoice.invoiceId}}"
+                          name="iban"
+                          value="{{invoice.iban}}"
+                          pattern="\b[A-Z]{2}[0-9]{2}(?:[- ]?[0-9]{4}){4,6}(?!(?:[ ]?[0-9]){3})(?:[ ]?[0-9]{1,2})?\b"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="form-row">
+                      <label for="accountNumber-{{invoice.invoiceId}}">Account Number:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="text"
+                          id="accountNumber-{{invoice.invoiceId}}"
+                          name="accountNumber"
+                          pattern="^[0-9]{8}[\D]*[0-9]{8}([\D]*[0-9]{8})?$"
+                          value="{{invoice.accountNumber}}"
+                        />
+                      </div>
+                    </div>
                   </fieldset>
 
-                  <fieldset>
-                    <legend>Prices</legend>
-                    <label>
-                      Net Price:
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        name="netPrice"
-                        value="{{invoice.netPrice}}"
-                      />
-                    </label>
-                    <label>
-                      Gross Price:
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        name="grossPrice"
-                        value="{{invoice.grossPrice}}"
-                      />
-                    </label>
-                    <label>
-                      Currency:
-                      <select name="currency">
-                        <option value="{{invoice.currency}}" selected>
-                          {{invoice.currency}}
-                        </option>
-                        <option value="EUR">EUR</option>
-                        <option value="HUF">HUF</option>
-                        <option value="USD">USD</option>
-                      </select>
-                    </label>
-                    <label>
-                      Vat Amount:
-                      <input
-                        type="number"
-                        min="0"
-                        step="any"
-                        name="vatAmount"
-                        value="{{invoice.vatAmount}}"
-                      />
-                    </label>
-                    <label>
-                      Vat Rate:
-                      <input
-                        type="text"
-                        name="vatRate"
-                        value="{{invoice.vatRate}}"
-                      />
-                    </label>
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">
+                      Prices
+                      <span class="form-legend__divider"></span>
+                    </legend>
+
+                    <div class="form-row">
+                      <label for="netPrice-{{invoice.invoiceId}}">Net Price:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="number"
+                          min="0"
+                          step="any"
+                          id="netPrice-{{invoice.invoiceId}}"
+                          name="netPrice"
+                          value="{{invoice.netPrice}}"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label for="grossPrice-{{invoice.invoiceId}}">Gross Price:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="number"
+                          min="0"
+                          step="any"
+                          id="grossPrice-{{invoice.invoiceId}}"
+                          name="grossPrice"
+                          value="{{invoice.grossPrice}}"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label for="currency-{{invoice.invoiceId}}">Currency:</label>
+                      <div>
+                        <select name="currency" id="currency-{{invoice.invoiceId}}" class="form-select">
+                          <option value="{{invoice.currency}}" selected>
+                            {{invoice.currency}}
+                          </option>
+                          <option value="EUR">EUR</option>
+                          <option value="HUF">HUF</option>
+                          <option value="USD">USD</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label for="vatAmount-{{invoice.invoiceId}}">Vat Amount:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="number"
+                          min="0"
+                          step="any"
+                          id="vatAmount-{{invoice.invoiceId}}"
+                          name="vatAmount"
+                          value="{{invoice.vatAmount}}"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <label for="vatRate-{{invoice.invoiceId}}">Vat Rate:</label>
+                      <div>
+                        <input
+                          class="form-input"
+                          type="text"
+                          id="vatRate-{{invoice.invoiceId}}"
+                          name="vatRate"
+                          value="{{invoice.vatRate}}"
+                        />
+                      </div>
+                    </div>
                   </fieldset>
 
-                  <fieldset>
-                    <legend>Services</legend>
-                    {{#invoice.services}}
-                    <fieldset>
-                      <legend>{{name}}</legend>
 
-                      <div style="margin-bottom: 16px">
-                        <label
-                          >Name:
+                  <h2 class="form-title">Services</h2>
+                  {{#invoice.services}}
+                  <fieldset class="form-fieldset">
+                    <legend class="form-legend">
+                      {{name}}
+                      <span class="form-legend__divider"></span>
+                    </legend>
+
+                    <div style="margin-bottom: 16px">
+                      <div class="form-row">
+                        <label>Name:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="text"
                             name="service_name_{{index}}"
                             value="{{name}}"
-                        /></label>
-                        <label
-                          >Amount:
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Amount:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="number"
                             min="0"
                             step="any"
                             name="service_amount_{{index}}"
                             value="{{amount}}"
-                        /></label>
-                        <label
-                          >Unit:
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Unit:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="text"
                             name="service_unit_{{index}}"
                             value="{{unit}}"
-                        /></label>
-                        <label
-                          >Unit Net Price:
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Unit Net Price:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="number"
                             step="any"
                             name="service_unitNetPrice_{{index}}"
                             value="{{unitNetPrice}}"
-                        /></label>
-                        <label
-                          >Net price:
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Net price:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="number"
                             step="any"
                             name="service_netPrice_{{index}}"
                             value="{{netPrice}}"
-                        /></label>
-                        <label
-                          >Gross Price:
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Gross Price:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="number"
                             step="any"
                             name="service_grossPrice_{{index}}"
                             value="{{grossPrice}}"
-                        /></label>
-                        <label
-                          >Currency:
-                          <select name="service_currency_{{index}}">
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Currency:</label>
+                        <div>
+                          <select name="service_currency_{{index}}" class="form-select">
                             <option value="{{currency}}" selected>
                               {{currency}}
                             </option>
@@ -482,55 +1109,87 @@
                             <option value="HUF">HUF</option>
                             <option value="USD">USD</option>
                           </select>
-                        </label>
-                        <label
-                          >Vat Amount:
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Vat Amount:</label>
+                        <div>
                           <input
+                            class="form-input"
                             type="number"
                             min="0"
                             step="any"
                             name="service_vatAmount_{{index}}"
                             value="{{vatAmount}}"
-                        /></label>
-                        <label
-                          >Vat Rate:<input
+                          />
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <label>Vat Rate:</label>
+                        <div>
+                          <input
+                            class="form-input"
                             type="text"
                             name="service_vatRate_{{index}}"
                             value="{{vatRate}}"
-                        /></label>
+                          />
+                        </div>
                       </div>
-                    </fieldset>
-                    {{/invoice.services}}
+                    </div>
                   </fieldset>
+                  {{/invoice.services}}
 
-                  <div class="edit-actions">
-                    <button type="submit">Save</button>
+                  <div class="form-footer">
+                    <button type="submit" class="btn btn--success">Save</button>
                     <button
+                      class="btn btn--secondary"
                       type="button"
                       on="tap:{{invoice.invoiceId}}-item-edit.hide,{{invoice.invoiceId}}-item-view.show"
                     >
                       Cancel
                     </button>
-                    <div submitting>Save in progress.</div>
-                    <div submit-success>Save successful.</div>
-                    <div submit-error template="submit_error_template"></div>
+                    <div submitting>
+                      <div class="notification notification--info">
+                        <p>Save in progress.</p>
+                      </div>
+                    </div>
+                    <div submit-success>
+                      <div class="notification notification--success">
+                        <p>Save successful</p>
+                      </div>
+                    </div>
+                    <div submit-error>
+                      <div class="notification notification--error">
+                        <p>Azthittem fölöltözöl rendesen! Error: {{message}}</p>
+                        <button type="button" class="notification__close btn btn--ghost" on="tap:edit-invoice-{{invoice.invoiceId}}.clear">
+                              <span class="gg-close">
+                                <span></span>
+                                <span></span>
+                              </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </form>
               </div>
             </div>
           </div>
           {{/items}}
-          <form
-            class="{{^items}}hidden{{/items}}"
-            method="POST"
-            action-xhr="[[.ApiUrl]]/api/invoices/accept_all?token=[[.Token]]"
-            on="submit-success:invoiceList.refresh"
-          >
-            {{#items}}
-            <input type="hidden" name="{{invoice.invoiceId}}" value="accept" />
-            {{/items}}
-            <input type="submit" value="Accept all" />
-          </form>
+
+          <div class="list-footer">
+            <form
+              class="{{^items}}hidden{{/items}}"
+              method="POST"
+              action-xhr="[[.ApiUrl]]/api/invoices/accept_all?token=[[.Token]]"
+              on="submit-success:invoiceList.refresh"
+            >
+              {{#items}}
+              <input type="hidden" name="{{invoice.invoiceId}}" value="accept" />
+              {{/items}}
+
+              <button type="submit" class="btn btn--outline-success">Accept all</button>
+            </form>
+          </div>
           {{^items}}
           <div>Nincs több pàlinka. Elfogyott.</div>
           <amp-img
@@ -543,7 +1202,7 @@
           {{/items}}
         </template>
         <template type="amp-mustache" id="submit_error_template">
-          <div class="save-error">
+          <div class="notification notification--error">
             Azthittem fölöltözöl rendesen! Error: {{message}}
           </div>
         </template>
