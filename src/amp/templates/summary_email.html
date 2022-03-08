@@ -361,6 +361,10 @@
         padding: 24px 0;
       }
 
+      .footer-message {
+        padding: 0 48px;
+      }
+
       /* ICONS */
       .gg-sync {
         border: 2px solid;
@@ -1191,14 +1195,16 @@
             </form>
           </div>
           {{^items}}
-          <div class="">Nincs több pàlinka. Elfogyott.</div>
-          <amp-img
-            alt="Pocok logo"
-            src="[[.PocokLogo]]"
-            width="200px"
-            height="200px"
-          >
-          </amp-img>
+          <div class="footer-message">
+            <p>Nincs több pàlinka. Elfogyott.</p>
+            <amp-img
+              alt="Pocok logo"
+              src="[[.PocokLogo]]"
+              width="200px"
+              height="200px"
+              >
+            </amp-img>
+          </div>
           {{/items}}
         </template>
         <template type="amp-mustache" id="submit_error_template">
