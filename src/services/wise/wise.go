@@ -56,7 +56,12 @@ func (s *WiseService) UpsertRecipient(profileId int, invoice *base_models.Invoic
 		return nil, getRecipientErr
 	}
 
-	recipient := api.FindRecipient(*recipients, func(a models.RecipientAccount) bool { return a.Name.FullName == invoice.VendorName })
+	recipient := api.FindRecipient(*recipients, func(a models.RecipientAccount) bool {
+		matchesEmailAndAccountNumber := a.Email == invoice.VendorEmail && invoice.AccountNumber != "" && a.Details.AccountNumber == invoice.AccountNumber
+		matchesEmailAndIban := a.Email == invoice.VendorEmail && invoice.Iban != "" && a.Details.Iban == invoice.Iban
+
+		return matchesEmailAndAccountNumber || matchesEmailAndIban
+	})
 	if recipient == nil {
 		recipientInput := mapInvoiceToRecipient(profileId, invoice)
 
@@ -78,15 +83,29 @@ func (s *WiseService) UpsertRecipient(profileId int, invoice *base_models.Invoic
 }
 
 func mapInvoiceToRecipient(profileId int, invoice *base_models.Invoice) *models.RecipientAccountV1 {
-	return &models.RecipientAccountV1{
-		Profile:           profileId,
-		AccountHolderName: invoice.VendorName,
-		Currency:          invoice.Currency,
-		Type:              "hungarian",
-		Details: models.RecipientAccountV1Details{
-			LegalType:     "PRIVATE",
-			AccountNumber: invoice.AccountNumber,
-			Email:         invoice.VendorEmail,
-		},
+	if invoice.Currency == "HUF" {
+		return &models.RecipientAccountV1{
+			Profile:           profileId,
+			AccountHolderName: invoice.VendorName,
+			Currency:          invoice.Currency,
+			Type:              "hungarian",
+			Details: models.RecipientAccountV1Details{
+				LegalType:     "PRIVATE",
+				AccountNumber: invoice.AccountNumber,
+				Email:         invoice.VendorEmail,
+			},
+		}
+	} else {
+		return &models.RecipientAccountV1{
+			Profile:           profileId,
+			AccountHolderName: invoice.VendorName,
+			Currency:          invoice.Currency,
+			Type:              "iban",
+			Details: models.RecipientAccountV1Details{
+				LegalType: "PRIVATE",
+				IBAN:      invoice.Iban,
+				Email:     invoice.VendorEmail,
+			},
+		}
 	}
 }
